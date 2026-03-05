@@ -142,6 +142,10 @@ Minimum `benchmarkRuns` fields:
 - `artifactBundleUri`
 - `artifactBundleHash`
 
+Current repo implementation:
+- [dashboard/schema.json](/home/mikers/dev/fil-builders/five-minute-challenge/dashboard/schema.json) defines `BenchmarkRun`, `BenchmarkIncident`, and `BenchmarkConfig`
+- [bin/generate-dashboard.sh](/home/mikers/dev/fil-builders/five-minute-challenge/bin/generate-dashboard.sh) generates the local dashboard scaffold from that schema using the sibling Token Host Builder repo
+
 ## Historical Example
 
 The first successful manual run is preserved in:

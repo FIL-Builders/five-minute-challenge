@@ -5,7 +5,9 @@
   "scripts": {
     "benchmark:local": "./bin/run-benchmark.sh",
     "benchmark:manual": "./run.sh",
-    "benchmark:validate": "node scripts/validate-run.mjs"
+    "benchmark:validate": "node scripts/validate-run.mjs",
+    "dashboard:generate": "./bin/generate-dashboard.sh",
+    "dashboard:dev": "./bin/dev-dashboard.sh"
   },
   "keywords": [],
   "author": "",

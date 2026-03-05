@@ -38,3 +38,11 @@ Local running log for benchmark-repo development.
 - Taught the harness to map benchmark mode to a default prompt version.
 - Added run-time docs snapshot capture and SHA-256 hashing before agent launch.
 - Added docs snapshot hash, mode, and prompt version to run artifacts and summary metadata.
+
+### Phase 4 Dashboard Start
+
+- Added `dashboard/schema.json` as the canonical Token Host Builder schema for the benchmark registry app.
+- Added `BenchmarkRun`, `BenchmarkIncident`, and `BenchmarkConfig` collections to support run history, operator triage, and local configuration.
+- Added `bin/generate-dashboard.sh` and `npm run dashboard:generate` to generate the local dashboard scaffold from the sibling Token Host Builder repo.
+- Verified that the schema generates successfully into `dashboard/generated/`.
+- Added `bin/dev-dashboard.sh` and `npm run dashboard:dev` as the local Calibration preview entry point.

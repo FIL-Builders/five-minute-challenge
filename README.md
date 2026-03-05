@@ -24,6 +24,7 @@ The active repo direction is documented here:
 - [docs/work-log.md](/home/mikers/dev/fil-builders/five-minute-challenge/docs/work-log.md)
 - [docs/benchmark-design.md](/home/mikers/dev/fil-builders/five-minute-challenge/docs/benchmark-design.md)
 - [schemas/benchmark-run-result.schema.json](/home/mikers/dev/fil-builders/five-minute-challenge/schemas/benchmark-run-result.schema.json)
+- [dashboard/schema.json](/home/mikers/dev/fil-builders/five-minute-challenge/dashboard/schema.json)
 
 ## Active Entry Point
 
@@ -41,3 +42,7 @@ Current environment assumptions:
 - artifact publishing backend target will be the Filecoin storage service under test
 - dashboard development can run locally first against Filecoin Calibration
 - scheduling can remain a locally invoked script until the harness output stabilizes
+
+## Dashboard
+
+The first dashboard slice is now defined as a Token Host Builder app schema in [dashboard/schema.json](/home/mikers/dev/fil-builders/five-minute-challenge/dashboard/schema.json). Generate the local app scaffold with `npm run dashboard:generate`, and run a Calibration-targeted local preview with `npm run dashboard:dev` once a dev private key is available.
