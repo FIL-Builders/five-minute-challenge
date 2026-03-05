@@ -74,3 +74,13 @@ Local running log for benchmark-repo development.
 - Updated `scripts/finalize-run.mjs` to normalize the newer agent result shape (`success`, `wallet`, `funding`, `deposit`, `upload`, `download`, `phaseTimings`, and named artifact files).
 - Updated `scripts/validate-run.mjs` to avoid treating `agentExitCode: null` as an automatic boot failure during repair/replay scenarios.
 - Tightened `bin/run-benchmark.sh` to launch Codex in a scrubbed environment so unrelated operator secrets are not inherited by the benchmarked agent.
+
+### Benchmark Registry Support And Artifact Links
+
+- Hardened `tokenhost-builder` so the benchmark registry schema compiles and deploys cleanly by combining `viaIR` fallback with lower-stack generated create flows and struct-based create inputs.
+- Extended the benchmark registry schema with `artifactBundleHttpUrl` and redeployed it to Filecoin Calibration at `0xb0b97c5f2cfebe842ba7a1b38cde1893ec06e517`.
+- Added `scripts/publish-dashboard-records.mjs` and `npm run dashboard:publish` so finalized run records can be written into the deployed `BenchmarkRun` collection.
+- Published run `20260305T205630Z-fa9abd` into the on-chain registry as `BenchmarkRun` record `#1`.
+- Added HTTP-served local artifact links to the custom dashboard run detail view for reports, logs, summaries, validation output, and publish metadata.
+- Switched the customized dashboard source app away from static export mode so Next route handlers can serve local run artifacts during development.
+- Updated `bin/up-dashboard-app.sh` to skip the preview server so successful deployments do not report false failures when port `3001` is already in use.

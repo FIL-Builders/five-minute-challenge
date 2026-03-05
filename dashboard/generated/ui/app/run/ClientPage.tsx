@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import { fetchBenchmarkFeed, formatDuration, type BenchmarkRunRecord } from '../../src/lib/feed';
+import { fetchBenchmarkFeed, formatDuration, type BenchmarkRunFeedRecord } from '../../src/lib/feed';
 
 function kv(label: string, value: string) {
   return (
@@ -18,7 +18,7 @@ function kv(label: string, value: string) {
 export default function RunClientPage() {
   const searchParams = useSearchParams();
   const runId = searchParams.get('id') ?? '';
-  const [run, setRun] = useState<BenchmarkRunRecord | null>(null);
+  const [run, setRun] = useState<BenchmarkRunFeedRecord | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -83,7 +83,45 @@ export default function RunClientPage() {
               {kv('pieceCid', run.pieceCid)}
               {kv('docsSnapshotHash', run.docsSnapshotHash)}
               {kv('artifactBundleUri', run.artifactBundleUri)}
+              {kv('artifactBundleHttpUrl', run.artifactBundleHttpUrl)}
             </div>
+
+            <div className="card" style={{ marginTop: 20 }}>
+              <h2>Artifacts</h2>
+              <div className="muted">Local run evidence and published bundle retrieval links.</div>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16 }}>
+                {(run.meta?.localArtifacts ?? []).map((artifact) => (
+                  artifact.url ? (
+                    <a key={`${artifact.label}-${artifact.path}`} className="btn" href={artifact.url} target="_blank" rel="noreferrer">
+                      {artifact.label}
+                    </a>
+                  ) : null
+                ))}
+                {run.artifactBundleHttpUrl ? (
+                  <a className="btn primary" href={run.artifactBundleHttpUrl} target="_blank" rel="noreferrer">
+                    Artifact bundle
+                  </a>
+                ) : null}
+              </div>
+            </div>
+
+            {run.meta?.dashboardPublish ? (
+              <div className="card" style={{ marginTop: 20 }}>
+                <h2>Registry</h2>
+                <div className="muted">Chain-backed BenchmarkRun registry publication metadata.</div>
+                <div className="kv detailKv" style={{ marginTop: 16 }}>
+                  {kv('publishedAt', run.meta.dashboardPublish.publishedAt ?? '')}
+                  {kv('chainName', run.meta.dashboardPublish.chainName ?? '')}
+                  {kv('deploymentAddress', run.meta.dashboardPublish.deploymentAddress ?? '')}
+                  {kv('runRecordId', run.meta.dashboardPublish.runRecordId ?? '')}
+                </div>
+                {run.meta.dashboardPublish.runRecordHref ? (
+                  <div style={{ marginTop: 16 }}>
+                    <Link className="btn" href={run.meta.dashboardPublish.runRecordHref}>Open on-chain record</Link>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
           </>
         ) : null}
       </div>

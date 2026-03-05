@@ -1,0 +1,48 @@
+{
+  "chainConfigVersion": "1.0.0",
+  "chainId": 314159,
+  "name": "Filecoin Calibration",
+  "type": "external-evm",
+  "nativeCurrency": {
+    "name": "testnet filecoin",
+    "symbol": "tFIL",
+    "decimals": 18
+  },
+  "trust": {
+    "posture": "external"
+  },
+  "finality": {
+    "model": "probabilistic",
+    "recommendedConfirmations": 2,
+    "typicalSeconds": 12
+  },
+  "rpc": {
+    "endpoints": [
+      {
+        "url": "https://api.calibration.node.glif.io/rpc/v1",
+        "kind": "public",
+        "priority": 0,
+        "capabilities": {
+          "batching": true,
+          "subscriptions": false
+        }
+      }
+    ]
+  },
+  "issuer": {
+    "name": "Token Host (local)",
+    "issuedAt": "2026-03-05T22:12:34.372Z"
+  },
+  "signatures": [
+    {
+      "alg": "none",
+      "sig": "UNSIGNED"
+    }
+  ],
+  "explorers": [
+    {
+      "name": "Filfox",
+      "url": "https://calibration.filfox.info"
+    }
+  ]
+}

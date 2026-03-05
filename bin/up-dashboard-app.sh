@@ -27,4 +27,5 @@ pnpm th up "${SCHEMA_PATH}" \
   --private-key "${PRIVATE_KEY}" \
   --host "${HOST}" \
   --port "${PORT}" \
+  --no-preview \
   --no-start-anvil

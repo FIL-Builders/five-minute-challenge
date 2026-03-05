@@ -5,5 +5,9 @@ node_modules/
 dashboard/generated/ui/node_modules/
 dashboard/generated/ui/.next/
 dashboard/generated/ui/out/
+dashboard/generated/compiled.tgz
+dashboard/generated/sources.tgz
+dashboard/generated/ui-bundle/
+dashboard/generated/ui-site/
 dashboard/local-feed.json
 alerts/

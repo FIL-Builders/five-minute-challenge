@@ -113,6 +113,7 @@ function normalizeArtifacts(runId, runDir, agentResult) {
     downloadedPayloadPath: rel(downloadedPayloadFile),
     artifactBundleUri: agentResult?.artifacts?.artifactBundleUri ?? null,
     artifactBundleHash: agentResult?.artifacts?.artifactBundleHash ?? null,
+    artifactBundleHttpUrl: agentResult?.artifacts?.artifactBundleHttpUrl ?? null,
     _localPaths: {
       reportPath,
       stdoutLogPath,
@@ -210,7 +211,8 @@ async function main() {
       uploadedPayloadPath: await exists(artifacts._localPaths.uploadedPayloadPath) ? artifacts.uploadedPayloadPath : null,
       downloadedPayloadPath: await exists(artifacts._localPaths.downloadedPayloadPath) ? artifacts.downloadedPayloadPath : null,
       artifactBundleUri: artifacts.artifactBundleUri ?? existingSummary?.artifacts?.artifactBundleUri ?? existingPublishResult?.artifactBundleUri ?? null,
-      artifactBundleHash: artifacts.artifactBundleHash ?? existingSummary?.artifacts?.artifactBundleHash ?? existingPublishResult?.artifactBundleHash ?? null
+      artifactBundleHash: artifacts.artifactBundleHash ?? existingSummary?.artifacts?.artifactBundleHash ?? existingPublishResult?.artifactBundleHash ?? null,
+      artifactBundleHttpUrl: artifacts.artifactBundleHttpUrl ?? existingSummary?.artifacts?.artifactBundleHttpUrl ?? existingPublishResult?.artifactBundleHttpUrl ?? null
     },
     evidence: normalizeEvidence(agentResult),
     operatorNotes: artifactValidationFailed

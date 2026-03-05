@@ -14,6 +14,11 @@ if [[ -f "${latest_run_file}" ]]; then
     --summary "${REPO_ROOT}/runs/${latest_run_id}/run-summary.json" \
     --validation "${REPO_ROOT}/runs/${latest_run_id}/validation-result.json" \
     --bundle "${REPO_ROOT}/runs/${latest_run_id}/workspace-output.tgz"
+  if [[ "${PUBLISH_DASHBOARD_APP:-0}" == "1" ]]; then
+    node "${REPO_ROOT}/scripts/publish-dashboard-records.mjs" \
+      --repo-root "${REPO_ROOT}" \
+      --run-dir "${REPO_ROOT}/runs/${latest_run_id}"
+  fi
 fi
 node "${REPO_ROOT}/scripts/build-dashboard-feed.mjs" --repo-root "${REPO_ROOT}"
 node "${REPO_ROOT}/scripts/check-alerts.mjs" \

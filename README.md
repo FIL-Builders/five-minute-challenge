@@ -11,9 +11,12 @@ The benchmark goal is simple:
 ## Current State
 
 What exists today:
-- one successful manual Codex-driven run, preserved as a historical example
-- a draft benchmark prompt
-- no canonical harness, schema validator, scheduler, or dashboard yet
+- a canonical local harness that runs Codex in a fresh workspace and writes normalized run artifacts under `runs/<run-id>/`
+- structured validation, dashboard record generation, local feed aggregation, and alert evaluation
+- Filecoin Cloud artifact bundle publishing for retained benchmark evidence
+- a Token Host Builder benchmark registry schema deployed on Filecoin Calibration
+- local dashboard views that combine feed-backed operator metrics with chain-backed collection pages
+- one preserved historical manual run plus newer validated benchmark runs under ignored `runs/`
 
 Historical evidence lives in [historical-runs/2026-03-04-initial-manual](/home/mikers/dev/fil-builders/five-minute-challenge/historical-runs/2026-03-04-initial-manual).
 
@@ -46,10 +49,21 @@ Current environment assumptions:
 - scheduling can remain a locally invoked script until the harness output stabilizes
 
 Local operations now support:
-- `npm run benchmark:cycle`: run benchmark, rebuild dashboard feed, then evaluate alerts
+- `npm run benchmark:cycle`: run benchmark, publish the workspace bundle, rebuild dashboard feed, then evaluate alerts
 - `npm run benchmark:publish`: publish the latest run bundle to Filecoin Cloud using the dev wallet
 - `npm run benchmark:alerts`: evaluate local alert thresholds without running a new benchmark
+- `PUBLISH_DASHBOARD_APP=1 npm run benchmark:cycle`: also publish the finalized run record into the deployed Token Host registry
 
 ## Dashboard
 
-The first dashboard slice is now defined as a Token Host Builder app schema in [dashboard/schema.json](/home/mikers/dev/fil-builders/five-minute-challenge/dashboard/schema.json). Generate the local app scaffold with `npm run dashboard:generate`, build a local aggregate feed with `npm run dashboard:feed`, and run the local UI preview with `npm run dashboard:dev`. If you need to compile/deploy the schema against Calibration, use `npm run dashboard:up` with a dev private key.
+The benchmark dashboard is defined as a Token Host Builder app schema in [dashboard/schema.json](/home/mikers/dev/fil-builders/five-minute-challenge/dashboard/schema.json).
+
+Current dashboard behavior:
+- the homepage and `/run?id=<runId>` use the local validated benchmark feed for operator metrics and artifact inspection
+- the generated collection routes such as `/BenchmarkRun` and `/BenchmarkIncident` read live records from the deployed Calibration app
+- local artifact links are served from the dev dashboard server so reports, logs, summaries, and validation results are clickable over HTTP
+
+Useful commands:
+- `npm run dashboard:dev`: start the local Next dashboard with the current manifest, ABI, and feed copied into `public/`
+- `npm run dashboard:up`: deploy the dashboard schema to Filecoin Calibration and refresh the generated manifest
+- `npm run dashboard:publish`: publish the latest finalized run into the deployed `BenchmarkRun` registry

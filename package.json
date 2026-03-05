@@ -12,6 +12,7 @@
     "dashboard:feed": "node scripts/build-dashboard-feed.mjs --repo-root .",
     "dashboard:generate": "./bin/generate-dashboard.sh",
     "dashboard:dev": "./bin/dev-dashboard.sh",
+    "dashboard:publish": "./bin/publish-dashboard-latest.sh",
     "dashboard:up": "./bin/up-dashboard-app.sh"
   },
   "dependencies": {

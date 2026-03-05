@@ -111,6 +111,10 @@ export const ths = {
           "type": "string"
         },
         {
+          "name": "artifactBundleHttpUrl",
+          "type": "string"
+        },
+        {
           "name": "operatorNotes",
           "type": "string"
         }
@@ -153,6 +157,7 @@ export const ths = {
           "contentMatch",
           "artifactBundleUri",
           "artifactBundleHash",
+          "artifactBundleHttpUrl",
           "operatorNotes"
         ],
         "access": "public"
@@ -163,6 +168,7 @@ export const ths = {
           "failurePhase",
           "artifactBundleUri",
           "artifactBundleHash",
+          "artifactBundleHttpUrl",
           "operatorNotes"
         ],
         "access": "owner",

@@ -14,6 +14,17 @@ fi
 
 node "${REPO_ROOT}/scripts/build-dashboard-feed.mjs" --repo-root "${REPO_ROOT}"
 
+if [[ -f "${REPO_ROOT}/dashboard/generated/compiled/App.json" ]]; then
+  mkdir -p "${UI_DIR}/public/compiled"
+  cp "${REPO_ROOT}/dashboard/generated/compiled/App.json" "${UI_DIR}/public/compiled/App.json"
+fi
+
+if [[ -f "${REPO_ROOT}/dashboard/generated/manifest.json" ]]; then
+  mkdir -p "${UI_DIR}/public/.well-known/tokenhost"
+  cp "${REPO_ROOT}/dashboard/generated/manifest.json" "${UI_DIR}/public/.well-known/tokenhost/manifest.json"
+  cp "${REPO_ROOT}/dashboard/generated/manifest.json" "${UI_DIR}/public/manifest.json"
+fi
+
 if [[ ! -d "${UI_DIR}/node_modules" ]]; then
   (cd "${UI_DIR}" && pnpm install --frozen-lockfile)
 fi

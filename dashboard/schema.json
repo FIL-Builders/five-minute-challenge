@@ -36,6 +36,7 @@
         { "name": "contentMatch", "type": "bool", "required": true },
         { "name": "artifactBundleUri", "type": "string" },
         { "name": "artifactBundleHash", "type": "string" },
+        { "name": "artifactBundleHttpUrl", "type": "string" },
         { "name": "operatorNotes", "type": "string" }
       ],
       "createRules": {
@@ -76,6 +77,7 @@
           "contentMatch",
           "artifactBundleUri",
           "artifactBundleHash",
+          "artifactBundleHttpUrl",
           "operatorNotes"
         ],
         "access": "public"
@@ -86,6 +88,7 @@
           "failurePhase",
           "artifactBundleUri",
           "artifactBundleHash",
+          "artifactBundleHttpUrl",
           "operatorNotes"
         ],
         "access": "owner",

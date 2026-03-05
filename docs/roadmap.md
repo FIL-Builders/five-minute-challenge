@@ -71,7 +71,7 @@ Status: baseline mode/version support complete
 
 ## Phase 4: Dashboard And History
 
-Status: local dashboard baseline complete
+Status: local plus chain-backed baseline complete
 
 - [x] Stand up a benchmark run registry app schema.
 - [x] Generate and review the local dashboard scaffold.
@@ -81,6 +81,9 @@ Status: local dashboard baseline complete
 - [x] Add operator notes and tagged incidents.
 - [x] Make benchmark history queryable over time.
 - [x] Make a single failed run inspectable without opening raw logs first.
+- [x] Deploy the benchmark registry schema to Filecoin Calibration.
+- [x] Publish at least one finalized `BenchmarkRun` record into the deployed registry.
+- [x] Expose local artifact links from the dashboard over HTTP instead of only showing piece CIDs.
 
 ## Phase 5: Scheduling And Alerting
 

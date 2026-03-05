@@ -72,8 +72,13 @@ export default function HomeClient() {
           <span className="eyebrow">Filecoin Cloud Benchmark</span>
           <h2 className="heroTitle">Run history, failures, and latency trends from local harness evidence.</h2>
           <p className="heroLead">
-            This dashboard reads a local benchmark feed built from validated runs so the UI reflects actual benchmark artifacts.
+            This overview reads a local benchmark feed built from validated runs. The chain-backed registry remains available through the generated
+            collection views.
           </p>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16 }}>
+            <Link className="btn" href="/BenchmarkRun">On-chain runs</Link>
+            <Link className="btn" href="/BenchmarkIncident">On-chain incidents</Link>
+          </div>
         </div>
         <div className="heroMeta">
           <div className="heroMetaItem">

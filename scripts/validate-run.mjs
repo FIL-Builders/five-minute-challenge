@@ -143,7 +143,7 @@ function validateSchema(summary) {
         pushError(errors, `$.artifacts.${required}`, "Must be a non-empty string.");
       }
     }
-    for (const optional of ["agentLogPath", "uploadedPayloadPath", "downloadedPayloadPath", "artifactBundleUri", "artifactBundleHash"]) {
+    for (const optional of ["agentLogPath", "uploadedPayloadPath", "downloadedPayloadPath", "artifactBundleUri", "artifactBundleHash", "artifactBundleHttpUrl"]) {
       if (!(summary.artifacts[optional] === undefined || isNullableString(summary.artifacts[optional]))) {
         pushError(errors, `$.artifacts.${optional}`, "Must be null or a string.");
       }

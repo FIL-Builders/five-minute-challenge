@@ -1,1 +1,206 @@
-{"generatedAt":null,"runCount":0,"incidentCount":0,"runs":[],"incidents":[]}
+{
+  "generatedAt": "2026-03-05T22:16:02.282Z",
+  "runCount": 2,
+  "incidentCount": 6,
+  "runs": [
+    {
+      "collection": "BenchmarkRun",
+      "data": {
+        "runId": "20260305T205630Z-fa9abd",
+        "mode": "fresh-follow-docs",
+        "promptVersion": "fresh-follow-docs-v1",
+        "model": "gpt-5.3-codex",
+        "repoSha": "3c89dbec06e0d34baef1c5e990c7ed841f4f6b5f",
+        "docsUrl": "https://docs.filecoin.cloud/getting-started/",
+        "docsSnapshotHash": "2542a0e97ab61d178b3c38be9617de1cad51ab3387a4039e23d52af2fbc0d72e",
+        "status": "success",
+        "failurePhase": "",
+        "startedAt": "2026-03-05T20:56:31Z",
+        "endedAt": "2026-03-05T21:09:47Z",
+        "outerWallTimeMs": "796093",
+        "walletAddress": "0x470884E8e4dd7C50Ea08626eE9995da63462E8Ee",
+        "fundingTxHash": "0x093bdea26f50ec16d2042df453df7e67cd7bee76d72fa220fc04664815d47865,0x5e0cbe00d15f3f7cbae5e0bd3635f2e246acab56481c036568cb9d8e6f9275fd",
+        "depositTxHash": "0x697b754c7f627c84fb896d1d20ccccd9d3bc9511232ac101b3e343e4d9b2174a",
+        "pieceCid": "bafkzcibd4uaqjgvfrkkzcqzyqwq35txdcyo6gcn4uigh7n7wfkad7yzr6ric27ja",
+        "contentMatch": true,
+        "artifactBundleUri": "piececid:bafkzcibf76r6yaqtme3vslvnhf5jnjmk56jp2fgy7aigdqvutf4uk4uxxdxojzy4hmbq",
+        "artifactBundleHash": "sha256:d85dee117dfd87945fff4abd385638f54478e25c5a10ede1f1e7ad42bd5fc2f8",
+        "artifactBundleHttpUrl": "",
+        "operatorNotes": ""
+      },
+      "meta": {
+        "source": {
+          "runSummaryPath": "runs/20260305T205630Z-fa9abd/run-summary.json",
+          "validationResultPath": "runs/20260305T205630Z-fa9abd/validation-result.json",
+          "dashboardRecordsPath": "runs/20260305T205630Z-fa9abd/dashboard-records.json",
+          "artifactPublishResultPath": "runs/20260305T205630Z-fa9abd/artifact-publish-result.json"
+        },
+        "localArtifacts": [
+          {
+            "label": "Report",
+            "path": "runs/20260305T205630Z-fa9abd/report.md",
+            "url": "/api/artifacts/20260305T205630Z-fa9abd/report.md"
+          },
+          {
+            "label": "Stdout log",
+            "path": "runs/20260305T205630Z-fa9abd/stdout.log",
+            "url": "/api/artifacts/20260305T205630Z-fa9abd/stdout.log"
+          },
+          {
+            "label": "Stderr log",
+            "path": "runs/20260305T205630Z-fa9abd/stderr.log",
+            "url": "/api/artifacts/20260305T205630Z-fa9abd/stderr.log"
+          },
+          {
+            "label": "Uploaded payload",
+            "path": "runs/20260305T205630Z-fa9abd/payload-20260305T205630Z-fa9abd.txt",
+            "url": "/api/artifacts/20260305T205630Z-fa9abd/payload-20260305T205630Z-fa9abd.txt"
+          },
+          {
+            "label": "Downloaded payload",
+            "path": "runs/20260305T205630Z-fa9abd/downloaded-20260305T205630Z-fa9abd.txt",
+            "url": "/api/artifacts/20260305T205630Z-fa9abd/downloaded-20260305T205630Z-fa9abd.txt"
+          },
+          {
+            "label": "Run summary",
+            "path": "runs/20260305T205630Z-fa9abd/run-summary.json",
+            "url": "/api/artifacts/20260305T205630Z-fa9abd/run-summary.json"
+          },
+          {
+            "label": "Validation result",
+            "path": "runs/20260305T205630Z-fa9abd/validation-result.json",
+            "url": "/api/artifacts/20260305T205630Z-fa9abd/validation-result.json"
+          },
+          {
+            "label": "Dashboard records",
+            "path": "runs/20260305T205630Z-fa9abd/dashboard-records.json",
+            "url": "/api/artifacts/20260305T205630Z-fa9abd/dashboard-records.json"
+          },
+          {
+            "label": "Artifact publish result",
+            "path": "runs/20260305T205630Z-fa9abd/artifact-publish-result.json",
+            "url": "/api/artifacts/20260305T205630Z-fa9abd/artifact-publish-result.json"
+          }
+        ],
+        "validation": {
+          "status": "success",
+          "failurePhase": null,
+          "schemaValid": true
+        },
+        "externalArtifacts": {
+          "artifactBundleUri": "piececid:bafkzcibf76r6yaqtme3vslvnhf5jnjmk56jp2fgy7aigdqvutf4uk4uxxdxojzy4hmbq",
+          "artifactBundleHash": "sha256:d85dee117dfd87945fff4abd385638f54478e25c5a10ede1f1e7ad42bd5fc2f8",
+          "artifactBundleHttpUrl": null
+        },
+        "dashboardPublish": {
+          "publishedAt": "2026-03-05T22:14:33.014Z",
+          "chainName": "filecoin_calibration",
+          "deploymentAddress": "0xb0b97c5f2cfebe842ba7a1b38cde1893ec06e517",
+          "runRecordId": "1",
+          "runRecordHref": "/BenchmarkRun/view/?id=1",
+          "incidentRecordIds": [],
+          "incidentRecordHrefs": []
+        }
+      }
+    },
+    {
+      "collection": "BenchmarkRun",
+      "data": {
+        "runId": "20260305T202023Z-d2f16d",
+        "mode": "fresh-follow-docs",
+        "promptVersion": "fresh-follow-docs-v1",
+        "model": "gpt-5.3-codex",
+        "repoSha": "b0d647bb89202e0356729f9d800f6ede70ab8f8a",
+        "docsUrl": "https://docs.filecoin.cloud/getting-started/",
+        "docsSnapshotHash": "2542a0e97ab61d178b3c38be9617de1cad51ab3387a4039e23d52af2fbc0d72e",
+        "status": "failure",
+        "failurePhase": "wallet_generation",
+        "startedAt": "2026-03-05T20:20:23Z",
+        "endedAt": "2026-03-05T20:37:53Z",
+        "outerWallTimeMs": "1050186",
+        "walletAddress": "0x0000000000000000000000000000000000000000",
+        "fundingTxHash": "",
+        "depositTxHash": "",
+        "pieceCid": "",
+        "contentMatch": false,
+        "artifactBundleUri": "piececid:bafkzcibe3s6ckegga4gosep3aym7dcetd3okv7qbccct3q6c4dmw4qzairhb3itzcy",
+        "artifactBundleHash": "sha256:ce7c4d036b1ae44ece3d01fd607f47089b7e400fb82966070886789983d18b51",
+        "operatorNotes": "artifact_publish: uploaded workspace bundle to piececid:bafkzcibe3s6ckegga4gosep3aym7dcetd3okv7qbccct3q6c4dmw4qzairhb3itzcy wallet_generation: Missing generated wallet address. | funding: Missing funding evidence. | deposit: Missing deposit or approval transaction evidence. | upload: Missing uploaded piece CID. | download: Missing downloaded payload artifact path. | verification: Downloaded payload did not verify as matching uploaded content."
+      }
+    }
+  ],
+  "incidents": [
+    {
+      "collection": "BenchmarkIncident",
+      "data": {
+        "runId": "20260305T202023Z-d2f16d",
+        "severity": "failure",
+        "title": "20260305T202023Z-d2f16d wallet_generation",
+        "status": "open",
+        "openedAt": "2026-03-05T20:37:53Z",
+        "closedAt": "",
+        "notes": "wallet_generation: Missing generated wallet address. [finding 1]"
+      }
+    },
+    {
+      "collection": "BenchmarkIncident",
+      "data": {
+        "runId": "20260305T202023Z-d2f16d",
+        "severity": "failure",
+        "title": "20260305T202023Z-d2f16d funding",
+        "status": "open",
+        "openedAt": "2026-03-05T20:37:53Z",
+        "closedAt": "",
+        "notes": "funding: Missing funding evidence. [finding 2]"
+      }
+    },
+    {
+      "collection": "BenchmarkIncident",
+      "data": {
+        "runId": "20260305T202023Z-d2f16d",
+        "severity": "failure",
+        "title": "20260305T202023Z-d2f16d deposit",
+        "status": "open",
+        "openedAt": "2026-03-05T20:37:53Z",
+        "closedAt": "",
+        "notes": "deposit: Missing deposit or approval transaction evidence. [finding 3]"
+      }
+    },
+    {
+      "collection": "BenchmarkIncident",
+      "data": {
+        "runId": "20260305T202023Z-d2f16d",
+        "severity": "failure",
+        "title": "20260305T202023Z-d2f16d upload",
+        "status": "open",
+        "openedAt": "2026-03-05T20:37:53Z",
+        "closedAt": "",
+        "notes": "upload: Missing uploaded piece CID. [finding 4]"
+      }
+    },
+    {
+      "collection": "BenchmarkIncident",
+      "data": {
+        "runId": "20260305T202023Z-d2f16d",
+        "severity": "failure",
+        "title": "20260305T202023Z-d2f16d download",
+        "status": "open",
+        "openedAt": "2026-03-05T20:37:53Z",
+        "closedAt": "",
+        "notes": "download: Missing downloaded payload artifact path. [finding 5]"
+      }
+    },
+    {
+      "collection": "BenchmarkIncident",
+      "data": {
+        "runId": "20260305T202023Z-d2f16d",
+        "severity": "failure",
+        "title": "20260305T202023Z-d2f16d verification",
+        "status": "open",
+        "openedAt": "2026-03-05T20:37:53Z",
+        "closedAt": "",
+        "notes": "verification: Downloaded payload did not verify as matching uploaded content. [finding 6]"
+      }
+    }
+  ]
+}

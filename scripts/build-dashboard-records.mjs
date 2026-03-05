@@ -17,15 +17,51 @@ async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, "utf8"));
 }
 
+async function maybeReadJson(filePath) {
+  try {
+    return JSON.parse(await readFile(filePath, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
 function normalizeNotes(value) {
   return typeof value === "string" && value.trim() ? value.trim() : null;
 }
 
-function buildRunRecord(summary) {
+function artifactUrl(runId, relativePath) {
+  if (typeof relativePath !== "string" || !relativePath.trim()) return null;
+  return `/api/artifacts/${encodeURIComponent(runId)}/${encodeURIComponent(path.basename(relativePath))}`;
+}
+
+function buildArtifactEntry(runId, label, relativePath) {
+  if (typeof relativePath !== "string" || !relativePath.trim()) return null;
+  return {
+    label,
+    path: relativePath,
+    url: artifactUrl(runId, relativePath)
+  };
+}
+
+function buildRunRecord(summary, validation, publishResult, outputPath) {
+  const runId = summary.runId;
+  const localArtifacts = [
+    buildArtifactEntry(runId, "Report", summary.artifacts?.reportPath),
+    buildArtifactEntry(runId, "Stdout log", summary.artifacts?.stdoutLogPath),
+    buildArtifactEntry(runId, "Stderr log", summary.artifacts?.stderrLogPath),
+    buildArtifactEntry(runId, "Agent log", summary.artifacts?.agentLogPath),
+    buildArtifactEntry(runId, "Uploaded payload", summary.artifacts?.uploadedPayloadPath),
+    buildArtifactEntry(runId, "Downloaded payload", summary.artifacts?.downloadedPayloadPath),
+    buildArtifactEntry(runId, "Run summary", `runs/${runId}/run-summary.json`),
+    buildArtifactEntry(runId, "Validation result", `runs/${runId}/validation-result.json`),
+    buildArtifactEntry(runId, "Dashboard records", `runs/${runId}/${path.basename(outputPath)}`),
+    buildArtifactEntry(runId, "Artifact publish result", `runs/${runId}/artifact-publish-result.json`)
+  ].filter(Boolean);
+
   return {
     collection: "BenchmarkRun",
     data: {
-      runId: summary.runId,
+      runId,
       mode: summary.mode,
       promptVersion: summary.promptVersion,
       model: summary.model,
@@ -44,7 +80,38 @@ function buildRunRecord(summary) {
       contentMatch: Boolean(summary.evidence?.contentMatch),
       artifactBundleUri: summary.artifacts?.artifactBundleUri ?? "",
       artifactBundleHash: summary.artifacts?.artifactBundleHash ?? "",
+      artifactBundleHttpUrl: summary.artifacts?.artifactBundleHttpUrl ?? "",
       operatorNotes: normalizeNotes(summary.operatorNotes) ?? ""
+    },
+    meta: {
+      source: {
+        runSummaryPath: `runs/${runId}/run-summary.json`,
+        validationResultPath: `runs/${runId}/validation-result.json`,
+        dashboardRecordsPath: `runs/${runId}/${path.basename(outputPath)}`,
+        artifactPublishResultPath: publishResult ? `runs/${runId}/artifact-publish-result.json` : null
+      },
+      localArtifacts,
+      validation: {
+        status: validation?.status ?? null,
+        failurePhase: validation?.failurePhase ?? null,
+        schemaValid: validation?.schemaValid ?? null
+      },
+      externalArtifacts: {
+        artifactBundleUri: summary.artifacts?.artifactBundleUri ?? null,
+        artifactBundleHash: summary.artifacts?.artifactBundleHash ?? null,
+        artifactBundleHttpUrl: summary.artifacts?.artifactBundleHttpUrl ?? null
+      },
+      dashboardPublish: publishResult
+        ? {
+            publishedAt: publishResult.publishedAt ?? null,
+            chainName: publishResult.chainName ?? null,
+            deploymentAddress: publishResult.deploymentAddress ?? null,
+            runRecordId: publishResult.runRecordId ?? null,
+            runRecordHref: publishResult.runRecordHref ?? null,
+            incidentRecordIds: Array.isArray(publishResult.incidentRecordIds) ? publishResult.incidentRecordIds : [],
+            incidentRecordHrefs: Array.isArray(publishResult.incidentRecordHrefs) ? publishResult.incidentRecordHrefs : []
+          }
+        : null
     }
   };
 }
@@ -73,10 +140,13 @@ async function main() {
   const validationPath = args["validation"] ?? path.join(runDir, "validation-result.json");
   const outputPath = args["output"] ?? path.join(runDir, "dashboard-records.json");
 
-  const summary = await readJson(summaryPath);
-  const validation = await readJson(validationPath);
+  const [summary, validation, publishResult] = await Promise.all([
+    readJson(summaryPath),
+    readJson(validationPath),
+    maybeReadJson(path.join(runDir, "dashboard-publish-result.json"))
+  ]);
 
-  const records = [buildRunRecord(summary), ...buildIncidentRecords(summary, validation)];
+  const records = [buildRunRecord(summary, validation, publishResult, outputPath), ...buildIncidentRecords(summary, validation)];
   const payload = {
     runId: summary.runId,
     generatedAt: new Date().toISOString(),

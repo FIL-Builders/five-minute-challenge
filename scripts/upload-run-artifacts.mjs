@@ -35,6 +35,35 @@ function normalizePieceCid(value) {
   return String(value);
 }
 
+function stringifyMaybe(value) {
+  if (value === null || value === undefined) return null;
+  if (typeof value === "string" && value.length > 0) return value;
+  if (typeof value === "bigint") return value.toString();
+  if (typeof value?.toString === "function") {
+    const result = value.toString();
+    return typeof result === "string" && result.length > 0 ? result : null;
+  }
+  return null;
+}
+
+function normalizeCopies(copies) {
+  if (!Array.isArray(copies)) return [];
+  return copies.map((copy) => ({
+    providerId: stringifyMaybe(copy?.providerId),
+    pieceId: stringifyMaybe(copy?.pieceId),
+    retrievalUrl: stringifyMaybe(copy?.retrievalUrl)
+  }));
+}
+
+function normalizeFailures(failures) {
+  if (!Array.isArray(failures)) return [];
+  return failures.map((failure) => ({
+    providerId: stringifyMaybe(failure?.providerId),
+    pieceCid: stringifyMaybe(failure?.pieceCid),
+    message: stringifyMaybe(failure?.message ?? failure?.error ?? failure)
+  }));
+}
+
 function isFundsError(error) {
   const message = String(error?.message ?? error ?? "");
   return /InsufficientLockupFunds|Insufficient balance|InsufficientAvailableFunds|lockup/i.test(message);
@@ -74,13 +103,17 @@ async function main() {
   }
 
   const pieceCid = normalizePieceCid(uploadResult?.pieceCid);
+  const copies = normalizeCopies(uploadResult?.copies);
+  const failures = normalizeFailures(uploadResult?.failures);
+  const artifactBundleHttpUrl = copies.find((copy) => typeof copy.retrievalUrl === "string" && /^https?:\/\//i.test(copy.retrievalUrl))?.retrievalUrl ?? null;
   const artifactBundleUri = `piececid:${pieceCid}`;
   const artifactBundleHash = `sha256:${bundleHash}`;
 
   summary.artifacts = {
     ...summary.artifacts,
     artifactBundleUri,
-    artifactBundleHash
+    artifactBundleHash,
+    artifactBundleHttpUrl
   };
   summary.operatorNotes = `artifact_publish: uploaded workspace bundle to ${artifactBundleUri}`;
 
@@ -91,11 +124,14 @@ async function main() {
     runId: summary.runId,
     artifactBundleUri,
     artifactBundleHash,
+    artifactBundleHttpUrl,
     pieceCid,
     depositTxHash,
     size: uploadResult?.size ?? bundleBytes.length,
-    copyCount: Array.isArray(uploadResult?.copies) ? uploadResult.copies.length : null,
-    failureCount: Array.isArray(uploadResult?.failures) ? uploadResult.failures.length : null
+    copyCount: copies.length,
+    failureCount: failures.length,
+    copies,
+    failures
   };
   await writeFile(path.join(runDir, "artifact-publish-result.json"), `${JSON.stringify(publishResult, null, 2)}\n`);
 

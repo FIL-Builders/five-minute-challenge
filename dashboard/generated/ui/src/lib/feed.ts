@@ -1,3 +1,40 @@
+export type ArtifactLink = {
+  label: string;
+  path: string;
+  url: string | null;
+};
+
+export type DashboardPublishMeta = {
+  publishedAt: string | null;
+  chainName: string | null;
+  deploymentAddress: string | null;
+  runRecordId: string | null;
+  runRecordHref: string | null;
+  incidentRecordIds: string[];
+  incidentRecordHrefs: string[];
+} | null;
+
+export type BenchmarkRunMeta = {
+  source: {
+    runSummaryPath: string;
+    validationResultPath: string;
+    dashboardRecordsPath: string;
+    artifactPublishResultPath: string | null;
+  };
+  localArtifacts: ArtifactLink[];
+  validation: {
+    status: string | null;
+    failurePhase: string | null;
+    schemaValid: boolean | null;
+  };
+  externalArtifacts: {
+    artifactBundleUri: string | null;
+    artifactBundleHash: string | null;
+    artifactBundleHttpUrl: string | null;
+  };
+  dashboardPublish: DashboardPublishMeta;
+};
+
 export type BenchmarkRunRecord = {
   runId: string;
   mode: string;
@@ -18,7 +55,12 @@ export type BenchmarkRunRecord = {
   contentMatch: boolean;
   artifactBundleUri: string;
   artifactBundleHash: string;
+  artifactBundleHttpUrl: string;
   operatorNotes: string;
+};
+
+export type BenchmarkRunFeedRecord = BenchmarkRunRecord & {
+  meta?: BenchmarkRunMeta;
 };
 
 export type BenchmarkIncidentRecord = {
@@ -34,6 +76,7 @@ export type BenchmarkIncidentRecord = {
 type FeedRecord = {
   collection: string;
   data: Record<string, unknown>;
+  meta?: Record<string, unknown>;
 };
 
 export type BenchmarkFeed = {
@@ -46,7 +89,7 @@ export type BenchmarkFeed = {
 
 export async function fetchBenchmarkFeed(): Promise<{
   feed: BenchmarkFeed;
-  runs: BenchmarkRunRecord[];
+  runs: BenchmarkRunFeedRecord[];
   incidents: BenchmarkIncidentRecord[];
 }> {
   const response = await fetch('/benchmark-feed.json', { cache: 'no-store' });
@@ -54,7 +97,12 @@ export async function fetchBenchmarkFeed(): Promise<{
     throw new Error(`Failed to load benchmark feed: ${response.status}`);
   }
   const feed = (await response.json()) as BenchmarkFeed;
-  const runs = Array.isArray(feed.runs) ? feed.runs.map((record) => record.data as BenchmarkRunRecord) : [];
+  const runs = Array.isArray(feed.runs)
+    ? feed.runs.map((record) => ({
+        ...(record.data as BenchmarkRunRecord),
+        meta: record.meta as BenchmarkRunMeta | undefined
+      }))
+    : [];
   const incidents = Array.isArray(feed.incidents)
     ? feed.incidents.map((record) => record.data as BenchmarkIncidentRecord)
     : [];

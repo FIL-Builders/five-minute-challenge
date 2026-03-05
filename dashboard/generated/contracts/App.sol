@@ -14,7 +14,7 @@ contract App is Context {
   string public constant THS_VERSION = "2025-12";
   string public constant SCHEMA_VERSION = "0.1.0";
   string public constant APP_SLUG = "benchmark-registry";
-  bytes32 public constant SCHEMA_HASH = bytes32(0x3ecb74bba7231189595ab3eb40f69f5c1f92c2cc5dbaf2d428b35ccb6f64cb11);
+  bytes32 public constant SCHEMA_HASH = bytes32(0xe96c22756b9cbc00214299329f1db896696f5cf5e51167b2252da617275662b2);
   
   bool public constant ON_CHAIN_INDEXING = true;
   uint256 public constant MAX_LIST_LIMIT = 50;
@@ -94,11 +94,78 @@ contract App is Context {
     bool contentMatch;
     string artifactBundleUri;
     string artifactBundleHash;
+    string artifactBundleHttpUrl;
+    string operatorNotes;
+  }
+  
+  struct CreateBenchmarkRunInput {
+    string runId;
+    string mode;
+    string promptVersion;
+    string model;
+    string repoSha;
+    string docsUrl;
+    string docsSnapshotHash;
+    string status;
+    string failurePhase;
+    string startedAt;
+    string endedAt;
+    uint256 outerWallTimeMs;
+    address walletAddress;
+    string fundingTxHash;
+    string depositTxHash;
+    string pieceCid;
+    bool contentMatch;
+    string artifactBundleUri;
+    string artifactBundleHash;
+    string artifactBundleHttpUrl;
     string operatorNotes;
   }
   
   function _hashRecordBenchmarkRun(RecordBenchmarkRun memory r) internal pure returns (bytes32) {
     return keccak256(abi.encode(COLLECTION_ID_BenchmarkRun, r));
+  }
+  
+  function _initRecordBenchmarkRun(RecordBenchmarkRun storage r, uint256 id) internal {
+    r.id = id;
+    r.createdAt = block.timestamp;
+    r.createdBy = _msgSender();
+    r.owner = _msgSender();
+    r.updatedAt = 0;
+    r.updatedBy = address(0);
+    r.isDeleted = false;
+    r.deletedAt = 0;
+    r.version = 0;
+  }
+  
+  function _applyCreateBenchmarkRunFields(RecordBenchmarkRun storage r, CreateBenchmarkRunInput calldata input) internal {
+    r.runId = input.runId;
+    r.mode = input.mode;
+    r.promptVersion = input.promptVersion;
+    r.model = input.model;
+    r.repoSha = input.repoSha;
+    r.docsUrl = input.docsUrl;
+    r.docsSnapshotHash = input.docsSnapshotHash;
+    r.status = input.status;
+    r.failurePhase = input.failurePhase;
+    r.startedAt = input.startedAt;
+    r.endedAt = input.endedAt;
+    r.outerWallTimeMs = input.outerWallTimeMs;
+    r.walletAddress = input.walletAddress;
+    r.fundingTxHash = input.fundingTxHash;
+    r.depositTxHash = input.depositTxHash;
+    r.pieceCid = input.pieceCid;
+    r.contentMatch = input.contentMatch;
+    r.artifactBundleUri = input.artifactBundleUri;
+    r.artifactBundleHash = input.artifactBundleHash;
+    r.artifactBundleHttpUrl = input.artifactBundleHttpUrl;
+    r.operatorNotes = input.operatorNotes;
+  }
+  
+  function _emitCreatedBenchmarkRun(uint256 id) internal {
+    RecordBenchmarkRun memory m = benchmarkRunRecords[id];
+    bytes32 dataHash = _hashRecordBenchmarkRun(m);
+    emit RecordCreated(COLLECTION_ID_BenchmarkRun, id, _msgSender(), block.timestamp, dataHash);
   }
   
   mapping(uint256 => RecordBenchmarkRun) private benchmarkRunRecords;
@@ -159,59 +226,30 @@ contract App is Context {
     return out;
   }
   
-  function createBenchmarkRun(string calldata runId, string calldata mode, string calldata promptVersion, string calldata model, string calldata repoSha, string calldata docsUrl, string calldata docsSnapshotHash, string calldata status, string calldata failurePhase, string calldata startedAt, string calldata endedAt, uint256 outerWallTimeMs, address walletAddress, string calldata fundingTxHash, string calldata depositTxHash, string calldata pieceCid, bool contentMatch, string calldata artifactBundleUri, string calldata artifactBundleHash, string calldata operatorNotes) external returns (uint256) {
-    if (bytes(runId).length == 0) revert Unauthorized(); // required field empty
-    if (bytes(mode).length == 0) revert Unauthorized(); // required field empty
-    if (bytes(promptVersion).length == 0) revert Unauthorized(); // required field empty
-    if (bytes(model).length == 0) revert Unauthorized(); // required field empty
-    if (bytes(repoSha).length == 0) revert Unauthorized(); // required field empty
-    if (bytes(docsUrl).length == 0) revert Unauthorized(); // required field empty
-    if (bytes(status).length == 0) revert Unauthorized(); // required field empty
-    if (bytes(startedAt).length == 0) revert Unauthorized(); // required field empty
-    if (bytes(endedAt).length == 0) revert Unauthorized(); // required field empty
-    bytes32 key_runId = keccak256(bytes(runId));
+  function createBenchmarkRun(CreateBenchmarkRunInput calldata input) external returns (uint256) {
+    if (bytes(input.runId).length == 0) revert Unauthorized(); // required field empty
+    if (bytes(input.mode).length == 0) revert Unauthorized(); // required field empty
+    if (bytes(input.promptVersion).length == 0) revert Unauthorized(); // required field empty
+    if (bytes(input.model).length == 0) revert Unauthorized(); // required field empty
+    if (bytes(input.repoSha).length == 0) revert Unauthorized(); // required field empty
+    if (bytes(input.docsUrl).length == 0) revert Unauthorized(); // required field empty
+    if (bytes(input.status).length == 0) revert Unauthorized(); // required field empty
+    if (bytes(input.startedAt).length == 0) revert Unauthorized(); // required field empty
+    if (bytes(input.endedAt).length == 0) revert Unauthorized(); // required field empty
+    bytes32 key_runId = keccak256(bytes(input.runId));
     if (unique_BenchmarkRun_runId[key_runId] != 0) revert UniqueViolation();
     uint256 id = nextIdBenchmarkRun;
     nextIdBenchmarkRun = id + 1;
     activeCountBenchmarkRun += 1;
     RecordBenchmarkRun storage r = benchmarkRunRecords[id];
-    r.id = id;
-    r.createdAt = block.timestamp;
-    r.createdBy = _msgSender();
-    r.owner = _msgSender();
-    r.updatedAt = 0;
-    r.updatedBy = address(0);
-    r.isDeleted = false;
-    r.deletedAt = 0;
-    r.version = 0;
-    r.runId = runId;
-    r.mode = mode;
-    r.promptVersion = promptVersion;
-    r.model = model;
-    r.repoSha = repoSha;
-    r.docsUrl = docsUrl;
-    r.docsSnapshotHash = docsSnapshotHash;
-    r.status = status;
-    r.failurePhase = failurePhase;
-    r.startedAt = startedAt;
-    r.endedAt = endedAt;
-    r.outerWallTimeMs = outerWallTimeMs;
-    r.walletAddress = walletAddress;
-    r.fundingTxHash = fundingTxHash;
-    r.depositTxHash = depositTxHash;
-    r.pieceCid = pieceCid;
-    r.contentMatch = contentMatch;
-    r.artifactBundleUri = artifactBundleUri;
-    r.artifactBundleHash = artifactBundleHash;
-    r.operatorNotes = operatorNotes;
+    _initRecordBenchmarkRun(r, id);
+    _applyCreateBenchmarkRunFields(r, input);
     unique_BenchmarkRun_runId[key_runId] = id;
-    RecordBenchmarkRun memory m = r;
-    bytes32 dataHash = _hashRecordBenchmarkRun(m);
-    emit RecordCreated(COLLECTION_ID_BenchmarkRun, id, _msgSender(), block.timestamp, dataHash);
+    _emitCreatedBenchmarkRun(id);
     return id;
   }
   
-  function updateBenchmarkRun(uint256 id, string calldata status, string calldata failurePhase, string calldata artifactBundleUri, string calldata artifactBundleHash, string calldata operatorNotes) external {
+  function updateBenchmarkRun(uint256 id, string calldata status, string calldata failurePhase, string calldata artifactBundleUri, string calldata artifactBundleHash, string calldata artifactBundleHttpUrl, string calldata operatorNotes) external {
     RecordBenchmarkRun storage r = benchmarkRunRecords[id];
     if (r.createdBy == address(0)) revert RecordNotFound();
     if (r.isDeleted) revert RecordIsDeleted();
@@ -220,6 +258,7 @@ contract App is Context {
     r.failurePhase = failurePhase;
     r.artifactBundleUri = artifactBundleUri;
     r.artifactBundleHash = artifactBundleHash;
+    r.artifactBundleHttpUrl = artifactBundleHttpUrl;
     r.operatorNotes = operatorNotes;
     r.updatedAt = block.timestamp;
     r.updatedBy = _msgSender();
@@ -282,8 +321,46 @@ contract App is Context {
     string notes;
   }
   
+  struct CreateBenchmarkIncidentInput {
+    string runId;
+    string severity;
+    string title;
+    string status;
+    string openedAt;
+    string closedAt;
+    string notes;
+  }
+  
   function _hashRecordBenchmarkIncident(RecordBenchmarkIncident memory r) internal pure returns (bytes32) {
     return keccak256(abi.encode(COLLECTION_ID_BenchmarkIncident, r));
+  }
+  
+  function _initRecordBenchmarkIncident(RecordBenchmarkIncident storage r, uint256 id) internal {
+    r.id = id;
+    r.createdAt = block.timestamp;
+    r.createdBy = _msgSender();
+    r.owner = _msgSender();
+    r.updatedAt = 0;
+    r.updatedBy = address(0);
+    r.isDeleted = false;
+    r.deletedAt = 0;
+    r.version = 0;
+  }
+  
+  function _applyCreateBenchmarkIncidentFields(RecordBenchmarkIncident storage r, CreateBenchmarkIncidentInput calldata input) internal {
+    r.runId = input.runId;
+    r.severity = input.severity;
+    r.title = input.title;
+    r.status = input.status;
+    r.openedAt = input.openedAt;
+    r.closedAt = input.closedAt;
+    r.notes = input.notes;
+  }
+  
+  function _emitCreatedBenchmarkIncident(uint256 id) internal {
+    RecordBenchmarkIncident memory m = benchmarkIncidentRecords[id];
+    bytes32 dataHash = _hashRecordBenchmarkIncident(m);
+    emit RecordCreated(COLLECTION_ID_BenchmarkIncident, id, _msgSender(), block.timestamp, dataHash);
   }
   
   mapping(uint256 => RecordBenchmarkIncident) private benchmarkIncidentRecords;
@@ -342,35 +419,19 @@ contract App is Context {
     return out;
   }
   
-  function createBenchmarkIncident(string calldata runId, string calldata severity, string calldata title, string calldata status, string calldata openedAt, string calldata closedAt, string calldata notes) external returns (uint256) {
-    if (bytes(runId).length == 0) revert Unauthorized(); // required field empty
-    if (bytes(severity).length == 0) revert Unauthorized(); // required field empty
-    if (bytes(title).length == 0) revert Unauthorized(); // required field empty
-    if (bytes(status).length == 0) revert Unauthorized(); // required field empty
-    if (bytes(openedAt).length == 0) revert Unauthorized(); // required field empty
+  function createBenchmarkIncident(CreateBenchmarkIncidentInput calldata input) external returns (uint256) {
+    if (bytes(input.runId).length == 0) revert Unauthorized(); // required field empty
+    if (bytes(input.severity).length == 0) revert Unauthorized(); // required field empty
+    if (bytes(input.title).length == 0) revert Unauthorized(); // required field empty
+    if (bytes(input.status).length == 0) revert Unauthorized(); // required field empty
+    if (bytes(input.openedAt).length == 0) revert Unauthorized(); // required field empty
     uint256 id = nextIdBenchmarkIncident;
     nextIdBenchmarkIncident = id + 1;
     activeCountBenchmarkIncident += 1;
     RecordBenchmarkIncident storage r = benchmarkIncidentRecords[id];
-    r.id = id;
-    r.createdAt = block.timestamp;
-    r.createdBy = _msgSender();
-    r.owner = _msgSender();
-    r.updatedAt = 0;
-    r.updatedBy = address(0);
-    r.isDeleted = false;
-    r.deletedAt = 0;
-    r.version = 0;
-    r.runId = runId;
-    r.severity = severity;
-    r.title = title;
-    r.status = status;
-    r.openedAt = openedAt;
-    r.closedAt = closedAt;
-    r.notes = notes;
-    RecordBenchmarkIncident memory m = r;
-    bytes32 dataHash = _hashRecordBenchmarkIncident(m);
-    emit RecordCreated(COLLECTION_ID_BenchmarkIncident, id, _msgSender(), block.timestamp, dataHash);
+    _initRecordBenchmarkIncident(r, id);
+    _applyCreateBenchmarkIncidentFields(r, input);
+    _emitCreatedBenchmarkIncident(id);
     return id;
   }
   
@@ -440,8 +501,40 @@ contract App is Context {
     bool active;
   }
   
+  struct CreateBenchmarkConfigInput {
+    string configKey;
+    string value;
+    string description;
+    bool active;
+  }
+  
   function _hashRecordBenchmarkConfig(RecordBenchmarkConfig memory r) internal pure returns (bytes32) {
     return keccak256(abi.encode(COLLECTION_ID_BenchmarkConfig, r));
+  }
+  
+  function _initRecordBenchmarkConfig(RecordBenchmarkConfig storage r, uint256 id) internal {
+    r.id = id;
+    r.createdAt = block.timestamp;
+    r.createdBy = _msgSender();
+    r.owner = _msgSender();
+    r.updatedAt = 0;
+    r.updatedBy = address(0);
+    r.isDeleted = false;
+    r.deletedAt = 0;
+    r.version = 0;
+  }
+  
+  function _applyCreateBenchmarkConfigFields(RecordBenchmarkConfig storage r, CreateBenchmarkConfigInput calldata input) internal {
+    r.configKey = input.configKey;
+    r.value = input.value;
+    r.description = input.description;
+    r.active = input.active;
+  }
+  
+  function _emitCreatedBenchmarkConfig(uint256 id) internal {
+    RecordBenchmarkConfig memory m = benchmarkConfigRecords[id];
+    bytes32 dataHash = _hashRecordBenchmarkConfig(m);
+    emit RecordCreated(COLLECTION_ID_BenchmarkConfig, id, _msgSender(), block.timestamp, dataHash);
   }
   
   mapping(uint256 => RecordBenchmarkConfig) private benchmarkConfigRecords;
@@ -502,32 +595,19 @@ contract App is Context {
     return out;
   }
   
-  function createBenchmarkConfig(string calldata configKey, string calldata value, string calldata description, bool active) external returns (uint256) {
-    if (bytes(configKey).length == 0) revert Unauthorized(); // required field empty
-    if (bytes(value).length == 0) revert Unauthorized(); // required field empty
-    bytes32 key_configKey = keccak256(bytes(configKey));
+  function createBenchmarkConfig(CreateBenchmarkConfigInput calldata input) external returns (uint256) {
+    if (bytes(input.configKey).length == 0) revert Unauthorized(); // required field empty
+    if (bytes(input.value).length == 0) revert Unauthorized(); // required field empty
+    bytes32 key_configKey = keccak256(bytes(input.configKey));
     if (unique_BenchmarkConfig_configKey[key_configKey] != 0) revert UniqueViolation();
     uint256 id = nextIdBenchmarkConfig;
     nextIdBenchmarkConfig = id + 1;
     activeCountBenchmarkConfig += 1;
     RecordBenchmarkConfig storage r = benchmarkConfigRecords[id];
-    r.id = id;
-    r.createdAt = block.timestamp;
-    r.createdBy = _msgSender();
-    r.owner = _msgSender();
-    r.updatedAt = 0;
-    r.updatedBy = address(0);
-    r.isDeleted = false;
-    r.deletedAt = 0;
-    r.version = 0;
-    r.configKey = configKey;
-    r.value = value;
-    r.description = description;
-    r.active = active;
+    _initRecordBenchmarkConfig(r, id);
+    _applyCreateBenchmarkConfigFields(r, input);
     unique_BenchmarkConfig_configKey[key_configKey] = id;
-    RecordBenchmarkConfig memory m = r;
-    bytes32 dataHash = _hashRecordBenchmarkConfig(m);
-    emit RecordCreated(COLLECTION_ID_BenchmarkConfig, id, _msgSender(), block.timestamp, dataHash);
+    _emitCreatedBenchmarkConfig(id);
     return id;
   }
   
