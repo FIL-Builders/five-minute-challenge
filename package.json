@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Benchmark harness planning repo for Filecoin Cloud agent onboarding runs",
   "scripts": {
+    "benchmark:local": "./bin/run-benchmark.sh",
     "benchmark:manual": "./run.sh"
   },
   "keywords": [],

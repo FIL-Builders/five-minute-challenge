@@ -10,10 +10,12 @@ Requirements:
 - fund the newly generated wallet by following the getting-started flow and any public guidance linked from it
 - complete the end-to-end flow: funding, deposit/approval as needed, upload, download, and integrity verification
 - make the uploaded payload unique to this run so the proof cannot be replayed from an earlier run
+- use the `BENCHMARK_RUN_ID` environment variable if present to make the payload and report traceable to this run
 
 Outputs required:
-- a Markdown report explaining what you did and whether the run succeeded
-- a machine-readable JSON result file capturing the phases, timestamps, and concrete evidence
+- write `report.md` in the current working directory
+- write `run-result.json` in the current working directory
+- write any payload or diagnostic files into the current working directory so the harness can collect them
 - logs and any helper code needed to understand or reproduce the run
 
 Include in your report:
@@ -26,3 +28,4 @@ Include in your report:
 Important:
 - the benchmark is about real end-to-end onboarding ability, not just executing a prewritten script
 - prefer structured evidence over narrative claims
+- if you create helper scripts, keep them in the current working directory

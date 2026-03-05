@@ -16,3 +16,11 @@ Local running log for benchmark-repo development.
 
 - Promoted `docs/roadmap.md` into a maintained execution checklist.
 - Added this `docs/work-log.md` file so implementation progress can be recorded locally as work lands.
+
+### Phase 1 Harness Start
+
+- Added `bin/run-benchmark.sh` as the local benchmark harness entry point.
+- Added `scripts/finalize-run.mjs` to finalize per-run metadata and produce `run-summary.json`.
+- Switched `run.sh` to act as the local manual scheduler entry point for the harness.
+- Updated the prompt so the agent writes `report.md` and `run-result.json` into the current working directory for collection.
+- Locked in current implementation assumptions: Filecoin storage as the artifact backend target, local dev server first for the dashboard, and local script invocation as the initial scheduler.

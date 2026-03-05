@@ -93,6 +93,11 @@ Reasoning:
 - expensive and bulky logs stay off-chain
 - the system dogfoods Filecoin storage for retained evidence
 
+Current implementation decisions:
+- the artifact publishing backend target is the Filecoin storage service under test
+- the dashboard can start as a local dev server and later move to a Vercel or Netlify style hosted frontend
+- the initial scheduler is just a locally invoked script rather than a hosted cron system
+
 ## Data Model Sketch
 
 Suggested collections for the app:

@@ -27,4 +27,9 @@ The active repo direction is documented here:
 
 ## Active Entry Point
 
-`run.sh` still launches Codex directly with `prompt.md`, but that is now a temporary manual loop for prompt iteration rather than the intended final monitoring architecture.
+Local execution now goes through [bin/run-benchmark.sh](/home/mikers/dev/fil-builders/five-minute-challenge/bin/run-benchmark.sh), which creates a fresh temporary workspace, launches Codex, captures outer timing, and writes run artifacts under ignored `runs/<run-id>/` directories.
+
+Current environment assumptions:
+- artifact publishing backend target will be the Filecoin storage service under test
+- dashboard development can run locally first against Filecoin Calibration
+- scheduling can remain a locally invoked script until the harness output stabilizes

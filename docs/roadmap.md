@@ -39,15 +39,15 @@ Status: baseline framing complete
 
 ## Phase 1: Canonical Local Harness
 
-Status: not started
+Status: in progress
 
-- [ ] Add `bin/run-benchmark.sh` or equivalent harness entry point.
-- [ ] Run each benchmark in a fresh temporary workspace.
-- [ ] Record outer wall-clock timing at harness level.
-- [ ] Capture stdout, stderr, exit code, timestamps, and artifact bundle paths.
-- [ ] Write canonical outputs into `runs/<run-id>/`.
-- [ ] Fail the run if required evidence files are missing.
-- [ ] Record both outer runtime and agent-reported phase data.
+- [x] Add `bin/run-benchmark.sh` or equivalent harness entry point.
+- [x] Run each benchmark in a fresh temporary workspace.
+- [x] Record outer wall-clock timing at harness level.
+- [x] Capture stdout, stderr, exit code, timestamps, and artifact bundle paths.
+- [x] Write canonical outputs into `runs/<run-id>/`.
+- [x] Fail the run if required evidence files are missing.
+- [x] Record both outer runtime and agent-reported phase data.
 
 ## Phase 2: Result Validation And Scoring
 
@@ -92,7 +92,7 @@ Status: not started
 
 ## Near-Term Order
 
-- [ ] Build the local harness.
+- [x] Build the local harness.
 - [ ] Build the result validator.
 - [ ] Add prompt versioning and benchmark modes.
 - [ ] Stand up the run registry app using the Token Host Builder stack.
