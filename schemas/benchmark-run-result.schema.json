@@ -1,0 +1,243 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/benchmark-run-result.schema.json",
+  "title": "Benchmark Run Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "runId",
+    "mode",
+    "promptVersion",
+    "model",
+    "repoSha",
+    "docsUrl",
+    "startedAt",
+    "endedAt",
+    "outerWallTimeMs",
+    "status",
+    "artifacts",
+    "evidence"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string"
+    },
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "fresh-follow-docs",
+        "scripted-regression"
+      ]
+    },
+    "promptVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repoSha": {
+      "type": "string",
+      "minLength": 1
+    },
+    "docsUrl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "docsSnapshotHash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "endedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "outerWallTimeMs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failure",
+        "invalid"
+      ]
+    },
+    "failurePhase": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "agent_boot",
+        "wallet_generation",
+        "funding",
+        "deposit",
+        "upload",
+        "download",
+        "verification",
+        "artifact_validation"
+      ]
+    },
+    "agentExitCode": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "walletAddress": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "agentPhaseData": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "phase",
+          "startedAt",
+          "endedAt",
+          "durationMs"
+        ],
+        "properties": {
+          "phase": {
+            "type": "string"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "durationMs": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reportPath",
+        "stdoutLogPath",
+        "stderrLogPath"
+      ],
+      "properties": {
+        "reportPath": {
+          "type": "string"
+        },
+        "stdoutLogPath": {
+          "type": "string"
+        },
+        "stderrLogPath": {
+          "type": "string"
+        },
+        "agentLogPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "uploadedPayloadPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "downloadedPayloadPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "artifactBundleUri": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "artifactBundleHash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contentMatch"
+      ],
+      "properties": {
+        "fundingSource": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fundingTxHash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "depositTxHash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pieceCid": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contentMatch": {
+          "type": "boolean"
+        },
+        "originalSha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "downloadedSha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "operatorNotes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "startedAt": "2026-03-04T18:24:27.349Z",
+  "endedAt": "2026-03-04T18:27:32.588Z",
+  "totalWallTimeMs": 185239,
+  "network": "filecoin_calibration",
+  "phaseData": [
+    {
+      "phase": "sdk_init",
+      "startedAt": "2026-03-04T18:24:27.349Z",
+      "endedAt": "2026-03-04T18:24:27.383Z",
+      "durationMs": 34
+    },
+    {
+      "phase": "wallet_balance_check",
+      "startedAt": "2026-03-04T18:24:27.383Z",
+      "endedAt": "2026-03-04T18:24:28.078Z",
+      "durationMs": 695,
+      "walletBalanceUsdfc": "5"
+    },
+    {
+      "phase": "deposit_and_approve",
+      "startedAt": "2026-03-04T18:24:28.078Z",
+      "endedAt": "2026-03-04T18:25:31.252Z",
+      "durationMs": 63174,
+      "txHash": "0xbd56a2a98418bab7b91030c8b32093e310aadf1b19aa95574119d82de0bd0249",
+      "blockNumber": "3510744",
+      "status": "success",
+      "gasUsed": "162380114"
+    },
+    {
+      "phase": "upload",
+      "startedAt": "2026-03-04T18:25:31.252Z",
+      "endedAt": "2026-03-04T18:27:32.157Z",
+      "durationMs": 120905,
+      "pieceCid": {
+        "/": "bafkzcibcdibzuzoft3vsfqobrhalogydjiny3k7y4nubip6xtucr27bykupf2ba"
+      },
+      "size": 228,
+      "copyCount": 2,
+      "failureCount": 0
+    },
+    {
+      "phase": "download_and_verify",
+      "startedAt": "2026-03-04T18:27:32.157Z",
+      "endedAt": "2026-03-04T18:27:32.588Z",
+      "durationMs": 431,
+      "downloadedBytes": 228,
+      "originalSha256": "08a44d8b17755bde450b3f4274b30bf3862ad2a3038550a7acde95612399a9d4",
+      "downloadedSha256": "08a44d8b17755bde450b3f4274b30bf3862ad2a3038550a7acde95612399a9d4",
+      "contentMatch": true
+    }
+  ],
+  "evidence": {
+    "txHash": "0xbd56a2a98418bab7b91030c8b32093e310aadf1b19aa95574119d82de0bd0249",
+    "pieceCid": {
+      "/": "bafkzcibcdibzuzoft3vsfqobrhalogydjiny3k7y4nubip6xtucr27bykupf2ba"
+    },
+    "uploadSizeBytes": 228,
+    "uploadedCopyCount": 2,
+    "uploadFailureCount": 0,
+    "contentMatch": true,
+    "walletBalanceUsdfc": "5"
+  }
+}
+real 186.74
+user 0.96
+sys 0.11

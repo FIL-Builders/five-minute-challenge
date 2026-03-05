@@ -1,0 +1,3 @@
+Filecoin Cloud quickstart verification run at 2026-03-04T18:25:31.252Z
+This payload is intentionally above 127 bytes to satisfy minimum upload requirements.
+If you can read this after download, the end-to-end workflow succeeded.

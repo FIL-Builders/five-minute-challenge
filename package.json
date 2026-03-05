@@ -1,0 +1,12 @@
+{
+  "name": "five-minute-challenge",
+  "version": "1.0.0",
+  "description": "Benchmark harness planning repo for Filecoin Cloud agent onboarding runs",
+  "scripts": {
+    "benchmark:manual": "./run.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
