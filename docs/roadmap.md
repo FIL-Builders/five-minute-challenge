@@ -71,10 +71,11 @@ Status: baseline mode/version support complete
 
 ## Phase 4: Dashboard And History
 
-Status: local schema and generation path complete
+Status: local schema, generation path, and feed mapping complete
 
 - [x] Stand up a benchmark run registry app schema.
 - [x] Generate and review the local dashboard scaffold.
+- [x] Build a local dashboard feed from benchmark run outputs.
 - [ ] Add a run detail page with evidence links, timings, and failure phase.
 - [ ] Add aggregate views for success rate and latency trends.
 - [ ] Add operator notes and tagged incidents.

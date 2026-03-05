@@ -145,6 +145,8 @@ Minimum `benchmarkRuns` fields:
 Current repo implementation:
 - [dashboard/schema.json](/home/mikers/dev/fil-builders/five-minute-challenge/dashboard/schema.json) defines `BenchmarkRun`, `BenchmarkIncident`, and `BenchmarkConfig`
 - [bin/generate-dashboard.sh](/home/mikers/dev/fil-builders/five-minute-challenge/bin/generate-dashboard.sh) generates the local dashboard scaffold from that schema using the sibling Token Host Builder repo
+- [scripts/build-dashboard-records.mjs](/home/mikers/dev/fil-builders/five-minute-challenge/scripts/build-dashboard-records.mjs) converts validated runs into dashboard-ready records
+- [scripts/build-dashboard-feed.mjs](/home/mikers/dev/fil-builders/five-minute-challenge/scripts/build-dashboard-feed.mjs) aggregates local run records into a feed for local dashboard development
 
 ## Historical Example
 

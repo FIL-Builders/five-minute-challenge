@@ -46,3 +46,5 @@ Local running log for benchmark-repo development.
 - Added `bin/generate-dashboard.sh` and `npm run dashboard:generate` to generate the local dashboard scaffold from the sibling Token Host Builder repo.
 - Verified that the schema generates successfully into `dashboard/generated/`.
 - Added `bin/dev-dashboard.sh` and `npm run dashboard:dev` as the local Calibration preview entry point.
+- Added `scripts/build-dashboard-records.mjs` so each run can emit dashboard-ready records.
+- Added `scripts/build-dashboard-feed.mjs` and `npm run dashboard:feed` to aggregate local run outputs into `dashboard/local-feed.json`.

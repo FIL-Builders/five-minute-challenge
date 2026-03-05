@@ -23,6 +23,14 @@ Generate the app scaffold:
 
 That writes generated output under `dashboard/generated/`.
 
+Build a local aggregate feed from benchmark runs:
+
+```bash
+npm run dashboard:feed
+```
+
+That writes `dashboard/local-feed.json` from any `runs/*/dashboard-records.json` files present locally.
+
 Run a local preview against Calibration:
 
 ```bash

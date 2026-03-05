@@ -196,6 +196,29 @@ async function main() {
     }
     await writeFile(path.join(runDir, "run-summary.json"), `${JSON.stringify(result, null, 2)}\n`);
   }
+
+  const dashboardRecords = spawnSync(
+    process.execPath,
+    [
+      path.join(repoRoot, "scripts", "build-dashboard-records.mjs"),
+      "--run-dir",
+      runDir,
+      "--summary",
+      path.join(runDir, "run-summary.json"),
+      "--validation",
+      path.join(runDir, "validation-result.json"),
+      "--output",
+      path.join(runDir, "dashboard-records.json")
+    ],
+    {
+      cwd: repoRoot,
+      encoding: "utf8"
+    }
+  );
+
+  if (dashboardRecords.status !== 0) {
+    throw new Error(dashboardRecords.stderr || dashboardRecords.stdout || "Dashboard record generation failed.");
+  }
 }
 
 main().catch((error) => {

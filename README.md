@@ -33,6 +33,7 @@ Local execution now goes through [bin/run-benchmark.sh](/home/mikers/dev/fil-bui
 Each run now produces:
 - `run-summary.json`: harness-normalized result record
 - `validation-result.json`: validator output derived from structured evidence
+- `dashboard-records.json`: dashboard-ready records derived from the validated run
 - `workspace-output.tgz`: captured workspace bundle for later publishing
 - `docs-snapshot.html` and `docs-snapshot.sha256` when the guide can be fetched at run start
 
@@ -45,4 +46,4 @@ Current environment assumptions:
 
 ## Dashboard
 
-The first dashboard slice is now defined as a Token Host Builder app schema in [dashboard/schema.json](/home/mikers/dev/fil-builders/five-minute-challenge/dashboard/schema.json). Generate the local app scaffold with `npm run dashboard:generate`, and run a Calibration-targeted local preview with `npm run dashboard:dev` once a dev private key is available.
+The first dashboard slice is now defined as a Token Host Builder app schema in [dashboard/schema.json](/home/mikers/dev/fil-builders/five-minute-challenge/dashboard/schema.json). Generate the local app scaffold with `npm run dashboard:generate`, build a local aggregate feed with `npm run dashboard:feed`, and run a Calibration-targeted local preview with `npm run dashboard:dev` once a dev private key is available.
