@@ -71,16 +71,16 @@ Status: baseline mode/version support complete
 
 ## Phase 4: Dashboard And History
 
-Status: local schema, generation path, and feed mapping complete
+Status: local dashboard baseline complete
 
 - [x] Stand up a benchmark run registry app schema.
 - [x] Generate and review the local dashboard scaffold.
 - [x] Build a local dashboard feed from benchmark run outputs.
-- [ ] Add a run detail page with evidence links, timings, and failure phase.
-- [ ] Add aggregate views for success rate and latency trends.
-- [ ] Add operator notes and tagged incidents.
-- [ ] Make benchmark history queryable over time.
-- [ ] Make a single failed run inspectable without opening raw logs first.
+- [x] Add a run detail page with evidence links, timings, and failure phase.
+- [x] Add aggregate views for success rate and latency trends.
+- [x] Add operator notes and tagged incidents.
+- [x] Make benchmark history queryable over time.
+- [x] Make a single failed run inspectable without opening raw logs first.
 
 ## Phase 5: Scheduling And Alerting
 
@@ -97,7 +97,7 @@ Status: not started
 - [x] Build the local harness.
 - [x] Build the result validator.
 - [x] Add prompt versioning and benchmark modes.
-- [ ] Stand up the run registry app using the Token Host Builder stack.
+- [x] Stand up the run registry app using the Token Host Builder stack.
 - [ ] Add scheduling only after local benchmark output is stable.
 
 ## Explicit Non-Goals For The Next Iteration

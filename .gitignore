@@ -2,4 +2,6 @@ runs/
 tmp/
 node_modules/
 .DS_Store
-dashboard/generated/
+dashboard/generated/ui/node_modules/
+dashboard/generated/ui/.next/
+dashboard/generated/ui/out/

@@ -48,3 +48,6 @@ Local running log for benchmark-repo development.
 - Added `bin/dev-dashboard.sh` and `npm run dashboard:dev` as the local Calibration preview entry point.
 - Added `scripts/build-dashboard-records.mjs` so each run can emit dashboard-ready records.
 - Added `scripts/build-dashboard-feed.mjs` and `npm run dashboard:feed` to aggregate local run outputs into `dashboard/local-feed.json`.
+- Customized the generated dashboard UI into a feed-backed benchmark overview with success rate and p50/p95 latency stats.
+- Added a static `/run?id=<runId>` detail page that renders key evidence, timings, and operator notes from the local feed.
+- Verified the customized generated UI builds successfully with `pnpm build`.

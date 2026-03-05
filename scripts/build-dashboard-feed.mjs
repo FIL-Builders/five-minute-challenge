@@ -59,6 +59,10 @@ async function main() {
 
   await mkdir(path.dirname(outputPath), { recursive: true });
   await writeFile(outputPath, `${JSON.stringify(feed, null, 2)}\n`);
+
+  const generatedUiPublicPath = path.join(repoRoot, "dashboard", "generated", "ui", "public", "benchmark-feed.json");
+  await mkdir(path.dirname(generatedUiPublicPath), { recursive: true });
+  await writeFile(generatedUiPublicPath, `${JSON.stringify(feed, null, 2)}\n`);
 }
 
 main().catch((error) => {
