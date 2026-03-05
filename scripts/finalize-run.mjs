@@ -37,23 +37,80 @@ async function exists(filePath) {
   }
 }
 
+function isObject(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function normalizeAgentStatus(agentResult, agentExitCode, artifactValidationFailed) {
+  if (artifactValidationFailed) return "invalid";
+  if (typeof agentResult?.status === "string") return agentResult.status;
+  if (typeof agentResult?.success === "boolean") return agentResult.success ? "success" : "failure";
+  return agentExitCode === 0 ? "success" : "failure";
+}
+
+function normalizeWalletAddress(agentResult) {
+  if (typeof agentResult?.walletAddress === "string") return agentResult.walletAddress;
+  if (typeof agentResult?.wallet?.address === "string") return agentResult.wallet.address;
+  return null;
+}
+
+function normalizeAgentPhaseData(agentResult) {
+  if (Array.isArray(agentResult?.agentPhaseData)) return agentResult.agentPhaseData;
+  if (!Array.isArray(agentResult?.phaseTimings)) return [];
+  return agentResult.phaseTimings
+    .filter((item) => item && typeof item === "object")
+    .map((item) => ({
+      phase: item.phase ?? item.name ?? "unknown",
+      startedAt: item.startedAt,
+      endedAt: item.endedAt,
+      durationMs: Number(item.durationMs ?? 0)
+    }));
+}
+
+function normalizeEvidence(agentResult) {
+  const fundingTxHashes = Array.isArray(agentResult?.funding?.txHashes)
+    ? agentResult.funding.txHashes.filter((value) => typeof value === "string" && value.length > 0)
+    : [];
+
+  return {
+    fundingSource: agentResult?.evidence?.fundingSource ?? agentResult?.funding?.faucetUrl ?? null,
+    fundingTxHash: agentResult?.evidence?.fundingTxHash ?? (fundingTxHashes.length > 0 ? fundingTxHashes.join(",") : null),
+    depositTxHash: agentResult?.evidence?.depositTxHash ?? agentResult?.deposit?.txHash ?? null,
+    pieceCid: agentResult?.evidence?.pieceCid ?? agentResult?.upload?.pieceCid ?? agentResult?.download?.pieceCid ?? null,
+    contentMatch: Boolean(agentResult?.evidence?.contentMatch ?? agentResult?.download?.integrityOk),
+    originalSha256: agentResult?.evidence?.originalSha256 ?? agentResult?.upload?.originalSha256 ?? agentResult?.payload?.sha256 ?? agentResult?.download?.downloadedSha256 ?? null,
+    downloadedSha256: agentResult?.evidence?.downloadedSha256 ?? agentResult?.download?.downloadedSha256 ?? null
+  };
+}
+
 function normalizeArtifacts(runId, runDir, agentResult) {
   const rel = (name) => `runs/${runId}/${name}`;
   const reportPath = path.join(runDir, "report.md");
   const stdoutLogPath = path.join(runDir, "stdout.log");
   const stderrLogPath = path.join(runDir, "stderr.log");
-  const agentLogPath = path.join(runDir, "agent.log");
-  const uploadedPayloadPath = path.join(runDir, "uploaded-payload.txt");
-  const downloadedPayloadPath = path.join(runDir, "downloaded-payload.txt");
+  const agentLogFile = typeof agentResult?.artifacts?.agentLogPath === "string"
+    ? path.basename(agentResult.artifacts.agentLogPath)
+    : (typeof agentResult?.artifacts?.runLog === "string" ? path.basename(agentResult.artifacts.runLog) : "agent.log");
+  const uploadedPayloadFile = typeof agentResult?.artifacts?.uploadedPayloadPath === "string"
+    ? path.basename(agentResult.artifacts.uploadedPayloadPath)
+    : (typeof agentResult?.artifacts?.payloadFile === "string" ? path.basename(agentResult.artifacts.payloadFile) : "uploaded-payload.txt");
+  const downloadedPayloadFile = typeof agentResult?.artifacts?.downloadedPayloadPath === "string"
+    ? path.basename(agentResult.artifacts.downloadedPayloadPath)
+    : (typeof agentResult?.artifacts?.downloadedTextFile === "string"
+      ? path.basename(agentResult.artifacts.downloadedTextFile)
+      : (typeof agentResult?.artifacts?.downloadedFile === "string" ? path.basename(agentResult.artifacts.downloadedFile) : "downloaded-payload.txt"));
+  const agentLogPath = path.join(runDir, agentLogFile);
+  const uploadedPayloadPath = path.join(runDir, uploadedPayloadFile);
+  const downloadedPayloadPath = path.join(runDir, downloadedPayloadFile);
   const workspaceBundlePath = path.join(runDir, "workspace-output.tgz");
 
   return {
     reportPath: rel("report.md"),
     stdoutLogPath: rel("stdout.log"),
     stderrLogPath: rel("stderr.log"),
-    agentLogPath: agentResult?.artifacts?.agentLogPath ?? rel("agent.log"),
-    uploadedPayloadPath: agentResult?.artifacts?.uploadedPayloadPath ?? rel("uploaded-payload.txt"),
-    downloadedPayloadPath: agentResult?.artifacts?.downloadedPayloadPath ?? rel("downloaded-payload.txt"),
+    agentLogPath: rel(agentLogFile),
+    uploadedPayloadPath: rel(uploadedPayloadFile),
+    downloadedPayloadPath: rel(downloadedPayloadFile),
     artifactBundleUri: agentResult?.artifacts?.artifactBundleUri ?? null,
     artifactBundleHash: agentResult?.artifacts?.artifactBundleHash ?? null,
     _localPaths: {
@@ -66,6 +123,24 @@ function normalizeArtifacts(runId, runDir, agentResult) {
       workspaceBundlePath
     }
   };
+}
+
+function collectWorkspaceArtifacts(agentResult) {
+  const files = new Set(["report.md", "run-result.json"]);
+  if (!agentResult || typeof agentResult !== "object") return [...files];
+
+  const artifactEntries = isObject(agentResult.artifacts) ? Object.values(agentResult.artifacts) : [];
+  for (const value of artifactEntries) {
+    if (typeof value === "string" && value.length > 0 && !value.includes("/") && !value.includes("\\")) {
+      files.add(value);
+    }
+  }
+
+  for (const name of ["agent.log", "run.log", "run-attempt1.log", "benchmark-run.mjs"]) {
+    files.add(name);
+  }
+
+  return [...files];
 }
 
 async function main() {
@@ -84,12 +159,19 @@ async function main() {
   const endedAt = args["ended-at"];
   const startMs = Number(args["start-ms"]);
   const endMs = Number(args["end-ms"]);
-  const agentExitCode = Number(args["agent-exit-code"]);
   const outerWallTimeMs = Math.max(0, endMs - startMs);
 
   await mkdir(runDir, { recursive: true });
+  const existingSummary = await maybeReadJson(path.join(runDir, "run-summary.json"));
+  const existingPublishResult = await maybeReadJson(path.join(runDir, "artifact-publish-result.json"));
 
-  for (const name of ["report.md", "run-result.json", "agent.log", "uploaded-payload.txt", "downloaded-payload.txt"]) {
+  const agentResult = await maybeReadJson(path.join(workspace, "run-result.json"));
+  const parsedAgentExitCode = Number(args["agent-exit-code"]);
+  const agentExitCode = Number.isInteger(parsedAgentExitCode)
+    ? parsedAgentExitCode
+    : (existingSummary?.agentExitCode ?? (agentResult?.success === true ? 0 : null));
+
+  for (const name of collectWorkspaceArtifacts(agentResult)) {
     const source = path.join(workspace, name);
     const target = path.join(runDir, name);
     if ((await exists(source)) && !(await exists(target))) {
@@ -97,7 +179,6 @@ async function main() {
     }
   }
 
-  const agentResult = await maybeReadJson(path.join(workspace, "run-result.json"));
   const artifacts = normalizeArtifacts(runId, runDir, agentResult);
 
   const hasReport = await exists(path.join(runDir, "report.md"));
@@ -116,30 +197,22 @@ async function main() {
     startedAt,
     endedAt,
     outerWallTimeMs,
-    status: artifactValidationFailed ? "invalid" : (agentResult?.status ?? (agentExitCode === 0 ? "success" : "failure")),
+    status: normalizeAgentStatus(agentResult, agentExitCode, artifactValidationFailed),
     failurePhase: agentResult?.failurePhase ?? (artifactValidationFailed ? "artifact_validation" : null),
     agentExitCode,
-    walletAddress: agentResult?.walletAddress ?? null,
-    agentPhaseData: Array.isArray(agentResult?.agentPhaseData) ? agentResult.agentPhaseData : [],
+    walletAddress: normalizeWalletAddress(agentResult),
+    agentPhaseData: normalizeAgentPhaseData(agentResult),
     artifacts: {
       reportPath: artifacts.reportPath,
       stdoutLogPath: artifacts.stdoutLogPath,
       stderrLogPath: artifacts.stderrLogPath,
-      agentLogPath: await exists(artifacts._localPaths.agentLogPath) ? `runs/${runId}/agent.log` : null,
-      uploadedPayloadPath: await exists(artifacts._localPaths.uploadedPayloadPath) ? `runs/${runId}/uploaded-payload.txt` : null,
-      downloadedPayloadPath: await exists(artifacts._localPaths.downloadedPayloadPath) ? `runs/${runId}/downloaded-payload.txt` : null,
-      artifactBundleUri: artifacts.artifactBundleUri,
-      artifactBundleHash: artifacts.artifactBundleHash
+      agentLogPath: await exists(artifacts._localPaths.agentLogPath) ? artifacts.agentLogPath : null,
+      uploadedPayloadPath: await exists(artifacts._localPaths.uploadedPayloadPath) ? artifacts.uploadedPayloadPath : null,
+      downloadedPayloadPath: await exists(artifacts._localPaths.downloadedPayloadPath) ? artifacts.downloadedPayloadPath : null,
+      artifactBundleUri: artifacts.artifactBundleUri ?? existingSummary?.artifacts?.artifactBundleUri ?? existingPublishResult?.artifactBundleUri ?? null,
+      artifactBundleHash: artifacts.artifactBundleHash ?? existingSummary?.artifacts?.artifactBundleHash ?? existingPublishResult?.artifactBundleHash ?? null
     },
-    evidence: {
-      fundingSource: agentResult?.evidence?.fundingSource ?? null,
-      fundingTxHash: agentResult?.evidence?.fundingTxHash ?? null,
-      depositTxHash: agentResult?.evidence?.depositTxHash ?? null,
-      pieceCid: agentResult?.evidence?.pieceCid ?? null,
-      contentMatch: Boolean(agentResult?.evidence?.contentMatch),
-      originalSha256: agentResult?.evidence?.originalSha256 ?? null,
-      downloadedSha256: agentResult?.evidence?.downloadedSha256 ?? null
-    },
+    evidence: normalizeEvidence(agentResult),
     operatorNotes: artifactValidationFailed
       ? "Required benchmark artifacts were missing or unreadable."
       : agentResult?.operatorNotes ?? null

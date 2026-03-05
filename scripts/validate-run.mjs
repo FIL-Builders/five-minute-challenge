@@ -185,7 +185,7 @@ function evaluateRun(summary) {
     }
   };
 
-  if (summary.agentExitCode !== 0) {
+  if (Number.isInteger(summary.agentExitCode) && summary.agentExitCode !== 0) {
     fail("agent_boot", `Agent exited with code ${summary.agentExitCode}.`);
   }
 

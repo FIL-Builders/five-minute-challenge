@@ -61,15 +61,22 @@ stderr_log="${run_dir}/stderr.log"
 set +e
 (
   cd "${workspace}"
-  export BENCHMARK_RUN_ID="${run_id}"
-  export BENCHMARK_MODE="${MODE}"
-  export BENCHMARK_PROMPT_VERSION="${PROMPT_VERSION}"
-  export BENCHMARK_DOCS_URL="${DOCS_URL}"
-  export BENCHMARK_DOCS_SNAPSHOT_HASH="${docs_snapshot_hash}"
-  unset PRIVATE_KEY
-  unset DASHBOARD_PRIVATE_KEY
-  unset ARTIFACT_PUBLISH_PRIVATE_KEY
-  npx --yes "${CODEX_PACKAGE}" --model "${MODEL}" --dangerously-bypass-approvals-and-sandbox exec "$(cat "${REPO_ROOT}/${PROMPT_FILE}")"
+  env -i \
+    HOME="${HOME}" \
+    PATH="${PATH}" \
+    TMPDIR="${TMPDIR:-/tmp}" \
+    TERM="${TERM:-dumb}" \
+    LANG="${LANG:-C.UTF-8}" \
+    LC_ALL="${LC_ALL:-C.UTF-8}" \
+    USER="${USER:-}" \
+    LOGNAME="${LOGNAME:-}" \
+    OPENAI_API_KEY="${OPENAI_API_KEY:-}" \
+    BENCHMARK_RUN_ID="${run_id}" \
+    BENCHMARK_MODE="${MODE}" \
+    BENCHMARK_PROMPT_VERSION="${PROMPT_VERSION}" \
+    BENCHMARK_DOCS_URL="${DOCS_URL}" \
+    BENCHMARK_DOCS_SNAPSHOT_HASH="${docs_snapshot_hash}" \
+    npx --yes "${CODEX_PACKAGE}" --model "${MODEL}" --dangerously-bypass-approvals-and-sandbox exec "$(cat "${REPO_ROOT}/${PROMPT_FILE}")"
 ) >"${stdout_log}" 2>"${stderr_log}"
 agent_exit_code=$?
 set -e

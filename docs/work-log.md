@@ -66,3 +66,11 @@ Local running log for benchmark-repo development.
 - Fixed post-publish state handling so artifact publishing re-runs `validate-run.mjs` after updating `run-summary.json`.
 - Added `scripts/lib/reconcile-run-summary.mjs` so both finalization and post-publish reconciliation derive status, failure phase, and operator notes from the same logic.
 - Closed the stale-status gap where dashboard records could keep reflecting an old `validation-result.json` after a successful artifact upload.
+
+### Successful Fresh Run And Harness Normalization
+
+- Ran a new full local benchmark cycle for run `20260305T205630Z-fa9abd`.
+- Confirmed a successful fresh-wallet end-to-end agent run with funding, deposit, upload, download, and integrity verification on Calibration.
+- Updated `scripts/finalize-run.mjs` to normalize the newer agent result shape (`success`, `wallet`, `funding`, `deposit`, `upload`, `download`, `phaseTimings`, and named artifact files).
+- Updated `scripts/validate-run.mjs` to avoid treating `agentExitCode: null` as an automatic boot failure during repair/replay scenarios.
+- Tightened `bin/run-benchmark.sh` to launch Codex in a scrubbed environment so unrelated operator secrets are not inherited by the benchmarked agent.
