@@ -84,13 +84,13 @@ Status: local dashboard baseline complete
 
 ## Phase 5: Scheduling And Alerting
 
-Status: not started
+Status: local baseline complete
 
-- [ ] Add a scheduled runner.
-- [ ] Add alert thresholds for success rate and p95 wall time.
-- [ ] Add a simple incident workflow for recurrent failures.
-- [ ] Ensure runs happen without manual intervention.
-- [ ] Ensure alerts link directly to failing runs.
+- [x] Add a scheduled runner.
+- [x] Add alert thresholds for success rate and p95 wall time.
+- [x] Add a simple incident workflow for recurrent failures.
+- [x] Ensure runs happen without manual intervention.
+- [x] Ensure alerts link directly to failing runs.
 
 ## Near-Term Order
 
@@ -98,7 +98,7 @@ Status: not started
 - [x] Build the result validator.
 - [x] Add prompt versioning and benchmark modes.
 - [x] Stand up the run registry app using the Token Host Builder stack.
-- [ ] Add scheduling only after local benchmark output is stable.
+- [x] Add scheduling only after local benchmark output is stable.
 
 ## Explicit Non-Goals For The Next Iteration
 

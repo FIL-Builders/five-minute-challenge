@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "Benchmark harness planning repo for Filecoin Cloud agent onboarding runs",
   "scripts": {
+    "benchmark:cycle": "./bin/run-local-cycle.sh",
     "benchmark:local": "./bin/run-benchmark.sh",
     "benchmark:manual": "./run.sh",
+    "benchmark:alerts": "node scripts/check-alerts.mjs --repo-root . --feed dashboard/local-feed.json --output alerts/latest-alerts.json",
     "benchmark:validate": "node scripts/validate-run.mjs",
     "dashboard:feed": "node scripts/build-dashboard-feed.mjs --repo-root .",
     "dashboard:generate": "./bin/generate-dashboard.sh",

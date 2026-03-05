@@ -51,3 +51,10 @@ Local running log for benchmark-repo development.
 - Customized the generated dashboard UI into a feed-backed benchmark overview with success rate and p50/p95 latency stats.
 - Added a static `/run?id=<runId>` detail page that renders key evidence, timings, and operator notes from the local feed.
 - Verified the customized generated UI builds successfully with `pnpm build`.
+
+### Phase 5 Local Scheduling And Alerts
+
+- Added `scripts/check-alerts.mjs` to evaluate success rate, p95 wall time, and consecutive-failure thresholds against the local dashboard feed.
+- Added `bin/run-local-cycle.sh` and `npm run benchmark:cycle` to run the benchmark, rebuild the feed, and evaluate alerts in one local cycle.
+- Added `npm run benchmark:alerts` for threshold evaluation without a new benchmark run.
+- Added structured alert outputs under ignored `alerts/`, including alert history when thresholds are breached.

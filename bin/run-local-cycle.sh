@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ALERTS_OUTPUT="${ALERTS_OUTPUT:-${REPO_ROOT}/alerts/latest-alerts.json}"
+
+"${REPO_ROOT}/bin/run-benchmark.sh"
+node "${REPO_ROOT}/scripts/build-dashboard-feed.mjs" --repo-root "${REPO_ROOT}"
+node "${REPO_ROOT}/scripts/check-alerts.mjs" \
+  --repo-root "${REPO_ROOT}" \
+  --feed "${REPO_ROOT}/dashboard/local-feed.json" \
+  --output "${ALERTS_OUTPUT}"

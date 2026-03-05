@@ -115,6 +115,18 @@ This lets operators distinguish:
 - prompt regressions vs model regressions
 - agent reasoning failures vs infrastructure failures
 
+## Local Scheduling And Alerts
+
+The first scheduler/alerting layer is intentionally local:
+- a local cycle runner invokes the benchmark, rebuilds the dashboard feed, and checks thresholds
+- alert evaluation writes structured JSON for the latest alert result and alert history
+- alert payloads include direct run summary paths so operators can jump from an alert to the implicated runs
+
+Initial local alert thresholds:
+- minimum success rate across a recent window
+- maximum p95 wall time
+- maximum consecutive non-success runs
+
 ## Data Model Sketch
 
 Suggested collections for the app:
