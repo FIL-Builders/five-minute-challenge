@@ -26,13 +26,14 @@ That writes generated output under `dashboard/generated/`.
 Run a local preview against Calibration:
 
 ```bash
-DASHBOARD_PRIVATE_KEY=0x... ./bin/dev-dashboard.sh
+PRIVATE_KEY=0x... ./bin/dev-dashboard.sh
 ```
 
 Defaults:
 - host: `127.0.0.1`
 - port: `3001`
 - chain: `filecoin_calibration`
+- wallet env: `PRIVATE_KEY` by default, or `DASHBOARD_PRIVATE_KEY` to override
 
 ## Deployment Direction
 
