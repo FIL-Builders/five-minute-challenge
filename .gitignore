@@ -5,4 +5,5 @@ node_modules/
 dashboard/generated/ui/node_modules/
 dashboard/generated/ui/.next/
 dashboard/generated/ui/out/
+dashboard/local-feed.json
 alerts/

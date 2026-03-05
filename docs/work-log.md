@@ -60,3 +60,9 @@ Local running log for benchmark-repo development.
 - Added structured alert outputs under ignored `alerts/`, including alert history when thresholds are breached.
 - Scrubbed `PRIVATE_KEY` and related deploy wallet variables from the benchmarked agent subprocess environment.
 - Added `scripts/upload-run-artifacts.mjs` so the local cycle can publish `workspace-output.tgz` to Filecoin Cloud using the dev wallet after the benchmark run finishes.
+
+### Artifact Publish Reconciliation
+
+- Fixed post-publish state handling so artifact publishing re-runs `validate-run.mjs` after updating `run-summary.json`.
+- Added `scripts/lib/reconcile-run-summary.mjs` so both finalization and post-publish reconciliation derive status, failure phase, and operator notes from the same logic.
+- Closed the stale-status gap where dashboard records could keep reflecting an old `validation-result.json` after a successful artifact upload.

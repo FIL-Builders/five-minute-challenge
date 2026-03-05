@@ -23,7 +23,7 @@ async function maybeReadJson(filePath) {
 
 async function main() {
   const args = parseArgs(process.argv);
-  const repoRoot = args["repo-root"];
+  const repoRoot = args["repo-root"] ?? process.cwd();
   const runsDir = args["runs-dir"] ?? path.join(repoRoot, "runs");
   const outputPath = args["output"] ?? path.join(repoRoot, "dashboard", "local-feed.json");
 

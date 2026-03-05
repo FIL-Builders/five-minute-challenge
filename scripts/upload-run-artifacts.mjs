@@ -4,6 +4,7 @@ import path from "node:path";
 
 import { Synapse, calibration, parseUnits } from "@filoz/synapse-sdk";
 import { privateKeyToAccount } from "viem/accounts";
+import { reconcileRunSummary } from "./lib/reconcile-run-summary.mjs";
 
 function parseArgs(argv) {
   const args = {};
@@ -81,9 +82,7 @@ async function main() {
     artifactBundleUri,
     artifactBundleHash
   };
-  summary.operatorNotes = summary.operatorNotes
-    ? `${summary.operatorNotes} artifact_publish: uploaded workspace bundle to ${artifactBundleUri}`
-    : `artifact_publish: uploaded workspace bundle to ${artifactBundleUri}`;
+  summary.operatorNotes = `artifact_publish: uploaded workspace bundle to ${artifactBundleUri}`;
 
   await writeFile(summaryPath, `${JSON.stringify(summary, null, 2)}\n`);
 
@@ -101,6 +100,33 @@ async function main() {
   await writeFile(path.join(runDir, "artifact-publish-result.json"), `${JSON.stringify(publishResult, null, 2)}\n`);
 
   const { spawnSync } = await import("node:child_process");
+  const revalidate = spawnSync(
+    process.execPath,
+    [
+      path.join(repoRoot, "scripts", "validate-run.mjs"),
+      "--run-dir",
+      runDir,
+      "--summary",
+      summaryPath,
+      "--output",
+      validationPath
+    ],
+    {
+      cwd: repoRoot,
+      encoding: "utf8"
+    }
+  );
+
+  if (revalidate.status !== 0) {
+    throw new Error(revalidate.stderr || revalidate.stdout || "Failed to revalidate run after artifact upload.");
+  }
+
+  await reconcileRunSummary({
+    summaryPath,
+    validationPath,
+    baseOperatorNotes: summary.operatorNotes
+  });
+
   const rerender = spawnSync(
     process.execPath,
     [

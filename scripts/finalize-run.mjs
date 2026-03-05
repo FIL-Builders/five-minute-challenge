@@ -1,6 +1,7 @@
 import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
+import { reconcileRunSummary } from "./lib/reconcile-run-summary.mjs";
 
 function parseArgs(argv) {
   const args = {};
@@ -184,18 +185,11 @@ async function main() {
     throw new Error(validator.stderr || validator.stdout || "Run validation failed.");
   }
 
-  const validation = await maybeReadJson(path.join(runDir, "validation-result.json"));
-  if (validation && typeof validation === "object") {
-    result.status = validation.status ?? result.status;
-    result.failurePhase = validation.failurePhase ?? result.failurePhase;
-    if (Array.isArray(validation.findings) && validation.findings.length > 0) {
-      const rendered = validation.findings
-        .map((finding) => `${finding.phase}: ${finding.message}`)
-        .join(" | ");
-      result.operatorNotes = result.operatorNotes ? `${result.operatorNotes} ${rendered}` : rendered;
-    }
-    await writeFile(path.join(runDir, "run-summary.json"), `${JSON.stringify(result, null, 2)}\n`);
-  }
+  await reconcileRunSummary({
+    summaryPath: path.join(runDir, "run-summary.json"),
+    validationPath: path.join(runDir, "validation-result.json"),
+    baseOperatorNotes: result.operatorNotes
+  });
 
   const dashboardRecords = spawnSync(
     process.execPath,
