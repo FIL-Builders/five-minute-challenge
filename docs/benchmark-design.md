@@ -119,6 +119,7 @@ This lets operators distinguish:
 
 The first scheduler/alerting layer is intentionally local:
 - a local cycle runner invokes the benchmark, rebuilds the dashboard feed, and checks thresholds
+- the local cycle also publishes the latest artifact bundle to Filecoin Cloud using the dev wallet outside the benchmarked agent environment
 - alert evaluation writes structured JSON for the latest alert result and alert history
 - alert payloads include direct run summary paths so operators can jump from an alert to the implicated runs
 

@@ -58,3 +58,5 @@ Local running log for benchmark-repo development.
 - Added `bin/run-local-cycle.sh` and `npm run benchmark:cycle` to run the benchmark, rebuild the feed, and evaluate alerts in one local cycle.
 - Added `npm run benchmark:alerts` for threshold evaluation without a new benchmark run.
 - Added structured alert outputs under ignored `alerts/`, including alert history when thresholds are breached.
+- Scrubbed `PRIVATE_KEY` and related deploy wallet variables from the benchmarked agent subprocess environment.
+- Added `scripts/upload-run-artifacts.mjs` so the local cycle can publish `workspace-output.tgz` to Filecoin Cloud using the dev wallet after the benchmark run finishes.

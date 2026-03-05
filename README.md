@@ -34,6 +34,7 @@ Each run now produces:
 - `run-summary.json`: harness-normalized result record
 - `validation-result.json`: validator output derived from structured evidence
 - `dashboard-records.json`: dashboard-ready records derived from the validated run
+- `artifact-publish-result.json`: Filecoin artifact publication result when bundle upload is enabled
 - `workspace-output.tgz`: captured workspace bundle for later publishing
 - `docs-snapshot.html` and `docs-snapshot.sha256` when the guide can be fetched at run start
 
@@ -46,6 +47,7 @@ Current environment assumptions:
 
 Local operations now support:
 - `npm run benchmark:cycle`: run benchmark, rebuild dashboard feed, then evaluate alerts
+- `npm run benchmark:publish`: publish the latest run bundle to Filecoin Cloud using the dev wallet
 - `npm run benchmark:alerts`: evaluate local alert thresholds without running a new benchmark
 
 ## Dashboard

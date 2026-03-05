@@ -4,6 +4,7 @@
   "description": "Benchmark harness planning repo for Filecoin Cloud agent onboarding runs",
   "scripts": {
     "benchmark:cycle": "./bin/run-local-cycle.sh",
+    "benchmark:publish": "./bin/publish-latest-run.sh",
     "benchmark:local": "./bin/run-benchmark.sh",
     "benchmark:manual": "./run.sh",
     "benchmark:alerts": "node scripts/check-alerts.mjs --repo-root . --feed dashboard/local-feed.json --output alerts/latest-alerts.json",
@@ -11,6 +12,10 @@
     "dashboard:feed": "node scripts/build-dashboard-feed.mjs --repo-root .",
     "dashboard:generate": "./bin/generate-dashboard.sh",
     "dashboard:dev": "./bin/dev-dashboard.sh"
+  },
+  "dependencies": {
+    "@filoz/synapse-sdk": "^0.38.0",
+    "viem": "^2.47.0"
   },
   "keywords": [],
   "author": "",

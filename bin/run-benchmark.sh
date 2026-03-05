@@ -38,6 +38,7 @@ cleanup() {
 trap cleanup EXIT
 
 printf '%s\n' "${run_id}" > "${run_dir}/run-id.txt"
+printf '%s\n' "${run_id}" > "${REPO_ROOT}/runs/latest-run.txt"
 cp "${REPO_ROOT}/${PROMPT_FILE}" "${run_dir}/prompt.md"
 printf '%s\n' "${PROMPT_VERSION}" > "${run_dir}/prompt-version.txt"
 printf '%s\n' "${MODE}" > "${run_dir}/mode.txt"
@@ -65,6 +66,9 @@ set +e
   export BENCHMARK_PROMPT_VERSION="${PROMPT_VERSION}"
   export BENCHMARK_DOCS_URL="${DOCS_URL}"
   export BENCHMARK_DOCS_SNAPSHOT_HASH="${docs_snapshot_hash}"
+  unset PRIVATE_KEY
+  unset DASHBOARD_PRIVATE_KEY
+  unset ARTIFACT_PUBLISH_PRIVATE_KEY
   npx --yes "${CODEX_PACKAGE}" --model "${MODEL}" --dangerously-bypass-approvals-and-sandbox exec "$(cat "${REPO_ROOT}/${PROMPT_FILE}")"
 ) >"${stdout_log}" 2>"${stderr_log}"
 agent_exit_code=$?
