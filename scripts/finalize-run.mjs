@@ -78,6 +78,7 @@ async function main() {
   const promptVersion = args["prompt-version"];
   const repoSha = args["repo-sha"];
   const docsUrl = args["docs-url"];
+  const docsSnapshotHash = args["docs-snapshot-hash"] || null;
   const startedAt = args["started-at"];
   const endedAt = args["ended-at"];
   const startMs = Number(args["start-ms"]);
@@ -110,7 +111,7 @@ async function main() {
     model,
     repoSha,
     docsUrl,
-    docsSnapshotHash: null,
+    docsSnapshotHash,
     startedAt,
     endedAt,
     outerWallTimeMs,
@@ -149,7 +150,11 @@ async function main() {
     runId,
     workspace,
     generatedAt: new Date().toISOString(),
-    workspaceBundlePath: `runs/${runId}/workspace-output.tgz`
+    workspaceBundlePath: `runs/${runId}/workspace-output.tgz`,
+    promptVersion,
+    mode,
+    docsUrl,
+    docsSnapshotHash
   };
   await writeFile(path.join(runDir, "harness-metadata.json"), `${JSON.stringify(metadata, null, 2)}\n`);
 

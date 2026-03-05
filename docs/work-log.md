@@ -31,3 +31,10 @@ Local running log for benchmark-repo development.
 - Wired finalization to invoke the validator and write `validation-result.json` into each run directory.
 - Switched run scoring to derive final status and failure phase from structured evidence instead of trusting agent self-reporting alone.
 - Verified validator behavior with both a synthetic success case and a synthetic failure case.
+
+### Phase 3 Mode And Prompt Versioning
+
+- Added explicit versioned prompts under `prompts/`.
+- Taught the harness to map benchmark mode to a default prompt version.
+- Added run-time docs snapshot capture and SHA-256 hashing before agent launch.
+- Added docs snapshot hash, mode, and prompt version to run artifacts and summary metadata.

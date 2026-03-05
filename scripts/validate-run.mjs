@@ -85,6 +85,9 @@ function validateSchema(summary) {
   if (!isNonEmptyString(summary.model)) pushError(errors, "$.model", "Must be a non-empty string.");
   if (!isNonEmptyString(summary.repoSha)) pushError(errors, "$.repoSha", "Must be a non-empty string.");
   if (!isNonEmptyString(summary.docsUrl)) pushError(errors, "$.docsUrl", "Must be a non-empty string.");
+  if (!(summary.docsSnapshotHash === null || isNonEmptyString(summary.docsSnapshotHash))) {
+    pushError(errors, "$.docsSnapshotHash", "Must be null or a non-empty string.");
+  }
   if (!isDateTime(summary.startedAt)) pushError(errors, "$.startedAt", "Must be a valid date-time string.");
   if (!isDateTime(summary.endedAt)) pushError(errors, "$.endedAt", "Must be a valid date-time string.");
   if (!isInteger(summary.outerWallTimeMs) || summary.outerWallTimeMs < 0) {

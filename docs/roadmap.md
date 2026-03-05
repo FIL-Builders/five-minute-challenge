@@ -61,13 +61,13 @@ Status: baseline validator complete
 
 ## Phase 3: Repeatable Benchmark Modes
 
-Status: not started
+Status: baseline mode/version support complete
 
-- [ ] Add `fresh-follow-docs` mode for true agent ability benchmarking.
-- [ ] Add `scripted-regression` mode for infrastructure sanity checks.
-- [ ] Version prompts explicitly.
-- [ ] Capture docs URL and docs snapshot hash in results.
-- [ ] Ensure mode, prompt version, and repo revision are visible on every run.
+- [x] Add `fresh-follow-docs` mode for true agent ability benchmarking.
+- [x] Add `scripted-regression` mode for infrastructure sanity checks.
+- [x] Version prompts explicitly.
+- [x] Capture docs URL and docs snapshot hash in results.
+- [x] Ensure mode, prompt version, and repo revision are visible on every run.
 
 ## Phase 4: Dashboard And History
 
@@ -94,7 +94,7 @@ Status: not started
 
 - [x] Build the local harness.
 - [x] Build the result validator.
-- [ ] Add prompt versioning and benchmark modes.
+- [x] Add prompt versioning and benchmark modes.
 - [ ] Stand up the run registry app using the Token Host Builder stack.
 - [ ] Add scheduling only after local benchmark output is stable.
 

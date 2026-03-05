@@ -98,6 +98,23 @@ Current implementation decisions:
 - the dashboard can start as a local dev server and later move to a Vercel or Netlify style hosted frontend
 - the initial scheduler is just a locally invoked script rather than a hosted cron system
 
+## Benchmark Modes
+
+Current planned modes:
+- `fresh-follow-docs`: benchmark true from-scratch agent ability against the public getting-started flow
+- `scripted-regression`: benchmark harness and infrastructure stability with more deterministic agent behavior
+
+Each run should record:
+- `mode`
+- `promptVersion`
+- `docsUrl`
+- `docsSnapshotHash`
+
+This lets operators distinguish:
+- docs changes vs service changes
+- prompt regressions vs model regressions
+- agent reasoning failures vs infrastructure failures
+
 ## Data Model Sketch
 
 Suggested collections for the app:

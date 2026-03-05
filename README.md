@@ -33,6 +33,9 @@ Each run now produces:
 - `run-summary.json`: harness-normalized result record
 - `validation-result.json`: validator output derived from structured evidence
 - `workspace-output.tgz`: captured workspace bundle for later publishing
+- `docs-snapshot.html` and `docs-snapshot.sha256` when the guide can be fetched at run start
+
+Prompt versions now live under [prompts/](/home/mikers/dev/fil-builders/five-minute-challenge/prompts), and the harness selects a version from the benchmark `MODE`.
 
 Current environment assumptions:
 - artifact publishing backend target will be the Filecoin storage service under test
