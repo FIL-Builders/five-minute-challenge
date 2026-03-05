@@ -52,4 +52,4 @@ Local operations now support:
 
 ## Dashboard
 
-The first dashboard slice is now defined as a Token Host Builder app schema in [dashboard/schema.json](/home/mikers/dev/fil-builders/five-minute-challenge/dashboard/schema.json). Generate the local app scaffold with `npm run dashboard:generate`, build a local aggregate feed with `npm run dashboard:feed`, and run a Calibration-targeted local preview with `npm run dashboard:dev` once a dev private key is available.
+The first dashboard slice is now defined as a Token Host Builder app schema in [dashboard/schema.json](/home/mikers/dev/fil-builders/five-minute-challenge/dashboard/schema.json). Generate the local app scaffold with `npm run dashboard:generate`, build a local aggregate feed with `npm run dashboard:feed`, and run the local UI preview with `npm run dashboard:dev`. If you need to compile/deploy the schema against Calibration, use `npm run dashboard:up` with a dev private key.

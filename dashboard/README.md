@@ -31,13 +31,25 @@ npm run dashboard:feed
 
 That writes `dashboard/local-feed.json` from any `runs/*/dashboard-records.json` files present locally.
 
-Run a local preview against Calibration:
+Run the local dashboard UI against the current local feed:
 
 ```bash
-PRIVATE_KEY=0x... ./bin/dev-dashboard.sh
+npm run dashboard:dev
 ```
 
 Defaults:
+- host: `127.0.0.1`
+- port: `3001`
+
+This serves the already-generated Next UI from `dashboard/generated/ui` and rebuilds `dashboard/local-feed.json` before startup.
+
+If you want to compile/deploy the Token Host Builder app schema against Calibration instead, run:
+
+```bash
+PRIVATE_KEY=0x... npm run dashboard:up
+```
+
+Defaults for schema deployment:
 - host: `127.0.0.1`
 - port: `3001`
 - chain: `filecoin_calibration`
