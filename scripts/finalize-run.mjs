@@ -43,7 +43,12 @@ function isObject(value) {
 
 function normalizeAgentStatus(agentResult, agentExitCode, artifactValidationFailed) {
   if (artifactValidationFailed) return "invalid";
-  if (typeof agentResult?.status === "string") return agentResult.status;
+  if (typeof agentResult?.status === "string") {
+    const normalized = agentResult.status.trim().toLowerCase();
+    if (["success", "failure", "invalid"].includes(normalized)) return normalized;
+    if (["blocked", "incomplete", "partial", "aborted", "error"].includes(normalized)) return "failure";
+  }
+  if (agentResult?.completed_end_to_end === false) return "failure";
   if (typeof agentResult?.success === "boolean") return agentResult.success ? "success" : "failure";
   return agentExitCode === 0 ? "success" : "failure";
 }
@@ -56,6 +61,16 @@ function normalizeWalletAddress(agentResult) {
 
 function normalizeAgentPhaseData(agentResult) {
   if (Array.isArray(agentResult?.agentPhaseData)) return agentResult.agentPhaseData;
+  if (Array.isArray(agentResult?.phase_durations)) {
+    return agentResult.phase_durations
+      .filter((item) => item && typeof item === "object")
+      .map((item) => ({
+        phase: item.phase ?? item.name ?? "unknown",
+        startedAt: item.startedAt ?? item.start,
+        endedAt: item.endedAt ?? item.end,
+        durationMs: Number(item.durationMs ?? item.duration_ms ?? 0)
+      }));
+  }
   if (!Array.isArray(agentResult?.phaseTimings)) return [];
   return agentResult.phaseTimings
     .filter((item) => item && typeof item === "object")
@@ -93,7 +108,9 @@ function normalizeArtifacts(runId, runDir, agentResult) {
     : (typeof agentResult?.artifacts?.runLog === "string" ? path.basename(agentResult.artifacts.runLog) : "agent.log");
   const uploadedPayloadFile = typeof agentResult?.artifacts?.uploadedPayloadPath === "string"
     ? path.basename(agentResult.artifacts.uploadedPayloadPath)
-    : (typeof agentResult?.artifacts?.payloadFile === "string" ? path.basename(agentResult.artifacts.payloadFile) : "uploaded-payload.txt");
+    : (typeof agentResult?.artifacts?.payloadFile === "string"
+      ? path.basename(agentResult.artifacts.payloadFile)
+      : (typeof agentResult?.payload?.file === "string" ? path.basename(agentResult.payload.file) : "uploaded-payload.txt"));
   const downloadedPayloadFile = typeof agentResult?.artifacts?.downloadedPayloadPath === "string"
     ? path.basename(agentResult.artifacts.downloadedPayloadPath)
     : (typeof agentResult?.artifacts?.downloadedTextFile === "string"

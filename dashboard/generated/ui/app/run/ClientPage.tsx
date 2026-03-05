@@ -110,11 +110,16 @@ export default function RunClientPage() {
                 <h2>Registry</h2>
                 <div className="muted">Chain-backed BenchmarkRun registry publication metadata.</div>
                 <div className="kv detailKv" style={{ marginTop: 16 }}>
+                  {kv('status', run.meta.dashboardPublish.status ?? '')}
+                  {kv('attemptedAt', run.meta.dashboardPublish.attemptedAt ?? '')}
                   {kv('publishedAt', run.meta.dashboardPublish.publishedAt ?? '')}
                   {kv('chainName', run.meta.dashboardPublish.chainName ?? '')}
                   {kv('deploymentAddress', run.meta.dashboardPublish.deploymentAddress ?? '')}
                   {kv('runRecordId', run.meta.dashboardPublish.runRecordId ?? '')}
                 </div>
+                {run.meta.dashboardPublish.error ? (
+                  <div className="notesPanel" style={{ marginTop: 16 }}>{run.meta.dashboardPublish.error}</div>
+                ) : null}
                 {run.meta.dashboardPublish.runRecordHref ? (
                   <div style={{ marginTop: 16 }}>
                     <Link className="btn" href={run.meta.dashboardPublish.runRecordHref}>Open on-chain record</Link>

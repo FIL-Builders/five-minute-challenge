@@ -29,6 +29,12 @@ async function maybeReadJson(filePath) {
   }
 }
 
+function parseTimeoutMs(value, fallbackMs) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) return fallbackMs;
+  return parsed;
+}
+
 function normalizePrivateKey(value) {
   if (!value) throw new Error("DASHBOARD_PRIVATE_KEY, PRIVATE_KEY, or --private-key is required for dashboard publication.");
   return value.startsWith("0x") ? value : `0x${value}`;
@@ -103,7 +109,34 @@ function buildViewHref(collectionName, recordId) {
   return `/${collectionName}/view/?id=${encodeURIComponent(String(recordId))}`;
 }
 
-async function publishRecord({ publicClient, walletClient, account, abi, address, schema, record }) {
+function toIsoTimestamp(value) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric) || numeric <= 0) return null;
+  return new Date(numeric * 1000).toISOString();
+}
+
+async function withTimeout(promise, timeoutMs, message) {
+  let timer = null;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(message)), timeoutMs);
+      })
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
+function serializeError(error, extra = {}) {
+  return {
+    message: error instanceof Error ? error.message : String(error),
+    ...extra
+  };
+}
+
+async function publishRecord({ publicClient, walletClient, account, abi, address, schema, record, timeoutMs }) {
   const functionName = `create${record.collection}`;
   const input = buildCreateInput(schema, record);
   const simulation = await publicClient.simulateContract({
@@ -117,7 +150,12 @@ async function publishRecord({ publicClient, walletClient, account, abi, address
     ...simulation.request,
     account
   });
-  await publicClient.waitForTransactionReceipt({ hash });
+  console.error(`Published ${record.collection} tx submitted: ${hash}`);
+  await withTimeout(
+    publicClient.waitForTransactionReceipt({ hash }),
+    timeoutMs,
+    `Timed out waiting for ${record.collection} transaction receipt after ${timeoutMs}ms: ${hash}`
+  );
 
   return {
     collection: record.collection,
@@ -125,6 +163,85 @@ async function publishRecord({ publicClient, walletClient, account, abi, address
     txHash: hash,
     href: buildViewHref(record.collection, simulation.result)
   };
+}
+
+async function recoverPublishedRun({ publicClient, abi, address, runId }) {
+  const count = Number(
+    await publicClient.readContract({
+      address,
+      abi,
+      functionName: "getCountBenchmarkRun",
+      args: [false]
+    })
+  );
+  if (!Number.isFinite(count) || count <= 0) return null;
+
+  const ids = await publicClient.readContract({
+    address,
+    abi,
+    functionName: "listIdsBenchmarkRun",
+    args: [0n, BigInt(count), false]
+  });
+
+  for (const id of ids) {
+    const record = await publicClient.readContract({
+      address,
+      abi,
+      functionName: "getBenchmarkRun",
+      args: [id, false]
+    });
+    if (record?.runId === runId) {
+      return {
+        collection: "BenchmarkRun",
+        recordId: String(record.id),
+        txHash: null,
+        href: buildViewHref("BenchmarkRun", record.id),
+        publishedAt: toIsoTimestamp(record.createdAt)
+      };
+    }
+  }
+
+  return null;
+}
+
+async function recoverPublishedIncidents({ publicClient, abi, address, runId }) {
+  const count = Number(
+    await publicClient.readContract({
+      address,
+      abi,
+      functionName: "getCountBenchmarkIncident",
+      args: [false]
+    })
+  );
+  if (!Number.isFinite(count) || count <= 0) return [];
+
+  const ids = await publicClient.readContract({
+    address,
+    abi,
+    functionName: "listIdsBenchmarkIncident",
+    args: [0n, BigInt(count), false]
+  });
+
+  const matches = [];
+  for (const id of ids) {
+    const record = await publicClient.readContract({
+      address,
+      abi,
+      functionName: "getBenchmarkIncident",
+      args: [id, false]
+    });
+    if (record?.runId === runId) {
+      matches.push({
+        collection: "BenchmarkIncident",
+        recordId: String(record.id),
+        txHash: null,
+        href: buildViewHref("BenchmarkIncident", record.id),
+        publishedAt: toIsoTimestamp(record.createdAt)
+      });
+    }
+  }
+
+  return matches.sort((left, right) => Number(left.recordId) - Number(right.recordId));
 }
 
 async function main() {
@@ -136,9 +253,11 @@ async function main() {
   const compiledPath = args["compiled"] ?? path.join(repoRoot, "dashboard", "generated", "compiled", "App.json");
   const schemaPath = args["schema"] ?? path.join(repoRoot, "dashboard", "schema.json");
   const resultPath = args["output"] ?? path.join(runDir, "dashboard-publish-result.json");
+  const timeoutMs = parseTimeoutMs(args["timeout-ms"] ?? process.env.DASHBOARD_PUBLISH_TIMEOUT_MS ?? "", 180000);
 
   if (!runDir) throw new Error("--run-dir is required.");
-  if (await maybeReadJson(resultPath)) {
+  const existingResult = await maybeReadJson(resultPath);
+  if (existingResult?.status === "success") {
     return;
   }
 
@@ -174,27 +293,53 @@ async function main() {
     transport: http(chain.rpcUrls.default.http[0])
   });
 
-  const publishedRecords = [];
+  let publishedRecords = [];
+  let failure = null;
   for (const record of payload.records ?? []) {
-    publishedRecords.push(await publishRecord({ publicClient, walletClient, account, abi, address, schema, record }));
+    try {
+      publishedRecords.push(await publishRecord({ publicClient, walletClient, account, abi, address, schema, record, timeoutMs }));
+    } catch (error) {
+      failure = serializeError(error, {
+        collection: record.collection
+      });
+      break;
+    }
+  }
+
+  let recovered = false;
+  let recoveredPublishedAt = null;
+  if (failure?.collection === "BenchmarkRun" && failure.message.includes("UniqueViolation()")) {
+    const recoveredRun = await recoverPublishedRun({ publicClient, abi, address, runId: payload.runId });
+    if (recoveredRun) {
+      const recoveredIncidents = await recoverPublishedIncidents({ publicClient, abi, address, runId: payload.runId });
+      publishedRecords = [recoveredRun, ...recoveredIncidents];
+      recovered = true;
+      recoveredPublishedAt = recoveredRun.publishedAt;
+      failure = null;
+    }
   }
 
   const runRecord = publishedRecords.find((record) => record.collection === "BenchmarkRun") ?? null;
   const incidentRecords = publishedRecords.filter((record) => record.collection === "BenchmarkIncident");
 
   const result = {
-    publishedAt: new Date().toISOString(),
+    status: failure ? "failed" : "success",
+    publishedAt: failure ? null : (recoveredPublishedAt ?? new Date().toISOString()),
+    attemptedAt: new Date().toISOString(),
+    recovered,
     runId: payload.runId,
     chainId: Number(chain.id),
     chainName: deployment.chainName ?? chain.name,
     deploymentAddress: address,
     manifestPath: path.relative(repoRoot, manifestPath),
     recordsPath: path.relative(repoRoot, recordsPath),
+    timeoutMs,
     publishedRecords,
     runRecordId: runRecord?.recordId ?? null,
     runRecordHref: runRecord?.href ?? null,
     incidentRecordIds: incidentRecords.map((record) => record.recordId),
-    incidentRecordHrefs: incidentRecords.map((record) => record.href)
+    incidentRecordHrefs: incidentRecords.map((record) => record.href),
+    error: failure
   };
   await writeFile(resultPath, `${JSON.stringify(result, null, 2)}\n`);
 
@@ -232,6 +377,10 @@ async function main() {
 
   if (refreshFeed.status !== 0) {
     throw new Error(refreshFeed.stderr || refreshFeed.stdout || "Failed to refresh dashboard feed after on-chain publication.");
+  }
+
+  if (failure) {
+    throw new Error(failure.message);
   }
 }
 

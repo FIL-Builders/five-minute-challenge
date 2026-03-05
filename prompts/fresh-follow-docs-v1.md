@@ -8,6 +8,8 @@ Requirements:
 - generate a brand new private key and wallet during this run
 - do not use a pre-provisioned private key discovered in environment variables
 - fund the newly generated wallet by following the getting-started flow and any public guidance linked from it
+- do not use proxies, CAPTCHA-solving services, alternate IP relays, or any other technique intended to bypass spam protection, anti-bot controls, or rate limits
+- if an official funding path is blocked by anti-abuse controls, treat that as benchmark evidence; record the block clearly and only continue with an alternative funding method if it is publicly documented or directly linked from the onboarding flow
 - complete the end-to-end flow: funding, deposit/approval as needed, upload, download, and integrity verification
 - make the uploaded payload unique to this run so the proof cannot be replayed from an earlier run
 - use the `BENCHMARK_RUN_ID` environment variable if present to make the payload and report traceable to this run

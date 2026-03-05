@@ -55,7 +55,8 @@ function buildRunRecord(summary, validation, publishResult, outputPath) {
     buildArtifactEntry(runId, "Run summary", `runs/${runId}/run-summary.json`),
     buildArtifactEntry(runId, "Validation result", `runs/${runId}/validation-result.json`),
     buildArtifactEntry(runId, "Dashboard records", `runs/${runId}/${path.basename(outputPath)}`),
-    buildArtifactEntry(runId, "Artifact publish result", `runs/${runId}/artifact-publish-result.json`)
+    buildArtifactEntry(runId, "Artifact publish result", `runs/${runId}/artifact-publish-result.json`),
+    publishResult ? buildArtifactEntry(runId, "Dashboard publish result", `runs/${runId}/dashboard-publish-result.json`) : null
   ].filter(Boolean);
 
   return {
@@ -88,7 +89,8 @@ function buildRunRecord(summary, validation, publishResult, outputPath) {
         runSummaryPath: `runs/${runId}/run-summary.json`,
         validationResultPath: `runs/${runId}/validation-result.json`,
         dashboardRecordsPath: `runs/${runId}/${path.basename(outputPath)}`,
-        artifactPublishResultPath: publishResult ? `runs/${runId}/artifact-publish-result.json` : null
+        artifactPublishResultPath: publishResult ? `runs/${runId}/artifact-publish-result.json` : null,
+        dashboardPublishResultPath: publishResult ? `runs/${runId}/dashboard-publish-result.json` : null
       },
       localArtifacts,
       validation: {
@@ -103,13 +105,16 @@ function buildRunRecord(summary, validation, publishResult, outputPath) {
       },
       dashboardPublish: publishResult
         ? {
+            status: publishResult.status ?? "success",
+            attemptedAt: publishResult.attemptedAt ?? null,
             publishedAt: publishResult.publishedAt ?? null,
             chainName: publishResult.chainName ?? null,
             deploymentAddress: publishResult.deploymentAddress ?? null,
             runRecordId: publishResult.runRecordId ?? null,
             runRecordHref: publishResult.runRecordHref ?? null,
             incidentRecordIds: Array.isArray(publishResult.incidentRecordIds) ? publishResult.incidentRecordIds : [],
-            incidentRecordHrefs: Array.isArray(publishResult.incidentRecordHrefs) ? publishResult.incidentRecordHrefs : []
+            incidentRecordHrefs: Array.isArray(publishResult.incidentRecordHrefs) ? publishResult.incidentRecordHrefs : [],
+            error: publishResult.error?.message ?? null
           }
         : null
     }

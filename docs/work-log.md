@@ -84,3 +84,13 @@ Local running log for benchmark-repo development.
 - Added HTTP-served local artifact links to the custom dashboard run detail view for reports, logs, summaries, validation output, and publish metadata.
 - Switched the customized dashboard source app away from static export mode so Next route handlers can serve local run artifacts during development.
 - Updated `bin/up-dashboard-app.sh` to skip the preview server so successful deployments do not report false failures when port `3001` is already in use.
+
+### Additional Run, Anti-Abuse Guardrails, And Publish Recovery
+
+- Redeployed the benchmark registry after the Token Host generator/compiler improvements to Filecoin Calibration at `0x74af3ad6de10623f909b11c6d9ed27dfea59533a`.
+- Started an additional benchmark cycle and terminated the first attempt after the agent began exploring proxy-based anti-abuse evasion; tightened the benchmark prompt to forbid proxies, CAPTCHA-solving services, and other rate-limit bypasses.
+- Ran a replacement compliant benchmark cycle for run `20260305T223418Z-b085f4`; the agent generated a fresh wallet, but the run failed at funding because official/publicly documented faucet paths remained blocked by anti-bot controls in a non-interactive environment.
+- Uploaded the failed run bundle to Filecoin Cloud with retrieval URL `https://calib.ezpdpz.net/piece/bafkzcibe6tdbyd7thupd2ivoroytcf2l5woacvkomf2cw5kh6xvvaqbli63mbgw3cm`.
+- Updated `scripts/finalize-run.mjs` to normalize agent result states like `blocked`, `partial`, and `incomplete` into canonical benchmark `failure` status so the harness can score early-documentation and faucet failures without schema drift.
+- Hardened `scripts/publish-dashboard-records.mjs` so interrupted or partial on-chain publication can be recovered from chain state, and updated `bin/run-local-cycle.sh` to continue rebuilding the local feed and alerts even when a later stage fails.
+- Recovered the interrupted publication state for run `20260305T223418Z-b085f4`; it now appears on-chain in the new registry as `BenchmarkRun` record `#1` with incident records `#1` through `#5`.

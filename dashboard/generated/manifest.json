@@ -10,9 +10,9 @@
     "compilerProfile": "auto(viaIR)"
   },
   "release": {
-    "releaseId": "rel_local_1772748677751",
+    "releaseId": "rel_local_1772749368894",
     "supersedesReleaseId": null,
-    "publishedAt": "2026-03-05T22:11:17.751Z"
+    "publishedAt": "2026-03-05T22:22:48.894Z"
   },
   "app": {
     "name": "Benchmark Registry",
@@ -48,30 +48,30 @@
       "chainId": 314159,
       "chainName": "filecoin_calibration",
       "deploymentMode": "single",
-      "deploymentEntrypointAddress": "0xb0b97c5f2cfebe842ba7a1b38cde1893ec06e517",
+      "deploymentEntrypointAddress": "0x74af3ad6de10623f909b11c6d9ed27dfea59533a",
       "adminAddress": "0xF00DCE36817586672B47480FB48C94177A97278B",
       "treasuryAddress": null,
       "contracts": [
         {
           "role": "app",
-          "address": "0xb0b97c5f2cfebe842ba7a1b38cde1893ec06e517",
+          "address": "0x74af3ad6de10623f909b11c6d9ed27dfea59533a",
           "verified": false,
           "bytecodeDigest": "sha256:f0591daa781dded20b3719d7a4259b59c349516bc3fdd7ae59cc3287e797ed32",
           "abiDigest": "sha256:6d6bef10d68cc846b07ee47a685c50dc3e2998473199e87eb4985c06f0c0b04e"
         }
       ],
       "verified": false,
-      "blockNumber": 3514078,
+      "blockNumber": 3514101,
       "chainConfig": {
         "url": "file:///home/mikers/dev/fil-builders/five-minute-challenge/dashboard/generated/chain-config/filecoin_calibration.json",
-        "digest": "sha256:e27d907c9c703fbcdf2d5b741c19a8e135ad1fda34afd1041ac3098fbcf23459",
+        "digest": "sha256:1f7f93bc1b1271263688fcd880aef853987f18334232c7fcf388854ffa631df4",
         "chainConfigVersion": "1.0.0"
       }
     }
   ],
   "ui": {
-    "bundleHash": "sha256:bc6644208ef8eed2b776ac43399698f002c78eda977dbd4b0bd85f5d07d3869b",
-    "baseUrl": "http://127.0.0.1:3001/",
+    "bundleHash": "sha256:b44ea45a0029289ffa8b11980a9716b286a34cc7f27db73fd404708e65bef5a4",
+    "baseUrl": "file:///home/mikers/dev/fil-builders/five-minute-challenge/dashboard/generated/ui-site/",
     "wellKnown": "/.well-known/tokenhost/manifest.json"
   },
   "features": {

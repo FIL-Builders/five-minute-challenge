@@ -5,6 +5,8 @@ export type ArtifactLink = {
 };
 
 export type DashboardPublishMeta = {
+  status: string;
+  attemptedAt: string | null;
   publishedAt: string | null;
   chainName: string | null;
   deploymentAddress: string | null;
@@ -12,6 +14,7 @@ export type DashboardPublishMeta = {
   runRecordHref: string | null;
   incidentRecordIds: string[];
   incidentRecordHrefs: string[];
+  error: string | null;
 } | null;
 
 export type BenchmarkRunMeta = {
@@ -20,6 +23,7 @@ export type BenchmarkRunMeta = {
     validationResultPath: string;
     dashboardRecordsPath: string;
     artifactPublishResultPath: string | null;
+    dashboardPublishResultPath?: string | null;
   };
   localArtifacts: ArtifactLink[];
   validation: {
