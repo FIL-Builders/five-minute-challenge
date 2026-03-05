@@ -29,6 +29,11 @@ The active repo direction is documented here:
 
 Local execution now goes through [bin/run-benchmark.sh](/home/mikers/dev/fil-builders/five-minute-challenge/bin/run-benchmark.sh), which creates a fresh temporary workspace, launches Codex, captures outer timing, and writes run artifacts under ignored `runs/<run-id>/` directories.
 
+Each run now produces:
+- `run-summary.json`: harness-normalized result record
+- `validation-result.json`: validator output derived from structured evidence
+- `workspace-output.tgz`: captured workspace bundle for later publishing
+
 Current environment assumptions:
 - artifact publishing backend target will be the Filecoin storage service under test
 - dashboard development can run locally first against Filecoin Calibration

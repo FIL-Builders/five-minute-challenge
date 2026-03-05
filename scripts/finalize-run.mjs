@@ -1,4 +1,5 @@
 import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
 import path from "node:path";
 
 function parseArgs(argv) {
@@ -68,6 +69,7 @@ function normalizeArtifacts(runId, runDir, agentResult) {
 
 async function main() {
   const args = parseArgs(process.argv);
+  const repoRoot = args["repo-root"];
   const runDir = args["run-dir"];
   const workspace = args["workspace"];
   const runId = args["run-id"];
@@ -100,15 +102,6 @@ async function main() {
   const hasRunResult = await exists(path.join(runDir, "run-result.json"));
   const artifactValidationFailed = !hasReport || !hasRunResult;
 
-  let status = "failure";
-  if (artifactValidationFailed || !agentResult || typeof agentResult !== "object") {
-    status = "invalid";
-  } else if (agentResult.status === "success" || agentResult.status === "failure" || agentResult.status === "invalid") {
-    status = agentResult.status;
-  } else if (agentExitCode !== 0) {
-    status = "failure";
-  }
-
   const result = {
     schemaVersion: "0.1.0",
     runId,
@@ -121,7 +114,7 @@ async function main() {
     startedAt,
     endedAt,
     outerWallTimeMs,
-    status,
+    status: artifactValidationFailed ? "invalid" : (agentResult?.status ?? (agentExitCode === 0 ? "success" : "failure")),
     failurePhase: agentResult?.failurePhase ?? (artifactValidationFailed ? "artifact_validation" : null),
     agentExitCode,
     walletAddress: agentResult?.walletAddress ?? null,
@@ -163,6 +156,40 @@ async function main() {
   const workspaceRunResult = path.join(workspace, "run-result.json");
   if (agentResult && !(await exists(path.join(runDir, "run-result.json")))) {
     await copyFile(workspaceRunResult, path.join(runDir, "run-result.json"));
+  }
+
+  const validator = spawnSync(
+    process.execPath,
+    [
+      path.join(repoRoot, "scripts", "validate-run.mjs"),
+      "--run-dir",
+      runDir,
+      "--summary",
+      path.join(runDir, "run-summary.json"),
+      "--output",
+      path.join(runDir, "validation-result.json")
+    ],
+    {
+      cwd: repoRoot,
+      encoding: "utf8"
+    }
+  );
+
+  if (validator.status !== 0) {
+    throw new Error(validator.stderr || validator.stdout || "Run validation failed.");
+  }
+
+  const validation = await maybeReadJson(path.join(runDir, "validation-result.json"));
+  if (validation && typeof validation === "object") {
+    result.status = validation.status ?? result.status;
+    result.failurePhase = validation.failurePhase ?? result.failurePhase;
+    if (Array.isArray(validation.findings) && validation.findings.length > 0) {
+      const rendered = validation.findings
+        .map((finding) => `${finding.phase}: ${finding.message}`)
+        .join(" | ");
+      result.operatorNotes = result.operatorNotes ? `${result.operatorNotes} ${rendered}` : rendered;
+    }
+    await writeFile(path.join(runDir, "run-summary.json"), `${JSON.stringify(result, null, 2)}\n`);
   }
 }
 

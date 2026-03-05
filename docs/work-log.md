@@ -24,3 +24,10 @@ Local running log for benchmark-repo development.
 - Switched `run.sh` to act as the local manual scheduler entry point for the harness.
 - Updated the prompt so the agent writes `report.md` and `run-result.json` into the current working directory for collection.
 - Locked in current implementation assumptions: Filecoin storage as the artifact backend target, local dev server first for the dashboard, and local script invocation as the initial scheduler.
+
+### Phase 2 Validator Start
+
+- Added `scripts/validate-run.mjs` as a dependency-free validator for `run-summary.json`.
+- Wired finalization to invoke the validator and write `validation-result.json` into each run directory.
+- Switched run scoring to derive final status and failure phase from structured evidence instead of trusting agent self-reporting alone.
+- Verified validator behavior with both a synthetic success case and a synthetic failure case.

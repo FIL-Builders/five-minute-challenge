@@ -61,6 +61,7 @@ tar \
   -C "${workspace}" .
 
 node "${REPO_ROOT}/scripts/finalize-run.mjs" \
+  --repo-root "${REPO_ROOT}" \
   --run-dir "${run_dir}" \
   --workspace "${workspace}" \
   --run-id "${run_id}" \

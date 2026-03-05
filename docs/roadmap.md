@@ -51,13 +51,13 @@ Status: in progress
 
 ## Phase 2: Result Validation And Scoring
 
-Status: schema drafted, validator not started
+Status: baseline validator complete
 
 - [x] Draft the JSON schema for `run-result.json`.
-- [ ] Implement schema validation.
-- [ ] Implement pass/fail evaluation from structured evidence only.
-- [ ] Add failure taxonomy handling for `agent_boot`, `wallet_generation`, `funding`, `deposit`, `upload`, `download`, `verification`, and `artifact_validation`.
-- [ ] Mark malformed or partial outputs as `invalid`.
+- [x] Implement schema validation.
+- [x] Implement pass/fail evaluation from structured evidence only.
+- [x] Add failure taxonomy handling for `agent_boot`, `wallet_generation`, `funding`, `deposit`, `upload`, `download`, `verification`, and `artifact_validation`.
+- [x] Mark malformed or partial outputs as `invalid`.
 
 ## Phase 3: Repeatable Benchmark Modes
 
@@ -93,7 +93,7 @@ Status: not started
 ## Near-Term Order
 
 - [x] Build the local harness.
-- [ ] Build the result validator.
+- [x] Build the result validator.
 - [ ] Add prompt versioning and benchmark modes.
 - [ ] Stand up the run registry app using the Token Host Builder stack.
 - [ ] Add scheduling only after local benchmark output is stable.
