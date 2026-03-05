@@ -10,8 +10,16 @@ CODEX_PACKAGE="${CODEX_PACKAGE:-@openai/codex@alpha}"
 default_prompt_version() {
   case "$1" in
     fresh-follow-docs) printf '%s\n' "fresh-follow-docs-v1" ;;
+    inherited-key-follow-docs) printf '%s\n' "inherited-key-follow-docs-v1" ;;
     scripted-regression) printf '%s\n' "scripted-regression-v1" ;;
     *) printf 'Unsupported MODE: %s\n' "$1" >&2; exit 1 ;;
+  esac
+}
+
+mode_uses_inherited_private_key() {
+  case "$1" in
+    inherited-key-follow-docs) return 0 ;;
+    *) return 1 ;;
   esac
 }
 
@@ -20,6 +28,11 @@ PROMPT_FILE="${PROMPT_FILE:-prompts/${PROMPT_VERSION}.md}"
 
 if [[ ! -f "${REPO_ROOT}/${PROMPT_FILE}" ]]; then
   printf 'Prompt file not found: %s\n' "${REPO_ROOT}/${PROMPT_FILE}" >&2
+  exit 1
+fi
+
+if mode_uses_inherited_private_key "${MODE}" && [[ -z "${PRIVATE_KEY:-}" ]]; then
+  printf 'MODE %s requires PRIVATE_KEY to be set in the parent environment.\n' "${MODE}" >&2
   exit 1
 fi
 
@@ -58,25 +71,39 @@ start_ms="$(node -e 'console.log(Date.now())')"
 stdout_log="${run_dir}/stdout.log"
 stderr_log="${run_dir}/stderr.log"
 
+env_cmd=(
+  env -i
+  HOME="${HOME}"
+  PATH="${PATH}"
+  TMPDIR="${TMPDIR:-/tmp}"
+  TERM="${TERM:-dumb}"
+  LANG="${LANG:-C.UTF-8}"
+  LC_ALL="${LC_ALL:-C.UTF-8}"
+  USER="${USER:-}"
+  LOGNAME="${LOGNAME:-}"
+  OPENAI_API_KEY="${OPENAI_API_KEY:-}"
+  BENCHMARK_RUN_ID="${run_id}"
+  BENCHMARK_MODE="${MODE}"
+  BENCHMARK_PROMPT_VERSION="${PROMPT_VERSION}"
+  BENCHMARK_DOCS_URL="${DOCS_URL}"
+  BENCHMARK_DOCS_SNAPSHOT_HASH="${docs_snapshot_hash}"
+)
+
+if mode_uses_inherited_private_key "${MODE}"; then
+  env_cmd+=(
+    BENCHMARK_CREDENTIAL_MODE="inherited-private-key"
+    PRIVATE_KEY="${PRIVATE_KEY}"
+  )
+else
+  env_cmd+=(
+    BENCHMARK_CREDENTIAL_MODE="fresh-wallet"
+  )
+fi
+
 set +e
 (
   cd "${workspace}"
-  env -i \
-    HOME="${HOME}" \
-    PATH="${PATH}" \
-    TMPDIR="${TMPDIR:-/tmp}" \
-    TERM="${TERM:-dumb}" \
-    LANG="${LANG:-C.UTF-8}" \
-    LC_ALL="${LC_ALL:-C.UTF-8}" \
-    USER="${USER:-}" \
-    LOGNAME="${LOGNAME:-}" \
-    OPENAI_API_KEY="${OPENAI_API_KEY:-}" \
-    BENCHMARK_RUN_ID="${run_id}" \
-    BENCHMARK_MODE="${MODE}" \
-    BENCHMARK_PROMPT_VERSION="${PROMPT_VERSION}" \
-    BENCHMARK_DOCS_URL="${DOCS_URL}" \
-    BENCHMARK_DOCS_SNAPSHOT_HASH="${docs_snapshot_hash}" \
-    npx --yes "${CODEX_PACKAGE}" --model "${MODEL}" --dangerously-bypass-approvals-and-sandbox exec "$(cat "${REPO_ROOT}/${PROMPT_FILE}")"
+  "${env_cmd[@]}" npx --yes "${CODEX_PACKAGE}" --model "${MODEL}" --dangerously-bypass-approvals-and-sandbox exec "$(cat "${REPO_ROOT}/${PROMPT_FILE}")"
 ) >"${stdout_log}" 2>"${stderr_log}"
 agent_exit_code=$?
 set -e

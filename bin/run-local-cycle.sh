@@ -20,7 +20,14 @@ const file = process.argv[1];
 const key = process.argv[2];
 const value = Number(process.argv[3]);
 let data = {};
-if (fs.existsSync(file)) data = JSON.parse(fs.readFileSync(file, "utf8"));
+if (fs.existsSync(file)) {
+  try {
+    const raw = fs.readFileSync(file, "utf8").trim();
+    data = raw ? JSON.parse(raw) : {};
+  } catch {
+    data = {};
+  }
+}
 data[key] = value;
 fs.writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
 ' "${CYCLE_STATUS_TMP}" "$1" "$2"
@@ -36,7 +43,15 @@ const fs = require("fs");
 const file = process.argv[1];
 const out = process.argv[2];
 const latestRunId = process.argv[3] || null;
-const data = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : {};
+let data = {};
+if (fs.existsSync(file)) {
+  try {
+    const raw = fs.readFileSync(file, "utf8").trim();
+    data = raw ? JSON.parse(raw) : {};
+  } catch {
+    data = {};
+  }
+}
 data.generatedAt = new Date().toISOString();
 data.latestRunId = latestRunId;
 data.success = Object.entries(data)

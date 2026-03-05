@@ -46,7 +46,7 @@ function normalizeAgentStatus(agentResult, agentExitCode, artifactValidationFail
   if (typeof agentResult?.status === "string") {
     const normalized = agentResult.status.trim().toLowerCase();
     if (["success", "failure", "invalid"].includes(normalized)) return normalized;
-    if (["blocked", "incomplete", "partial", "aborted", "error"].includes(normalized)) return "failure";
+    if (["blocked", "incomplete", "partial", "aborted", "error", "failed"].includes(normalized)) return "failure";
   }
   if (agentResult?.completed_end_to_end === false) return "failure";
   if (typeof agentResult?.success === "boolean") return agentResult.success ? "success" : "failure";
@@ -56,11 +56,22 @@ function normalizeAgentStatus(agentResult, agentExitCode, artifactValidationFail
 function normalizeWalletAddress(agentResult) {
   if (typeof agentResult?.walletAddress === "string") return agentResult.walletAddress;
   if (typeof agentResult?.wallet?.address === "string") return agentResult.wallet.address;
+  if (typeof agentResult?.inheritedWalletAddress === "string") return agentResult.inheritedWalletAddress;
   return null;
 }
 
 function normalizeAgentPhaseData(agentResult) {
   if (Array.isArray(agentResult?.agentPhaseData)) return agentResult.agentPhaseData;
+  if (Array.isArray(agentResult?.phases)) {
+    return agentResult.phases
+      .filter((item) => item && typeof item === "object")
+      .map((item) => ({
+        phase: item.phase ?? item.name ?? "unknown",
+        startedAt: item.startedAt ?? item.start,
+        endedAt: item.endedAt ?? item.end,
+        durationMs: Number(item.durationMs ?? item.duration_ms ?? 0)
+      }));
+  }
   if (Array.isArray(agentResult?.phase_durations)) {
     return agentResult.phase_durations
       .filter((item) => item && typeof item === "object")
@@ -86,14 +97,17 @@ function normalizeEvidence(agentResult) {
   const fundingTxHashes = Array.isArray(agentResult?.funding?.txHashes)
     ? agentResult.funding.txHashes.filter((value) => typeof value === "string" && value.length > 0)
     : [];
+  const inheritedFundingSource = agentResult?.funding?.inheritedWalletPreFunded
+    ? "inherited_wallet_prefunded"
+    : (agentResult?.funding?.topUpPerformed ? (agentResult?.funding?.topUpMethod ?? "inherited_wallet_topped_up") : null);
 
   return {
-    fundingSource: agentResult?.evidence?.fundingSource ?? agentResult?.funding?.faucetUrl ?? null,
+    fundingSource: agentResult?.evidence?.fundingSource ?? agentResult?.funding?.faucetUrl ?? inheritedFundingSource,
     fundingTxHash: agentResult?.evidence?.fundingTxHash ?? (fundingTxHashes.length > 0 ? fundingTxHashes.join(",") : null),
-    depositTxHash: agentResult?.evidence?.depositTxHash ?? agentResult?.deposit?.txHash ?? null,
+    depositTxHash: agentResult?.evidence?.depositTxHash ?? agentResult?.deposit?.txHash ?? agentResult?.payment?.depositAndApprovalTxHash ?? null,
     pieceCid: agentResult?.evidence?.pieceCid ?? agentResult?.upload?.pieceCid ?? agentResult?.download?.pieceCid ?? null,
-    contentMatch: Boolean(agentResult?.evidence?.contentMatch ?? agentResult?.download?.integrityOk),
-    originalSha256: agentResult?.evidence?.originalSha256 ?? agentResult?.upload?.originalSha256 ?? agentResult?.payload?.sha256 ?? agentResult?.download?.downloadedSha256 ?? null,
+    contentMatch: Boolean(agentResult?.evidence?.contentMatch ?? agentResult?.download?.integrityOk ?? agentResult?.download?.integrityMatch),
+    originalSha256: agentResult?.evidence?.originalSha256 ?? agentResult?.upload?.originalSha256 ?? agentResult?.upload?.payloadSha256 ?? agentResult?.payload?.sha256 ?? agentResult?.download?.downloadedSha256 ?? null,
     downloadedSha256: agentResult?.evidence?.downloadedSha256 ?? agentResult?.download?.downloadedSha256 ?? null
   };
 }
@@ -105,17 +119,25 @@ function normalizeArtifacts(runId, runDir, agentResult) {
   const stderrLogPath = path.join(runDir, "stderr.log");
   const agentLogFile = typeof agentResult?.artifacts?.agentLogPath === "string"
     ? path.basename(agentResult.artifacts.agentLogPath)
-    : (typeof agentResult?.artifacts?.runLog === "string" ? path.basename(agentResult.artifacts.runLog) : "agent.log");
+    : (typeof agentResult?.artifacts?.runLog === "string"
+      ? path.basename(agentResult.artifacts.runLog)
+      : (Array.isArray(agentResult?.artifacts)
+        ? path.basename(agentResult.artifacts.find((value) => typeof value === "string" && value.endsWith("execution.log")) ?? "agent.log")
+        : "agent.log"));
   const uploadedPayloadFile = typeof agentResult?.artifacts?.uploadedPayloadPath === "string"
     ? path.basename(agentResult.artifacts.uploadedPayloadPath)
     : (typeof agentResult?.artifacts?.payloadFile === "string"
       ? path.basename(agentResult.artifacts.payloadFile)
-      : (typeof agentResult?.payload?.file === "string" ? path.basename(agentResult.payload.file) : "uploaded-payload.txt"));
+      : (typeof agentResult?.payload?.file === "string"
+        ? path.basename(agentResult.payload.file)
+        : (typeof agentResult?.upload?.payloadFile === "string" ? path.basename(agentResult.upload.payloadFile) : "uploaded-payload.txt")));
   const downloadedPayloadFile = typeof agentResult?.artifacts?.downloadedPayloadPath === "string"
     ? path.basename(agentResult.artifacts.downloadedPayloadPath)
     : (typeof agentResult?.artifacts?.downloadedTextFile === "string"
       ? path.basename(agentResult.artifacts.downloadedTextFile)
-      : (typeof agentResult?.artifacts?.downloadedFile === "string" ? path.basename(agentResult.artifacts.downloadedFile) : "downloaded-payload.txt"));
+      : (typeof agentResult?.artifacts?.downloadedFile === "string"
+        ? path.basename(agentResult.artifacts.downloadedFile)
+        : (typeof agentResult?.download?.downloadedFile === "string" ? path.basename(agentResult.download.downloadedFile) : "downloaded-payload.txt")));
   const agentLogPath = path.join(runDir, agentLogFile);
   const uploadedPayloadPath = path.join(runDir, uploadedPayloadFile);
   const downloadedPayloadPath = path.join(runDir, downloadedPayloadFile);
@@ -154,7 +176,24 @@ function collectWorkspaceArtifacts(agentResult) {
     }
   }
 
-  for (const name of ["agent.log", "run.log", "run-attempt1.log", "benchmark-run.mjs"]) {
+  if (Array.isArray(agentResult.artifacts)) {
+    for (const value of agentResult.artifacts) {
+      if (typeof value === "string" && value.length > 0) {
+        files.add(path.basename(value));
+      }
+    }
+  }
+
+  for (const value of [
+    agentResult?.upload?.payloadFile,
+    agentResult?.download?.downloadedFile
+  ]) {
+    if (typeof value === "string" && value.length > 0) {
+      files.add(path.basename(value));
+    }
+  }
+
+  for (const name of ["agent.log", "run.log", "run-attempt1.log", "benchmark-run.mjs", "execution.log", "execution-attempt1.log", "run-benchmark.mjs"]) {
     files.add(name);
   }
 
@@ -183,14 +222,18 @@ async function main() {
   const existingSummary = await maybeReadJson(path.join(runDir, "run-summary.json"));
   const existingPublishResult = await maybeReadJson(path.join(runDir, "artifact-publish-result.json"));
 
-  const agentResult = await maybeReadJson(path.join(workspace, "run-result.json"));
+  const workspaceRunResultPath = path.join(workspace, "run-result.json");
+  const runDirRunResultPath = path.join(runDir, "run-result.json");
+  const workspaceHasRunResult = await exists(workspaceRunResultPath);
+  const effectiveWorkspace = workspaceHasRunResult ? workspace : runDir;
+  const agentResult = await maybeReadJson(workspaceHasRunResult ? workspaceRunResultPath : runDirRunResultPath);
   const parsedAgentExitCode = Number(args["agent-exit-code"]);
   const agentExitCode = Number.isInteger(parsedAgentExitCode)
     ? parsedAgentExitCode
     : (existingSummary?.agentExitCode ?? (agentResult?.success === true ? 0 : null));
 
   for (const name of collectWorkspaceArtifacts(agentResult)) {
-    const source = path.join(workspace, name);
+    const source = path.join(effectiveWorkspace, name);
     const target = path.join(runDir, name);
     if ((await exists(source)) && !(await exists(target))) {
       await copyFile(source, target);
@@ -251,9 +294,8 @@ async function main() {
   };
   await writeFile(path.join(runDir, "harness-metadata.json"), `${JSON.stringify(metadata, null, 2)}\n`);
 
-  const workspaceRunResult = path.join(workspace, "run-result.json");
-  if (agentResult && !(await exists(path.join(runDir, "run-result.json")))) {
-    await copyFile(workspaceRunResult, path.join(runDir, "run-result.json"));
+  if (agentResult && workspaceHasRunResult && !(await exists(path.join(runDir, "run-result.json")))) {
+    await copyFile(workspaceRunResultPath, path.join(runDir, "run-result.json"));
   }
 
   const validator = spawnSync(

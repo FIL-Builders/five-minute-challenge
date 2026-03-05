@@ -43,6 +43,11 @@ Each run now produces:
 
 Prompt versions now live under [prompts/](/home/mikers/dev/fil-builders/five-minute-challenge/prompts), and the harness selects a version from the benchmark `MODE`.
 
+Current benchmark modes:
+- `fresh-follow-docs`: agent must generate and fund a fresh wallet
+- `inherited-key-follow-docs`: agent inherits `PRIVATE_KEY` from the harness environment and uses that wallet for the guide flow
+- `scripted-regression`: deterministic harness sanity mode
+
 Current environment assumptions:
 - artifact publishing backend target will be the Filecoin storage service under test
 - dashboard development can run locally first against Filecoin Calibration

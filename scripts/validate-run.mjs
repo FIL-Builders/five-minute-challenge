@@ -78,7 +78,7 @@ function validateSchema(summary) {
 
   if (!isNonEmptyString(summary.schemaVersion)) pushError(errors, "$.schemaVersion", "Must be a non-empty string.");
   if (!isNonEmptyString(summary.runId)) pushError(errors, "$.runId", "Must be a non-empty string.");
-  if (!["fresh-follow-docs", "scripted-regression"].includes(summary.mode)) {
+  if (!["fresh-follow-docs", "inherited-key-follow-docs", "scripted-regression"].includes(summary.mode)) {
     pushError(errors, "$.mode", "Must be a supported benchmark mode.");
   }
   if (!isNonEmptyString(summary.promptVersion)) pushError(errors, "$.promptVersion", "Must be a non-empty string.");
@@ -193,11 +193,14 @@ function evaluateRun(summary) {
     fail("wallet_generation", "Missing generated wallet address.");
   }
 
-  if (!summary.evidence?.fundingSource && !summary.evidence?.fundingTxHash) {
+  const requiresFundingEvidence = summary.mode === "fresh-follow-docs";
+  const requiresDepositEvidence = ["fresh-follow-docs", "inherited-key-follow-docs"].includes(summary.mode);
+
+  if (requiresFundingEvidence && !summary.evidence?.fundingSource && !summary.evidence?.fundingTxHash) {
     fail("funding", "Missing funding evidence.");
   }
 
-  if (summary.mode === "fresh-follow-docs" && !summary.evidence?.depositTxHash) {
+  if (requiresDepositEvidence && !summary.evidence?.depositTxHash) {
     fail("deposit", "Missing deposit or approval transaction evidence.");
   }
 

@@ -102,6 +102,7 @@ Current implementation decisions:
 
 Current planned modes:
 - `fresh-follow-docs`: benchmark true from-scratch agent ability against the public getting-started flow
+- `inherited-key-follow-docs`: benchmark the same getting-started flow when the agent is intentionally given `PRIVATE_KEY` in its environment
 - `scripted-regression`: benchmark harness and infrastructure stability with more deterministic agent behavior
 
 Each run should record:

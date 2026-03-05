@@ -64,6 +64,7 @@ Status: baseline validator complete
 Status: baseline mode/version support complete
 
 - [x] Add `fresh-follow-docs` mode for true agent ability benchmarking.
+- [x] Add `inherited-key-follow-docs` mode for pre-provisioned wallet benchmarking.
 - [x] Add `scripted-regression` mode for infrastructure sanity checks.
 - [x] Version prompts explicitly.
 - [x] Capture docs URL and docs snapshot hash in results.

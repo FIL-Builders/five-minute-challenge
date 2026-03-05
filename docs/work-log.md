@@ -94,3 +94,19 @@ Local running log for benchmark-repo development.
 - Updated `scripts/finalize-run.mjs` to normalize agent result states like `blocked`, `partial`, and `incomplete` into canonical benchmark `failure` status so the harness can score early-documentation and faucet failures without schema drift.
 - Hardened `scripts/publish-dashboard-records.mjs` so interrupted or partial on-chain publication can be recovered from chain state, and updated `bin/run-local-cycle.sh` to continue rebuilding the local feed and alerts even when a later stage fails.
 - Recovered the interrupted publication state for run `20260305T223418Z-b085f4`; it now appears on-chain in the new registry as `BenchmarkRun` record `#1` with incident records `#1` through `#5`.
+
+### Dual Credential Modes
+
+- Added explicit `inherited-key-follow-docs` mode alongside `fresh-follow-docs`.
+- Updated the harness to pass `PRIVATE_KEY` through only for the inherited-key mode while continuing to scrub it in the fresh-wallet mode.
+- Added a dedicated inherited-key prompt and updated validation so pre-provisioned wallet runs are not falsely marked as missing funding evidence when they legitimately reuse an existing funded account.
+
+### First Inherited-Key Benchmark Run
+
+- Ran inherited-key benchmark `20260305T230454Z-f3e09d` using the dev wallet from `PRIVATE_KEY`.
+- The agent hit one transient Calibration RPC null-round receipt error on its first deposit attempt, retried within the run, and then completed the full inherited-key flow successfully: deposit, upload, download, and integrity verification.
+- Preserved the successful inherited-key run bundle at `runs/20260305T230454Z-f3e09d/` with uploaded artifact bundle `piececid:bafkzcibdraxquqxltscvg32rqhd6eqqkzkmp72dxpdmzlxcbiihjkwy7yg6yfsb7`.
+- Extended `scripts/finalize-run.mjs` to normalize inherited-key result shapes, including inherited wallet addresses, pre-funded wallet evidence, deposit hashes from `payment.depositAndApprovalTxHash`, phase arrays, and payload/download artifact paths recovered from the saved workspace bundle.
+- Added a `runDir` fallback path in finalization so repaired runs can be re-normalized even after the original temp workspace has been cleaned up.
+- The local feed now reflects `20260305T230454Z-f3e09d` as a validated success in `inherited-key-follow-docs` mode.
+- One caveat remains on the current on-chain registry schema: `BenchmarkRun #2` was created from stale pre-repair data before local normalization was corrected, and the current contract only allows updating status/failure/artifact summary fields, not wallet or `pieceCid`; full on-chain repair would require either a contract schema change or redeploying the early-stage registry.

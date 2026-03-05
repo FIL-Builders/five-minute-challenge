@@ -1,8 +1,132 @@
 {
-  "generatedAt": "2026-03-05T22:55:16.368Z",
-  "runCount": 3,
+  "generatedAt": "2026-03-05T23:24:22.216Z",
+  "runCount": 4,
   "incidentCount": 11,
   "runs": [
+    {
+      "collection": "BenchmarkRun",
+      "data": {
+        "runId": "20260305T230454Z-f3e09d",
+        "mode": "inherited-key-follow-docs",
+        "promptVersion": "inherited-key-follow-docs-v1",
+        "model": "gpt-5.3-codex",
+        "repoSha": "1f84e37dc98b5aac741c85360eba2b6f2be7146e",
+        "docsUrl": "https://docs.filecoin.cloud/getting-started/",
+        "docsSnapshotHash": "2542a0e97ab61d178b3c38be9617de1cad51ab3387a4039e23d52af2fbc0d72e",
+        "status": "success",
+        "failurePhase": "",
+        "startedAt": "2026-03-05T23:04:55Z",
+        "endedAt": "2026-03-05T23:16:05Z",
+        "outerWallTimeMs": "670000",
+        "walletAddress": "0xF00DCE36817586672B47480FB48C94177A97278B",
+        "fundingTxHash": "",
+        "depositTxHash": "0x9e087880cd6a6715ecc190d181e49c17edf1d454c87c3032c9857fabdb1a554d",
+        "pieceCid": "bafkzcibds4aqi6sdagubuvbnh655u6ui42acbd2n2x4klqjk3ehoeig7lnkxfhys",
+        "contentMatch": true,
+        "artifactBundleUri": "piececid:bafkzcibdraxquqxltscvg32rqhd6eqqkzkmp72dxpdmzlxcbiihjkwy7yg6yfsb7",
+        "artifactBundleHash": "sha256:3002adb1ba23937db2fbd6137bb3d86dece67f209f09e434fccc1b634bc1dc8e",
+        "artifactBundleHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibdraxquqxltscvg32rqhd6eqqkzkmp72dxpdmzlxcbiihjkwy7yg6yfsb7",
+        "operatorNotes": ""
+      },
+      "meta": {
+        "source": {
+          "runSummaryPath": "runs/20260305T230454Z-f3e09d/run-summary.json",
+          "validationResultPath": "runs/20260305T230454Z-f3e09d/validation-result.json",
+          "dashboardRecordsPath": "runs/20260305T230454Z-f3e09d/dashboard-records.json",
+          "artifactPublishResultPath": "runs/20260305T230454Z-f3e09d/artifact-publish-result.json",
+          "dashboardPublishResultPath": "runs/20260305T230454Z-f3e09d/dashboard-publish-result.json"
+        },
+        "localArtifacts": [
+          {
+            "label": "Report",
+            "path": "runs/20260305T230454Z-f3e09d/report.md",
+            "url": "/api/artifacts/20260305T230454Z-f3e09d/report.md"
+          },
+          {
+            "label": "Stdout log",
+            "path": "runs/20260305T230454Z-f3e09d/stdout.log",
+            "url": "/api/artifacts/20260305T230454Z-f3e09d/stdout.log"
+          },
+          {
+            "label": "Stderr log",
+            "path": "runs/20260305T230454Z-f3e09d/stderr.log",
+            "url": "/api/artifacts/20260305T230454Z-f3e09d/stderr.log"
+          },
+          {
+            "label": "Agent log",
+            "path": "runs/20260305T230454Z-f3e09d/execution.log",
+            "url": "/api/artifacts/20260305T230454Z-f3e09d/execution.log"
+          },
+          {
+            "label": "Uploaded payload",
+            "path": "runs/20260305T230454Z-f3e09d/payload-20260305T230454Z-f3e09d.txt",
+            "url": "/api/artifacts/20260305T230454Z-f3e09d/payload-20260305T230454Z-f3e09d.txt"
+          },
+          {
+            "label": "Downloaded payload",
+            "path": "runs/20260305T230454Z-f3e09d/downloaded-20260305T230454Z-f3e09d.bin",
+            "url": "/api/artifacts/20260305T230454Z-f3e09d/downloaded-20260305T230454Z-f3e09d.bin"
+          },
+          {
+            "label": "Run summary",
+            "path": "runs/20260305T230454Z-f3e09d/run-summary.json",
+            "url": "/api/artifacts/20260305T230454Z-f3e09d/run-summary.json"
+          },
+          {
+            "label": "Validation result",
+            "path": "runs/20260305T230454Z-f3e09d/validation-result.json",
+            "url": "/api/artifacts/20260305T230454Z-f3e09d/validation-result.json"
+          },
+          {
+            "label": "Dashboard records",
+            "path": "runs/20260305T230454Z-f3e09d/dashboard-records.json",
+            "url": "/api/artifacts/20260305T230454Z-f3e09d/dashboard-records.json"
+          },
+          {
+            "label": "Artifact publish result",
+            "path": "runs/20260305T230454Z-f3e09d/artifact-publish-result.json",
+            "url": "/api/artifacts/20260305T230454Z-f3e09d/artifact-publish-result.json"
+          },
+          {
+            "label": "Dashboard publish result",
+            "path": "runs/20260305T230454Z-f3e09d/dashboard-publish-result.json",
+            "url": "/api/artifacts/20260305T230454Z-f3e09d/dashboard-publish-result.json"
+          }
+        ],
+        "validation": {
+          "status": "success",
+          "failurePhase": null,
+          "schemaValid": true
+        },
+        "externalArtifacts": {
+          "artifactBundleUri": "piececid:bafkzcibdraxquqxltscvg32rqhd6eqqkzkmp72dxpdmzlxcbiihjkwy7yg6yfsb7",
+          "artifactBundleHash": "sha256:3002adb1ba23937db2fbd6137bb3d86dece67f209f09e434fccc1b634bc1dc8e",
+          "artifactBundleHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibdraxquqxltscvg32rqhd6eqqkzkmp72dxpdmzlxcbiihjkwy7yg6yfsb7"
+        },
+        "dashboardPublish": {
+          "status": "success",
+          "attemptedAt": "2026-03-05T23:22:33.881Z",
+          "publishedAt": "2026-03-05T23:22:33.881Z",
+          "chainName": "filecoin_calibration",
+          "deploymentAddress": "0x74af3ad6de10623f909b11c6d9ed27dfea59533a",
+          "runRecordId": "2",
+          "runRecordHref": "/BenchmarkRun/view/?id=2",
+          "incidentRecordIds": [
+            "6",
+            "7",
+            "8",
+            "9"
+          ],
+          "incidentRecordHrefs": [
+            "/BenchmarkIncident/view/?id=6",
+            "/BenchmarkIncident/view/?id=7",
+            "/BenchmarkIncident/view/?id=8",
+            "/BenchmarkIncident/view/?id=9"
+          ],
+          "error": null
+        }
+      }
+    },
     {
       "collection": "BenchmarkRun",
       "data": {
