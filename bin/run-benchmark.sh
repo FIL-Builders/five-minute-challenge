@@ -5,6 +5,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MODE="${MODE:-fresh-follow-docs}"
 MODEL="${MODEL:-gpt-5.3-codex}"
 DOCS_URL="${DOCS_URL:-https://docs.filecoin.cloud/getting-started/}"
+FUNDING_REFERENCE_URL="${FUNDING_REFERENCE_URL:-https://github.com/ChainSafe/forest-explorer/blob/main/docs/api-documentation.md}"
 CODEX_PACKAGE="${CODEX_PACKAGE:-@openai/codex@alpha}"
 
 default_prompt_version() {
@@ -87,6 +88,7 @@ env_cmd=(
   BENCHMARK_PROMPT_VERSION="${PROMPT_VERSION}"
   BENCHMARK_DOCS_URL="${DOCS_URL}"
   BENCHMARK_DOCS_SNAPSHOT_HASH="${docs_snapshot_hash}"
+  BENCHMARK_FUNDING_REFERENCE_URL="${FUNDING_REFERENCE_URL}"
 )
 
 if mode_uses_inherited_private_key "${MODE}"; then

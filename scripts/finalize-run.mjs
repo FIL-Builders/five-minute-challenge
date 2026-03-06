@@ -115,6 +115,11 @@ function normalizeEvidence(agentResult) {
   const fundingTxHashes = Array.isArray(agentResult?.funding?.txHashes)
     ? agentResult.funding.txHashes.filter((value) => typeof value === "string" && value.length > 0)
     : [];
+  const freshFundingClaims = Array.isArray(agentResult?.evidence?.funding?.claims)
+    ? agentResult.evidence.funding.claims
+        .map((claim) => (typeof claim?.txHash === "string" && claim.txHash.length > 0 ? claim.txHash : null))
+        .filter(Boolean)
+    : [];
   const inheritedFundingSource = agentResult?.funding?.inheritedWalletPreFunded || agentResult?.funding?.wasPrefunded
     ? "inherited_wallet_prefunded"
     : (agentResult?.funding?.topUpPerformed ? (agentResult?.funding?.topUpMethod ?? "inherited_wallet_topped_up") : null);
@@ -122,18 +127,33 @@ function normalizeEvidence(agentResult) {
     agentResult?.evidence?.depositRequirementSatisfied
       ?? agentResult?.funding?.depositApprovalTxHash
       ?? agentResult?.deposit?.txHash
+      ?? agentResult?.evidence?.depositApproval?.txHash
       ?? agentResult?.payment?.depositAndApprovalTxHash
       ?? agentResult?.funding?.depositApprovalNeeded === false
       ?? agentResult?.funding?.depositApprovalAction === "not_needed"
   );
 
   return {
-    fundingSource: agentResult?.evidence?.fundingSource ?? agentResult?.funding?.faucetUrl ?? inheritedFundingSource,
-    fundingTxHash: agentResult?.evidence?.fundingTxHash ?? (fundingTxHashes.length > 0 ? fundingTxHashes.join(",") : null),
-    depositTxHash: agentResult?.evidence?.depositTxHash ?? agentResult?.deposit?.txHash ?? agentResult?.payment?.depositAndApprovalTxHash ?? agentResult?.funding?.depositApprovalTxHash ?? null,
+    fundingSource:
+      agentResult?.evidence?.fundingSource
+      ?? agentResult?.evidence?.funding?.claimEndpoint
+      ?? agentResult?.funding?.faucetUrl
+      ?? inheritedFundingSource,
+    fundingTxHash:
+      agentResult?.evidence?.fundingTxHash
+      ?? (fundingTxHashes.length > 0 ? fundingTxHashes.join(",") : null)
+      ?? (freshFundingClaims.length > 0 ? freshFundingClaims.join(",") : null),
+    depositTxHash:
+      agentResult?.evidence?.depositTxHash
+      ?? agentResult?.evidence?.depositApproval?.txHash
+      ?? agentResult?.deposit?.txHash
+      ?? agentResult?.payment?.depositAndApprovalTxHash
+      ?? agentResult?.funding?.depositApprovalTxHash
+      ?? null,
     depositRequirementSatisfied,
     pieceCid: normalizeMaybeString(
       agentResult?.evidence?.pieceCid
+        ?? agentResult?.evidence?.upload?.pieceCid
         ?? agentResult?.upload?.pieceCid
         ?? agentResult?.download?.pieceCid
         ?? agentResult?.storage?.upload?.pieceCid
@@ -141,6 +161,7 @@ function normalizeEvidence(agentResult) {
     ),
     contentMatch: Boolean(
       agentResult?.evidence?.contentMatch
+        ?? agentResult?.evidence?.download?.integrityMatch
         ?? agentResult?.download?.integrityOk
         ?? agentResult?.download?.integrityMatch
         ?? agentResult?.integrity?.verified
@@ -148,8 +169,20 @@ function normalizeEvidence(agentResult) {
         ?? agentResult?.integrity?.hashEquality
         ?? agentResult?.storage?.integrityVerified
     ),
-    originalSha256: agentResult?.evidence?.originalSha256 ?? agentResult?.upload?.originalSha256 ?? agentResult?.upload?.payloadSha256 ?? agentResult?.payload?.sha256 ?? agentResult?.storage?.payloadSha256 ?? null,
-    downloadedSha256: agentResult?.evidence?.downloadedSha256 ?? agentResult?.download?.downloadedSha256 ?? agentResult?.storage?.downloadedSha256 ?? null
+    originalSha256:
+      agentResult?.evidence?.originalSha256
+      ?? agentResult?.evidence?.upload?.payloadSha256
+      ?? agentResult?.upload?.originalSha256
+      ?? agentResult?.upload?.payloadSha256
+      ?? agentResult?.payload?.sha256
+      ?? agentResult?.storage?.payloadSha256
+      ?? null,
+    downloadedSha256:
+      agentResult?.evidence?.downloadedSha256
+      ?? agentResult?.evidence?.download?.downloadedSha256
+      ?? agentResult?.download?.downloadedSha256
+      ?? agentResult?.storage?.downloadedSha256
+      ?? null
   };
 }
 
@@ -222,9 +255,11 @@ function normalizeArtifacts(runId, runDir, agentResult) {
         ? path.basename(agentResult.artifacts.payloadTextPath)
       : (typeof agentResult?.payload?.file === "string"
         ? path.basename(agentResult.payload.file)
+        : (typeof agentResult?.evidence?.upload?.payloadFile === "string"
+          ? path.basename(agentResult.evidence.upload.payloadFile)
         : (typeof agentResult?.upload?.payloadFile === "string"
           ? path.basename(agentResult.upload.payloadFile)
-          : (typeof agentResult?.storage?.payloadFile === "string" ? path.basename(agentResult.storage.payloadFile) : "uploaded-payload.txt")))));
+          : (typeof agentResult?.storage?.payloadFile === "string" ? path.basename(agentResult.storage.payloadFile) : "uploaded-payload.txt"))))));
   const downloadedPayloadFile = typeof agentResult?.artifacts?.downloadedPayloadPath === "string"
     ? path.basename(agentResult.artifacts.downloadedPayloadPath)
     : (typeof agentResult?.artifacts?.downloadedTextFile === "string"
@@ -233,9 +268,11 @@ function normalizeArtifacts(runId, runDir, agentResult) {
         ? path.basename(agentResult.artifacts.downloadedTextPath)
       : (typeof agentResult?.artifacts?.downloadedFile === "string"
         ? path.basename(agentResult.artifacts.downloadedFile)
+        : (typeof agentResult?.evidence?.download?.downloadedFile === "string"
+          ? path.basename(agentResult.evidence.download.downloadedFile)
         : (typeof agentResult?.download?.downloadedFile === "string"
           ? path.basename(agentResult.download.downloadedFile)
-          : (typeof agentResult?.storage?.downloadedFile === "string" ? path.basename(agentResult.storage.downloadedFile) : "downloaded-payload.txt")))));
+          : (typeof agentResult?.storage?.downloadedFile === "string" ? path.basename(agentResult.storage.downloadedFile) : "downloaded-payload.txt"))))));
   const agentLogPath = path.join(runDir, agentLogFile);
   const uploadedPayloadPath = path.join(runDir, uploadedPayloadFile);
   const downloadedPayloadPath = path.join(runDir, downloadedPayloadFile);
@@ -282,7 +319,17 @@ function collectWorkspaceArtifacts(agentResult) {
     }
   }
 
+  if (Array.isArray(agentResult?.evidence?.artifacts)) {
+    for (const value of agentResult.evidence.artifacts) {
+      if (typeof value === "string" && value.length > 0) {
+        files.add(path.basename(value));
+      }
+    }
+  }
+
   for (const value of [
+    agentResult?.evidence?.upload?.payloadFile,
+    agentResult?.evidence?.download?.downloadedFile,
     agentResult?.upload?.payloadFile,
     agentResult?.download?.downloadedFile
   ]) {

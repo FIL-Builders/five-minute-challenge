@@ -8,6 +8,9 @@ Requirements:
 - generate a brand new private key and wallet during this run
 - do not use a pre-provisioned private key discovered in environment variables
 - fund the newly generated wallet by following the getting-started flow and any public guidance linked from it
+- when you need an automation-friendly faucet reference for Calibration funding, use the Forest Explorer API reference:
+  `https://github.com/ChainSafe/forest-explorer/blob/main/docs/api-documentation.md`
+- prefer the documented Forest Explorer claim endpoints from that reference over ad hoc or unofficial funding methods
 - do not use proxies, CAPTCHA-solving services, alternate IP relays, or any other technique intended to bypass spam protection, anti-bot controls, or rate limits
 - if an official funding path is blocked by anti-abuse controls, treat that as benchmark evidence; record the block clearly and only continue with an alternative funding method if it is publicly documented or directly linked from the onboarding flow
 - complete the end-to-end flow: funding, deposit/approval as needed, upload, download, and integrity verification
