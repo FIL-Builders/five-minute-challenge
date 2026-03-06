@@ -373,13 +373,6 @@
 
 .runContentGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.95fr);
-  gap: 18px;
-}
-
-.runMainColumn,
-.runSideColumn {
-  display: grid;
   gap: 18px;
 }
 
