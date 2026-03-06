@@ -26,6 +26,21 @@ function getRunRecord(payload) {
   return records.find((record) => record?.collection === "BenchmarkRun") ?? null;
 }
 
+function getFeedbackRecord(payload) {
+  const records = Array.isArray(payload?.records) ? payload.records : [];
+  return records.find((record) => record?.collection === "BenchmarkFeedback") ?? null;
+}
+
+function getEvidenceRecord(payload) {
+  const records = Array.isArray(payload?.records) ? payload.records : [];
+  return records.find((record) => record?.collection === "BenchmarkEvidence") ?? null;
+}
+
+function getArtifactsRecord(payload) {
+  const records = Array.isArray(payload?.records) ? payload.records : [];
+  return records.find((record) => record?.collection === "BenchmarkArtifacts") ?? null;
+}
+
 async function main() {
   const args = parseArgs(process.argv);
   const repoRoot = args["repo-root"] ?? process.cwd();
@@ -60,8 +75,73 @@ async function main() {
   const runRecords = [];
   const incidentRecords = [];
   for (const payload of feeds) {
+    const feedbackRecord = getFeedbackRecord(payload);
+    const evidenceRecord = getEvidenceRecord(payload);
+    const artifactsRecord = getArtifactsRecord(payload);
     for (const record of payload.records ?? []) {
-      if (record.collection === "BenchmarkRun") runRecords.push(record);
+      if (record.collection === "BenchmarkRun") {
+        const merged = feedbackRecord
+          ? {
+              ...record,
+              data: {
+                ...record.data,
+                whatWorkedWell: feedbackRecord.data?.whatWorkedWell ?? "",
+                frictionFailures: feedbackRecord.data?.frictionFailures ?? "",
+                recommendations: feedbackRecord.data?.recommendations ?? ""
+              },
+              meta: {
+                ...(record.meta ?? {}),
+                feedbackRecordHref: feedbackRecord.href ?? null
+              }
+            }
+          : record;
+        const mergedWithEvidence = evidenceRecord
+          ? {
+              ...merged,
+              data: {
+                ...merged.data,
+                docsSnapshotHash: evidenceRecord.data?.docsSnapshotHash ?? "",
+                walletAddress: evidenceRecord.data?.walletAddress ?? "",
+                fundingTxHash: evidenceRecord.data?.fundingTxHash ?? "",
+                depositTxHash: evidenceRecord.data?.depositTxHash ?? "",
+                pieceCid: evidenceRecord.data?.pieceCid ?? "",
+                contentMatch: Boolean(evidenceRecord.data?.contentMatch)
+              },
+              meta: {
+                ...(merged.meta ?? {}),
+                evidenceRecordHref: merged.meta?.dashboardPublish?.evidenceRecordHref ?? null
+              }
+            }
+          : merged;
+        const mergedWithArtifacts = artifactsRecord
+          ? {
+              ...mergedWithEvidence,
+              data: {
+                ...mergedWithEvidence.data,
+                artifactBundleUri: artifactsRecord.data?.artifactBundleUri ?? "",
+                artifactBundleHash: artifactsRecord.data?.artifactBundleHash ?? "",
+                artifactBundleHttpUrl: artifactsRecord.data?.artifactBundleHttpUrl ?? "",
+                artifactIndexUri: artifactsRecord.data?.artifactIndexUri ?? "",
+                artifactIndexHash: artifactsRecord.data?.artifactIndexHash ?? "",
+                artifactIndexHttpUrl: artifactsRecord.data?.artifactIndexHttpUrl ?? ""
+              },
+              meta: {
+                ...(mergedWithEvidence.meta ?? {}),
+                artifactsRecordHref: mergedWithEvidence.meta?.dashboardPublish?.artifactsRecordHref ?? null
+              }
+            }
+          : mergedWithEvidence;
+        const mergedWithFeedbackMeta = feedbackRecord
+          ? {
+              ...mergedWithArtifacts,
+              meta: {
+                ...(mergedWithArtifacts.meta ?? {}),
+                feedbackRecordHref: mergedWithArtifacts.meta?.dashboardPublish?.feedbackRecordHref ?? null
+              }
+            }
+          : mergedWithArtifacts;
+        runRecords.push(mergedWithFeedbackMeta);
+      }
       if (record.collection === "BenchmarkIncident") incidentRecords.push(record);
     }
   }

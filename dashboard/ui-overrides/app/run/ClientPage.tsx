@@ -203,6 +203,27 @@ export default function RunClientPage() {
                 </section>
 
                 <section className="card sectionCard">
+                  <h2>SDK and onboarding feedback</h2>
+                  <div className="muted">
+                    These three text sections are stored on-chain in the benchmark registry as a dedicated feedback record keyed by <code>runId</code>, and they mirror the benchmark report structure.
+                  </div>
+                  <div className="feedbackSectionList">
+                    <div className="feedbackSectionCard">
+                      <span className="statLabel">What Worked Well</span>
+                      <div className="notesPanel feedbackPanel">{run.whatWorkedWell || 'No on-chain “what worked well” feedback was recorded for this execution.'}</div>
+                    </div>
+                    <div className="feedbackSectionCard">
+                      <span className="statLabel">Friction / Failures</span>
+                      <div className="notesPanel feedbackPanel">{run.frictionFailures || 'No on-chain friction or failure notes were recorded for this execution.'}</div>
+                    </div>
+                    <div className="feedbackSectionCard">
+                      <span className="statLabel">Recommendations</span>
+                      <div className="notesPanel feedbackPanel">{run.recommendations || 'No on-chain recommendations were recorded for this execution.'}</div>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="card sectionCard">
                   <h2>Evidence and artifacts</h2>
                   <div className="muted">
                     All linked evidence below is stored on Filecoin Onchain Cloud retrieval URLs rather than localhost.

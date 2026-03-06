@@ -329,6 +329,22 @@
   margin-top: 16px;
 }
 
+.feedbackSectionList {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.feedbackSectionCard {
+  display: grid;
+  gap: 8px;
+}
+
+.feedbackPanel {
+  margin-top: 0;
+  min-height: 0;
+}
+
 .summaryBullet {
   padding: 14px 16px;
   line-height: 1.7;

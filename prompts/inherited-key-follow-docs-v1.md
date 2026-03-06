@@ -22,6 +22,11 @@ Outputs required:
 - write any payload or diagnostic files into the current working directory so the harness can collect them
 - logs and any helper code needed to understand or reproduce the run
 
+In `run-result.json`, include a top-level `feedback` object with string fields:
+- `whatWorkedWell`
+- `frictionFailures`
+- `recommendations`
+
 Include in your report:
 - the phases of execution and how long each one took
 - the total end-to-end wall time
@@ -29,8 +34,13 @@ Include in your report:
 - whether the wallet was pre-funded or topped up during the run
 - proof of deposit, upload, and download
 - feedback on the SDK, docs, and any onboarding friction, prioritizing actionable suggestions for the development team
+- explicit markdown sections titled exactly:
+  - `## What Worked Well`
+  - `## Friction / Failures`
+  - `## Recommendations`
 
 Important:
 - the benchmark is about guide-following and service usage with inherited credentials, not secret discovery
 - prefer structured evidence over narrative claims
 - if you create helper scripts, keep them in the current working directory
+- once `report.md` and `run-result.json` are written, stop work immediately and exit cleanly

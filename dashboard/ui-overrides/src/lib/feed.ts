@@ -15,6 +15,12 @@ export type DashboardPublishMeta = {
   deploymentAddress: string | null;
   runRecordId: string | null;
   runRecordHref: string | null;
+  evidenceRecordId?: string | null;
+  evidenceRecordHref?: string | null;
+  artifactsRecordId?: string | null;
+  artifactsRecordHref?: string | null;
+  feedbackRecordId?: string | null;
+  feedbackRecordHref?: string | null;
   incidentRecordIds: string[];
   incidentRecordHrefs: string[];
   error: string | null;
@@ -43,6 +49,9 @@ export type BenchmarkRunMeta = {
     artifactIndexHttpUrl: string | null;
   };
   dashboardPublish: DashboardPublishMeta;
+  feedbackRecordHref?: string | null;
+  evidenceRecordHref?: string | null;
+  artifactsRecordHref?: string | null;
   insights?: {
     headline: string;
     summary: string;
@@ -90,6 +99,9 @@ export type BenchmarkRunRecord = {
   artifactIndexUri: string;
   artifactIndexHash: string;
   artifactIndexHttpUrl: string;
+  whatWorkedWell: string;
+  frictionFailures: string;
+  recommendations: string;
   operatorNotes: string;
 };
 

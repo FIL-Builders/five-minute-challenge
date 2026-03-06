@@ -70,37 +70,45 @@ function normalizeWalletAddress(agentResult) {
   return null;
 }
 
-function normalizeAgentPhaseData(agentResult) {
+function normalizePhaseEntries(agentResult) {
   if (Array.isArray(agentResult?.agentPhaseData)) return agentResult.agentPhaseData;
-  if (Array.isArray(agentResult?.phases)) {
-    return agentResult.phases
-      .filter((item) => item && typeof item === "object")
-      .map((item) => ({
-        phase: item.phase ?? item.name ?? "unknown",
-        startedAt: item.startedAt ?? item.start,
-        endedAt: item.endedAt ?? item.end,
-        durationMs: Number(item.durationMs ?? item.duration_ms ?? 0)
-      }));
-  }
-  if (Array.isArray(agentResult?.phase_durations)) {
-    return agentResult.phase_durations
-      .filter((item) => item && typeof item === "object")
-      .map((item) => ({
-        phase: item.phase ?? item.name ?? "unknown",
-        startedAt: item.startedAt ?? item.start,
-        endedAt: item.endedAt ?? item.end,
-        durationMs: Number(item.durationMs ?? item.duration_ms ?? 0)
-      }));
-  }
-  if (!Array.isArray(agentResult?.phaseTimings)) return [];
-  return agentResult.phaseTimings
+  if (Array.isArray(agentResult?.phases)) return agentResult.phases;
+  if (Array.isArray(agentResult?.phase_durations)) return agentResult.phase_durations;
+  if (Array.isArray(agentResult?.phaseTimings)) return agentResult.phaseTimings;
+  return [];
+}
+
+function normalizeAgentPhaseData(agentResult, benchmarkStartedAt) {
+  const phaseEntries = normalizePhaseEntries(agentResult)
     .filter((item) => item && typeof item === "object")
     .map((item) => ({
       phase: item.phase ?? item.name ?? "unknown",
-      startedAt: item.startedAt,
-      endedAt: item.endedAt,
-      durationMs: Number(item.durationMs ?? 0)
+      startedAt: item.startedAt ?? item.start ?? null,
+      endedAt: item.endedAt ?? item.end ?? null,
+      durationMs: Number(
+        item.durationMs
+          ?? item.duration_ms
+          ?? (typeof item.durationSeconds === "number" ? Math.round(item.durationSeconds * 1000) : 0)
+      )
     }));
+
+  let cursorMs = Number.isFinite(Date.parse(benchmarkStartedAt)) ? Date.parse(benchmarkStartedAt) : Date.now();
+  return phaseEntries.map((item) => {
+    const durationMs = Number.isFinite(item.durationMs) && item.durationMs >= 0 ? Math.round(item.durationMs) : 0;
+    const startedAt = typeof item.startedAt === "string" && !Number.isNaN(Date.parse(item.startedAt))
+      ? new Date(item.startedAt).toISOString()
+      : new Date(cursorMs).toISOString();
+    const endedAt = typeof item.endedAt === "string" && !Number.isNaN(Date.parse(item.endedAt))
+      ? new Date(item.endedAt).toISOString()
+      : new Date(Date.parse(startedAt) + durationMs).toISOString();
+    cursorMs = Date.parse(endedAt);
+    return {
+      phase: item.phase,
+      startedAt,
+      endedAt,
+      durationMs
+    };
+  });
 }
 
 function normalizeEvidence(agentResult) {
@@ -135,10 +143,60 @@ function normalizeEvidence(agentResult) {
       agentResult?.evidence?.contentMatch
         ?? agentResult?.download?.integrityOk
         ?? agentResult?.download?.integrityMatch
+        ?? agentResult?.integrity?.verified
+        ?? agentResult?.integrity?.byteEquality
+        ?? agentResult?.integrity?.hashEquality
         ?? agentResult?.storage?.integrityVerified
     ),
     originalSha256: agentResult?.evidence?.originalSha256 ?? agentResult?.upload?.originalSha256 ?? agentResult?.upload?.payloadSha256 ?? agentResult?.payload?.sha256 ?? agentResult?.storage?.payloadSha256 ?? null,
     downloadedSha256: agentResult?.evidence?.downloadedSha256 ?? agentResult?.download?.downloadedSha256 ?? agentResult?.storage?.downloadedSha256 ?? null
+  };
+}
+
+function normalizeTextBlock(value) {
+  if (Array.isArray(value)) {
+    const parts = value.map((entry) => (typeof entry === "string" ? entry.trim() : "")).filter(Boolean);
+    return parts.length > 0 ? parts.join("\n") : null;
+  }
+  if (typeof value === "string") {
+    const normalized = value.trim();
+    return normalized.length > 0 ? normalized : null;
+  }
+  return null;
+}
+
+function extractMarkdownSection(reportText, heading) {
+  if (typeof reportText !== "string" || reportText.length === 0) return null;
+  const escaped = heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = new RegExp(`^##\\s+${escaped}\\s*$([\\s\\S]*?)(?=^##\\s+|\\Z)`, "im");
+  const match = reportText.match(pattern);
+  if (!match) return null;
+  const body = String(match[1] ?? "").trim();
+  return body.length > 0 ? body : null;
+}
+
+function normalizeFeedback(agentResult, reportText) {
+  const feedback = isObject(agentResult?.feedback) ? agentResult.feedback : {};
+  const whatWorkedWell =
+    normalizeTextBlock(feedback.whatWorkedWell)
+    ?? normalizeTextBlock(agentResult?.whatWorkedWell)
+    ?? extractMarkdownSection(reportText, "What Worked Well");
+  const frictionFailures =
+    normalizeTextBlock(feedback.frictionFailures)
+    ?? normalizeTextBlock(agentResult?.frictionFailures)
+    ?? normalizeTextBlock(agentResult?.whatDidNotWorkWell)
+    ?? extractMarkdownSection(reportText, "Friction / Failures")
+    ?? extractMarkdownSection(reportText, "What Did Not Work Well");
+  const recommendations =
+    normalizeTextBlock(feedback.recommendations)
+    ?? normalizeTextBlock(agentResult?.recommendations)
+    ?? extractMarkdownSection(reportText, "Recommendations")
+    ?? extractMarkdownSection(reportText, "SDK/Docs/Onboarding Feedback (Actionable)");
+
+  return {
+    whatWorkedWell,
+    frictionFailures,
+    recommendations
   };
 }
 
@@ -281,6 +339,8 @@ async function main() {
   }
 
   const artifacts = normalizeArtifacts(runId, runDir, agentResult);
+  const reportText = await exists(path.join(runDir, "report.md")) ? await readFile(path.join(runDir, "report.md"), "utf8") : "";
+  const feedback = normalizeFeedback(agentResult, reportText);
 
   const hasReport = await exists(path.join(runDir, "report.md"));
   const hasRunResult = await exists(path.join(runDir, "run-result.json"));
@@ -302,7 +362,7 @@ async function main() {
     failurePhase: agentResult?.failurePhase ?? (artifactValidationFailed ? "artifact_validation" : null),
     agentExitCode,
     walletAddress: normalizeWalletAddress(agentResult),
-    agentPhaseData: normalizeAgentPhaseData(agentResult),
+    agentPhaseData: normalizeAgentPhaseData(agentResult, startedAt),
     artifacts: {
       reportPath: artifacts.reportPath,
       stdoutLogPath: artifacts.stdoutLogPath,
@@ -315,6 +375,7 @@ async function main() {
       artifactBundleHttpUrl: artifacts.artifactBundleHttpUrl ?? existingSummary?.artifacts?.artifactBundleHttpUrl ?? existingPublishResult?.artifactBundleHttpUrl ?? null
     },
     evidence: normalizeEvidence(agentResult),
+    feedback,
     operatorNotes: artifactValidationFailed
       ? "Required benchmark artifacts were missing or unreadable."
       : agentResult?.operatorNotes ?? null

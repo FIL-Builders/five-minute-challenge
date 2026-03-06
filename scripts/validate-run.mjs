@@ -180,6 +180,16 @@ function validateSchema(summary) {
     pushError(errors, "$.operatorNotes", "Must be null or a string.");
   }
 
+  if (!(summary.feedback === undefined || isObject(summary.feedback))) {
+    pushError(errors, "$.feedback", "Must be an object when present.");
+  } else if (isObject(summary.feedback)) {
+    for (const key of ["whatWorkedWell", "frictionFailures", "recommendations"]) {
+      if (!(summary.feedback[key] === undefined || isNullableString(summary.feedback[key]))) {
+        pushError(errors, `$.feedback.${key}`, "Must be null or a string.");
+      }
+    }
+  }
+
   return errors;
 }
 

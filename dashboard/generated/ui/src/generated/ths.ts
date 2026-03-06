@@ -67,10 +67,6 @@ export const ths = {
           }
         },
         {
-          "name": "docsSnapshotHash",
-          "type": "string"
-        },
-        {
           "name": "status",
           "type": "string",
           "required": true
@@ -95,6 +91,100 @@ export const ths = {
           "required": true
         },
         {
+          "name": "operatorNotes",
+          "type": "string"
+        }
+      ],
+      "createRules": {
+        "required": [
+          "runId",
+          "mode",
+          "promptVersion",
+          "model",
+          "repoSha",
+          "docsUrl",
+          "status",
+          "startedAt",
+          "endedAt",
+          "outerWallTimeMs"
+        ],
+        "auto": {},
+        "access": "public"
+      },
+      "visibilityRules": {
+        "gets": [
+          "runId",
+          "mode",
+          "promptVersion",
+          "model",
+          "repoSha",
+          "docsUrl",
+          "status",
+          "failurePhase",
+          "startedAt",
+          "endedAt",
+          "outerWallTimeMs",
+          "operatorNotes"
+        ],
+        "access": "public"
+      },
+      "updateRules": {
+        "mutable": [
+          "status",
+          "failurePhase",
+          "operatorNotes"
+        ],
+        "access": "owner",
+        "optimisticConcurrency": false
+      },
+      "deleteRules": {
+        "softDelete": true,
+        "access": "owner"
+      },
+      "transferRules": {
+        "access": "owner"
+      },
+      "indexes": {
+        "unique": [
+          {
+            "field": "runId",
+            "scope": "allTime"
+          }
+        ],
+        "index": [
+          {
+            "field": "status"
+          },
+          {
+            "field": "mode"
+          },
+          {
+            "field": "promptVersion"
+          },
+          {
+            "field": "failurePhase"
+          },
+          {
+            "field": "startedAt"
+          }
+        ]
+      },
+      "relations": []
+    },
+    {
+      "name": "BenchmarkEvidence",
+      "plural": "Benchmark Evidence",
+      "fields": [
+        {
+          "name": "runId",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "docsSnapshotHash",
+          "type": "string"
+        },
+        {
           "name": "walletAddress",
           "type": "address"
         },
@@ -113,6 +203,70 @@ export const ths = {
         {
           "name": "contentMatch",
           "type": "bool",
+          "required": true
+        }
+      ],
+      "createRules": {
+        "required": [
+          "runId",
+          "contentMatch"
+        ],
+        "auto": {},
+        "access": "public"
+      },
+      "visibilityRules": {
+        "gets": [
+          "runId",
+          "docsSnapshotHash",
+          "walletAddress",
+          "fundingTxHash",
+          "depositTxHash",
+          "pieceCid",
+          "contentMatch"
+        ],
+        "access": "public"
+      },
+      "updateRules": {
+        "mutable": [
+          "docsSnapshotHash",
+          "walletAddress",
+          "fundingTxHash",
+          "depositTxHash",
+          "pieceCid",
+          "contentMatch"
+        ],
+        "access": "owner",
+        "optimisticConcurrency": false
+      },
+      "deleteRules": {
+        "softDelete": true,
+        "access": "owner"
+      },
+      "transferRules": {
+        "access": "owner"
+      },
+      "indexes": {
+        "unique": [
+          {
+            "field": "runId",
+            "scope": "allTime"
+          }
+        ],
+        "index": [
+          {
+            "field": "runId"
+          }
+        ]
+      },
+      "relations": []
+    },
+    {
+      "name": "BenchmarkArtifacts",
+      "plural": "Benchmark Artifacts",
+      "fields": [
+        {
+          "name": "runId",
+          "type": "string",
           "required": true
         },
         {
@@ -148,25 +302,11 @@ export const ths = {
             "label": "Artifact index",
             "target": "_blank"
           }
-        },
-        {
-          "name": "operatorNotes",
-          "type": "string"
         }
       ],
       "createRules": {
         "required": [
-          "runId",
-          "mode",
-          "promptVersion",
-          "model",
-          "repoSha",
-          "docsUrl",
-          "status",
-          "startedAt",
-          "endedAt",
-          "outerWallTimeMs",
-          "contentMatch"
+          "runId"
         ],
         "auto": {},
         "access": "public"
@@ -174,40 +314,23 @@ export const ths = {
       "visibilityRules": {
         "gets": [
           "runId",
-          "mode",
-          "promptVersion",
-          "model",
-          "repoSha",
-          "docsUrl",
-          "docsSnapshotHash",
-          "status",
-          "failurePhase",
-          "startedAt",
-          "endedAt",
-          "outerWallTimeMs",
-          "walletAddress",
-          "fundingTxHash",
-          "depositTxHash",
-          "pieceCid",
-          "contentMatch",
           "artifactBundleUri",
           "artifactBundleHash",
           "artifactBundleHttpUrl",
           "artifactIndexUri",
           "artifactIndexHash",
-          "artifactIndexHttpUrl",
-          "operatorNotes"
+          "artifactIndexHttpUrl"
         ],
         "access": "public"
       },
       "updateRules": {
         "mutable": [
-          "status",
-          "failurePhase",
           "artifactBundleUri",
           "artifactBundleHash",
           "artifactBundleHttpUrl",
-          "operatorNotes"
+          "artifactIndexUri",
+          "artifactIndexHash",
+          "artifactIndexHttpUrl"
         ],
         "access": "owner",
         "optimisticConcurrency": false
@@ -228,19 +351,82 @@ export const ths = {
         ],
         "index": [
           {
-            "field": "status"
-          },
+            "field": "runId"
+          }
+        ]
+      },
+      "relations": []
+    },
+    {
+      "name": "BenchmarkFeedback",
+      "plural": "Benchmark Feedback",
+      "fields": [
+        {
+          "name": "runId",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "whatWorkedWell",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "frictionFailures",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "recommendations",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "createRules": {
+        "required": [
+          "runId",
+          "whatWorkedWell",
+          "frictionFailures",
+          "recommendations"
+        ],
+        "auto": {},
+        "access": "public"
+      },
+      "visibilityRules": {
+        "gets": [
+          "runId",
+          "whatWorkedWell",
+          "frictionFailures",
+          "recommendations"
+        ],
+        "access": "public"
+      },
+      "updateRules": {
+        "mutable": [
+          "whatWorkedWell",
+          "frictionFailures",
+          "recommendations"
+        ],
+        "access": "owner",
+        "optimisticConcurrency": false
+      },
+      "deleteRules": {
+        "softDelete": true,
+        "access": "owner"
+      },
+      "transferRules": {
+        "access": "owner"
+      },
+      "indexes": {
+        "unique": [
           {
-            "field": "mode"
-          },
+            "field": "runId",
+            "scope": "allTime"
+          }
+        ],
+        "index": [
           {
-            "field": "promptVersion"
-          },
-          {
-            "field": "failurePhase"
-          },
-          {
-            "field": "startedAt"
+            "field": "runId"
           }
         ]
       },

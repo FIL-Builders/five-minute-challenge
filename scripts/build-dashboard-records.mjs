@@ -200,23 +200,11 @@ function buildRunRecord(summary, validation, artifactPublishResult, publishResul
       model: summary.model,
       repoSha: summary.repoSha,
       docsUrl: summary.docsUrl,
-      docsSnapshotHash: summary.docsSnapshotHash ?? "",
       status: summary.status,
       failurePhase: summary.failurePhase ?? "",
       startedAt: summary.startedAt,
       endedAt: summary.endedAt,
       outerWallTimeMs: String(summary.outerWallTimeMs),
-      walletAddress: summary.walletAddress ?? "0x0000000000000000000000000000000000000000",
-      fundingTxHash: summary.evidence?.fundingTxHash ?? "",
-      depositTxHash: summary.evidence?.depositTxHash ?? "",
-      pieceCid: summary.evidence?.pieceCid ?? "",
-      contentMatch: Boolean(summary.evidence?.contentMatch),
-      artifactBundleUri: summary.artifacts?.artifactBundleUri ?? "",
-      artifactBundleHash: summary.artifacts?.artifactBundleHash ?? "",
-      artifactBundleHttpUrl: summary.artifacts?.artifactBundleHttpUrl ?? "",
-      artifactIndexUri: summary.artifacts?.artifactIndexUri ?? "",
-      artifactIndexHash: summary.artifacts?.artifactIndexHash ?? "",
-      artifactIndexHttpUrl: summary.artifacts?.artifactIndexHttpUrl ?? "",
       operatorNotes: normalizeNotes(summary.operatorNotes) ?? ""
     },
     meta: {
@@ -250,12 +238,65 @@ function buildRunRecord(summary, validation, artifactPublishResult, publishResul
             deploymentAddress: publishResult.deploymentAddress ?? null,
             runRecordId: publishResult.runRecordId ?? null,
             runRecordHref: publishResult.runRecordHref ?? null,
+            evidenceRecordId: publishResult.evidenceRecordId ?? null,
+            evidenceRecordHref: publishResult.evidenceRecordHref ?? null,
+            artifactsRecordId: publishResult.artifactsRecordId ?? null,
+            artifactsRecordHref: publishResult.artifactsRecordHref ?? null,
+            feedbackRecordId: publishResult.feedbackRecordId ?? null,
+            feedbackRecordHref: publishResult.feedbackRecordHref ?? null,
             incidentRecordIds: Array.isArray(publishResult.incidentRecordIds) ? publishResult.incidentRecordIds : [],
             incidentRecordHrefs: Array.isArray(publishResult.incidentRecordHrefs) ? publishResult.incidentRecordHrefs : [],
             error: publishResult.error?.message ?? null
           }
         : null,
       insights: buildInsights(summary, validation, artifactPublishResult, publishResult)
+    }
+  };
+}
+
+function buildEvidenceRecord(summary) {
+  return {
+    collection: "BenchmarkEvidence",
+    data: {
+      runId: summary.runId,
+      docsSnapshotHash: summary.docsSnapshotHash ?? "",
+      walletAddress: summary.walletAddress ?? "0x0000000000000000000000000000000000000000",
+      fundingTxHash: summary.evidence?.fundingTxHash ?? "",
+      depositTxHash: summary.evidence?.depositTxHash ?? "",
+      pieceCid: summary.evidence?.pieceCid ?? "",
+      contentMatch: Boolean(summary.evidence?.contentMatch)
+    }
+  };
+}
+
+function buildArtifactsRecord(summary) {
+  return {
+    collection: "BenchmarkArtifacts",
+    data: {
+      runId: summary.runId,
+      artifactBundleUri: summary.artifacts?.artifactBundleUri ?? "",
+      artifactBundleHash: summary.artifacts?.artifactBundleHash ?? "",
+      artifactBundleHttpUrl: summary.artifacts?.artifactBundleHttpUrl ?? "",
+      artifactIndexUri: summary.artifacts?.artifactIndexUri ?? "",
+      artifactIndexHash: summary.artifacts?.artifactIndexHash ?? "",
+      artifactIndexHttpUrl: summary.artifacts?.artifactIndexHttpUrl ?? ""
+    }
+  };
+}
+
+function buildFeedbackRecord(summary) {
+  const whatWorkedWell = normalizeNotes(summary.feedback?.whatWorkedWell) ?? "";
+  const frictionFailures = normalizeNotes(summary.feedback?.frictionFailures) ?? "";
+  const recommendations = normalizeNotes(summary.feedback?.recommendations) ?? "";
+  if (!whatWorkedWell && !frictionFailures && !recommendations) return null;
+
+  return {
+    collection: "BenchmarkFeedback",
+    data: {
+      runId: summary.runId,
+      whatWorkedWell,
+      frictionFailures,
+      recommendations
     }
   };
 }
@@ -291,7 +332,14 @@ async function main() {
     maybeReadJson(path.join(runDir, "dashboard-publish-result.json"))
   ]);
 
-  const records = [buildRunRecord(summary, validation, artifactPublishResult, dashboardPublishResult, outputPath), ...buildIncidentRecords(summary, validation)];
+  const feedbackRecord = buildFeedbackRecord(summary);
+  const records = [
+    buildRunRecord(summary, validation, artifactPublishResult, dashboardPublishResult, outputPath),
+    buildEvidenceRecord(summary),
+    buildArtifactsRecord(summary),
+    ...(feedbackRecord ? [feedbackRecord] : []),
+    ...buildIncidentRecords(summary, validation)
+  ];
   const payload = {
     runId: summary.runId,
     generatedAt: new Date().toISOString(),

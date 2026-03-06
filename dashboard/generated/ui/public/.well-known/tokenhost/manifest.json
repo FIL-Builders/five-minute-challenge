@@ -2,7 +2,7 @@
   "manifestVersion": "0.1.0",
   "thsVersion": "2025-12",
   "schemaVersion": "0.1.0",
-  "schemaHash": "sha256:6d7c4b460d7085031c88c011eece544258cdec9f330a94918a24ad81aa17e32b",
+  "schemaHash": "sha256:cc03564a1ef7055ee44a21910d7331dcbc068b5106ea3b6bdffa9c3fbe6e25b3",
   "generatorVersion": "0.0.0",
   "toolchain": {
     "node": "24.1.0",
@@ -10,9 +10,9 @@
     "compilerProfile": "large-app(viaIR)"
   },
   "release": {
-    "releaseId": "rel_local_1772761400446",
+    "releaseId": "rel_local_1772765855415",
     "supersedesReleaseId": null,
-    "publishedAt": "2026-03-06T01:43:20.446Z"
+    "publishedAt": "2026-03-06T02:57:35.415Z"
   },
   "app": {
     "name": "Benchmark Registry",
@@ -22,6 +22,18 @@
     {
       "name": "BenchmarkRun",
       "collectionId": "0xa9af96cdcbafffcdaf20b71e08d396baac7da89c89d7916767cf57a24f9130da"
+    },
+    {
+      "name": "BenchmarkEvidence",
+      "collectionId": "0x5e0f0252abb3dfc8e27b0e4cbe48ff0390db5f69ccd61c7291f28fe0e573111a"
+    },
+    {
+      "name": "BenchmarkArtifacts",
+      "collectionId": "0xf3f27bbf4c66b004352b5ff7ae2a37cc066569397526bf9862cd2d1c11c578c8"
+    },
+    {
+      "name": "BenchmarkFeedback",
+      "collectionId": "0x56f1bf43083e05a7f87d25772851434792872d420e43876bcb044ab6bad97ed1"
     },
     {
       "name": "BenchmarkIncident",
@@ -34,11 +46,11 @@
   ],
   "artifacts": {
     "soliditySources": {
-      "digest": "sha256:75c1e8f4a48e3f9ce389dd2093caeddbaa0aacc13cf51142fb66f499d7005177",
+      "digest": "sha256:ebcbe7da6cbe92a51b1c4d2e1bd0f1e806726a3d1ee98892a2342625b1b0f3e0",
       "url": "file:///home/mikers/dev/fil-builders/five-minute-challenge/dashboard/generated/sources.tgz"
     },
     "compiledContracts": {
-      "digest": "sha256:853bc6b2ce20512c66ec15f7f7b82c6930a616ad30cbdae4760832cfc41fe83f",
+      "digest": "sha256:c4a5c97de7cbbabca0259699381860e49067664a9a0b69c84b68e4034542e4d3",
       "url": "file:///home/mikers/dev/fil-builders/five-minute-challenge/dashboard/generated/compiled.tgz"
     }
   },
@@ -48,29 +60,29 @@
       "chainId": 314159,
       "chainName": "filecoin_calibration",
       "deploymentMode": "single",
-      "deploymentEntrypointAddress": "0x7e046c569c4df5b829cd72f62b00d464e39ef50a",
+      "deploymentEntrypointAddress": "0xe79722646a2103b9a8037c4919c00037c1149046",
       "adminAddress": "0xF00DCE36817586672B47480FB48C94177A97278B",
       "treasuryAddress": null,
       "contracts": [
         {
           "role": "app",
-          "address": "0x7e046c569c4df5b829cd72f62b00d464e39ef50a",
+          "address": "0xe79722646a2103b9a8037c4919c00037c1149046",
           "verified": false,
-          "bytecodeDigest": "sha256:a347ce8da5bc8c10bea5de6d44d3ebff44f1db5af5381fe6799c7b3a91a93985",
-          "abiDigest": "sha256:cca4596c9f3964a7f2712272e45ba791712a27d1950886c4e63bdd0efaa6d265"
+          "bytecodeDigest": "sha256:3b4a8062360928165d4d3d7e0dc515de12c6decdf0c21e2e95fd3ab4037f7290",
+          "abiDigest": "sha256:64faf011b1251e9e7290345389afea8142d00390ae33a7d430114eab3b75ba99"
         }
       ],
       "verified": false,
-      "blockNumber": 3514502,
+      "blockNumber": 3514650,
       "chainConfig": {
         "url": "file:///home/mikers/dev/fil-builders/five-minute-challenge/dashboard/generated/chain-config/filecoin_calibration.json",
-        "digest": "sha256:86e9311eedc88a933b39262b5eb5c724a58e5a0458759c3928b7bcb8d812b03d",
+        "digest": "sha256:f497b2390791acb100e6a3c9c23ae579daf3d061cc3f61361cae989d3c728406",
         "chainConfigVersion": "1.0.0"
       }
     }
   ],
   "ui": {
-    "bundleHash": "sha256:a0c29c4d437109a427e50afbcd2186d57b3fb477044f9a9f48ecca5a25e603ba",
+    "bundleHash": "sha256:8885926dcfb45ac58212cbd0db437cfade09fd65298fde7aacc612b0a6024085",
     "baseUrl": "file:///home/mikers/dev/fil-builders/five-minute-challenge/dashboard/generated/ui-site/",
     "wellKnown": "/.well-known/tokenhost/manifest.json"
   },

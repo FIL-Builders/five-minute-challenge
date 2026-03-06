@@ -216,6 +216,81 @@ async function updateRunRecord({ publicClient, walletClient, account, abi, addre
   };
 }
 
+async function updateFeedbackRecord({ publicClient, walletClient, account, abi, address, recordId, record, timeoutMs }) {
+  const functionName = "updateBenchmarkFeedback";
+  const args = buildUpdateArgs(abi, functionName, recordId, record);
+  const simulation = await publicClient.simulateContract({
+    address,
+    abi,
+    functionName,
+    args,
+    account: account.address
+  });
+  const hash = await walletClient.writeContract({
+    ...simulation.request,
+    account
+  });
+  console.error(`Updated BenchmarkFeedback tx submitted: ${hash}`);
+  await waitForReceipt({ publicClient, hash, timeoutMs, label: "BenchmarkFeedback update" });
+
+  return {
+    collection: "BenchmarkFeedback",
+    recordId: String(recordId),
+    txHash: hash,
+    href: buildViewHref("BenchmarkFeedback", recordId)
+  };
+}
+
+async function updateEvidenceRecord({ publicClient, walletClient, account, abi, address, recordId, record, timeoutMs }) {
+  const functionName = "updateBenchmarkEvidence";
+  const args = buildUpdateArgs(abi, functionName, recordId, record);
+  const simulation = await publicClient.simulateContract({
+    address,
+    abi,
+    functionName,
+    args,
+    account: account.address
+  });
+  const hash = await walletClient.writeContract({
+    ...simulation.request,
+    account
+  });
+  console.error(`Updated BenchmarkEvidence tx submitted: ${hash}`);
+  await waitForReceipt({ publicClient, hash, timeoutMs, label: "BenchmarkEvidence update" });
+
+  return {
+    collection: "BenchmarkEvidence",
+    recordId: String(recordId),
+    txHash: hash,
+    href: buildViewHref("BenchmarkEvidence", recordId)
+  };
+}
+
+async function updateArtifactsRecord({ publicClient, walletClient, account, abi, address, recordId, record, timeoutMs }) {
+  const functionName = "updateBenchmarkArtifacts";
+  const args = buildUpdateArgs(abi, functionName, recordId, record);
+  const simulation = await publicClient.simulateContract({
+    address,
+    abi,
+    functionName,
+    args,
+    account: account.address
+  });
+  const hash = await walletClient.writeContract({
+    ...simulation.request,
+    account
+  });
+  console.error(`Updated BenchmarkArtifacts tx submitted: ${hash}`);
+  await waitForReceipt({ publicClient, hash, timeoutMs, label: "BenchmarkArtifacts update" });
+
+  return {
+    collection: "BenchmarkArtifacts",
+    recordId: String(recordId),
+    txHash: hash,
+    href: buildViewHref("BenchmarkArtifacts", recordId)
+  };
+}
+
 async function deleteIncidentRecord({ publicClient, walletClient, account, abi, address, recordId, timeoutMs }) {
   const functionName = "deleteBenchmarkIncident";
   const simulation = await publicClient.simulateContract({
@@ -307,6 +382,114 @@ async function listBenchmarkIncidentsByRunId({ publicClient, abi, address, runId
   return matches.sort((left, right) => Number(left.id) - Number(right.id));
 }
 
+async function findBenchmarkFeedbackByRunId({ publicClient, abi, address, runId }) {
+  const count = Number(
+    await publicClient.readContract({
+      address,
+      abi,
+      functionName: "getCountBenchmarkFeedback",
+      args: [false]
+    })
+  );
+  if (!Number.isFinite(count) || count <= 0) return null;
+
+  const ids = await publicClient.readContract({
+    address,
+    abi,
+    functionName: "listIdsBenchmarkFeedback",
+    args: [0n, BigInt(count), false]
+  });
+
+  for (const id of ids) {
+    const record = await publicClient.readContract({
+      address,
+      abi,
+      functionName: "getBenchmarkFeedback",
+      args: [id, false]
+    });
+    if (record?.runId === runId) {
+      return {
+        id: String(record.id),
+        href: buildViewHref("BenchmarkFeedback", id)
+      };
+    }
+  }
+
+  return null;
+}
+
+async function findBenchmarkEvidenceByRunId({ publicClient, abi, address, runId }) {
+  const count = Number(
+    await publicClient.readContract({
+      address,
+      abi,
+      functionName: "getCountBenchmarkEvidence",
+      args: [false]
+    })
+  );
+  if (!Number.isFinite(count) || count <= 0) return null;
+
+  const ids = await publicClient.readContract({
+    address,
+    abi,
+    functionName: "listIdsBenchmarkEvidence",
+    args: [0n, BigInt(count), false]
+  });
+
+  for (const id of ids) {
+    const record = await publicClient.readContract({
+      address,
+      abi,
+      functionName: "getBenchmarkEvidence",
+      args: [id, false]
+    });
+    if (record?.runId === runId) {
+      return {
+        id: String(record.id),
+        href: buildViewHref("BenchmarkEvidence", id)
+      };
+    }
+  }
+
+  return null;
+}
+
+async function findBenchmarkArtifactsByRunId({ publicClient, abi, address, runId }) {
+  const count = Number(
+    await publicClient.readContract({
+      address,
+      abi,
+      functionName: "getCountBenchmarkArtifacts",
+      args: [false]
+    })
+  );
+  if (!Number.isFinite(count) || count <= 0) return null;
+
+  const ids = await publicClient.readContract({
+    address,
+    abi,
+    functionName: "listIdsBenchmarkArtifacts",
+    args: [0n, BigInt(count), false]
+  });
+
+  for (const id of ids) {
+    const record = await publicClient.readContract({
+      address,
+      abi,
+      functionName: "getBenchmarkArtifacts",
+      args: [id, false]
+    });
+    if (record?.runId === runId) {
+      return {
+        id: String(record.id),
+        href: buildViewHref("BenchmarkArtifacts", id)
+      };
+    }
+  }
+
+  return null;
+}
+
 function refreshOutputs({ repoRoot, runDir }) {
   const refreshDashboardRecords = spawnSync(
     process.execPath,
@@ -396,10 +579,16 @@ async function main() {
 
   const runRecord = (payload.records ?? []).find((record) => record.collection === "BenchmarkRun");
   if (!runRecord) throw new Error(`No BenchmarkRun record found in ${recordsPath}.`);
+  const evidenceRecord = (payload.records ?? []).find((record) => record.collection === "BenchmarkEvidence") ?? null;
+  const artifactsRecord = (payload.records ?? []).find((record) => record.collection === "BenchmarkArtifacts") ?? null;
+  const feedbackRecord = (payload.records ?? []).find((record) => record.collection === "BenchmarkFeedback") ?? null;
   const desiredIncidents = (payload.records ?? []).filter((record) => record.collection === "BenchmarkIncident");
 
   let failure = null;
   let runPublication = null;
+  let evidencePublication = null;
+  let artifactsPublication = null;
+  let feedbackPublication = null;
   let deletedIncidentIds = [];
   let publishedIncidents = [];
   let reconciled = false;
@@ -431,6 +620,90 @@ async function main() {
         timeoutMs
       });
       runPublication.publishedAt = new Date().toISOString();
+    }
+
+    if (evidenceRecord) {
+      const existingEvidence = await findBenchmarkEvidenceByRunId({ publicClient, abi, address, runId: payload.runId });
+      if (existingEvidence) {
+        reconciled = true;
+        evidencePublication = await updateEvidenceRecord({
+          publicClient,
+          walletClient,
+          account,
+          abi,
+          address,
+          recordId: existingEvidence.id,
+          record: evidenceRecord,
+          timeoutMs
+        });
+      } else {
+        evidencePublication = await createRecord({
+          publicClient,
+          walletClient,
+          account,
+          abi,
+          address,
+          schema,
+          record: evidenceRecord,
+          timeoutMs
+        });
+      }
+    }
+
+    if (artifactsRecord) {
+      const existingArtifacts = await findBenchmarkArtifactsByRunId({ publicClient, abi, address, runId: payload.runId });
+      if (existingArtifacts) {
+        reconciled = true;
+        artifactsPublication = await updateArtifactsRecord({
+          publicClient,
+          walletClient,
+          account,
+          abi,
+          address,
+          recordId: existingArtifacts.id,
+          record: artifactsRecord,
+          timeoutMs
+        });
+      } else {
+        artifactsPublication = await createRecord({
+          publicClient,
+          walletClient,
+          account,
+          abi,
+          address,
+          schema,
+          record: artifactsRecord,
+          timeoutMs
+        });
+      }
+    }
+
+    if (feedbackRecord) {
+      const existingFeedback = await findBenchmarkFeedbackByRunId({ publicClient, abi, address, runId: payload.runId });
+      if (existingFeedback) {
+        reconciled = true;
+        feedbackPublication = await updateFeedbackRecord({
+          publicClient,
+          walletClient,
+          account,
+          abi,
+          address,
+          recordId: existingFeedback.id,
+          record: feedbackRecord,
+          timeoutMs
+        });
+      } else {
+        feedbackPublication = await createRecord({
+          publicClient,
+          walletClient,
+          account,
+          abi,
+          address,
+          schema,
+          record: feedbackRecord,
+          timeoutMs
+        });
+      }
     }
 
     const existingIncidents = await listBenchmarkIncidentsByRunId({ publicClient, abi, address, runId: payload.runId });
@@ -477,9 +750,15 @@ async function main() {
     recordsPath: path.relative(repoRoot, recordsPath),
     timeoutMs,
     deletedIncidentIds,
-    publishedRecords: [runPublication, ...publishedIncidents].filter(Boolean),
+    publishedRecords: [runPublication, evidencePublication, artifactsPublication, feedbackPublication, ...publishedIncidents].filter(Boolean),
     runRecordId: runPublication?.recordId ?? null,
     runRecordHref: runPublication?.href ?? null,
+    evidenceRecordId: evidencePublication?.recordId ?? null,
+    evidenceRecordHref: evidencePublication?.href ?? null,
+    artifactsRecordId: artifactsPublication?.recordId ?? null,
+    artifactsRecordHref: artifactsPublication?.href ?? null,
+    feedbackRecordId: feedbackPublication?.recordId ?? null,
+    feedbackRecordHref: feedbackPublication?.href ?? null,
     incidentRecordIds: publishedIncidents.map((record) => record.recordId),
     incidentRecordHrefs: publishedIncidents.map((record) => record.href),
     error: failure

@@ -1,112 +1,115 @@
 {
-  "generatedAt": "2026-03-06T02:39:02.531Z",
+  "generatedAt": "2026-03-06T03:39:46.286Z",
   "runCount": 1,
   "incidentCount": 0,
   "runs": [
     {
       "collection": "BenchmarkRun",
       "data": {
-        "runId": "20260306T000054Z-f0eb33",
+        "runId": "20260306T031019Z-29dfee",
         "mode": "inherited-key-follow-docs",
         "promptVersion": "inherited-key-follow-docs-v1",
         "model": "gpt-5.3-codex",
-        "repoSha": "78b8e8fe0d560348f684ac5b5962f071bf4c1d73",
+        "repoSha": "76ae8834ce8d946a23a9a66fb08f0d30be22a794",
         "docsUrl": "https://docs.filecoin.cloud/getting-started/",
-        "docsSnapshotHash": "2542a0e97ab61d178b3c38be9617de1cad51ab3387a4039e23d52af2fbc0d72e",
         "status": "success",
         "failurePhase": "",
-        "startedAt": "2026-03-06T00:00:54Z",
-        "endedAt": "2026-03-06T00:09:59Z",
-        "outerWallTimeMs": "545000",
+        "startedAt": "2026-03-06T03:10:20Z",
+        "endedAt": "2026-03-06T03:17:59Z",
+        "outerWallTimeMs": "459000",
+        "operatorNotes": "artifact_publish: uploaded workspace bundle to piececid:bafkzcibdzqzqylk4qbixij4pzqnegas23hef5tduaxuq2zch6vwg5dyikz43rtbw and artifact index to piececid:bafkzcibdrenqqxlwobh3jn6fqejvr2exydg3nz5qhma246hidrrgbrhygznpbkrl",
+        "whatWorkedWell": "The quick-start flow was reproducible with a single private key input. Synapse SDK defaulted to Calibration correctly, deposit+approval completed in one transaction, and storage upload/download returned clear machine-usable outputs (piece CID, copy metadata, and bytes).",
+        "frictionFailures": "The docs are clear on high-level flow but still leave ambiguity on practical minimum funding and when a user can skip extra faucet steps if the inherited wallet is already funded. PieceCID serialization format in logs is not explicitly standardized in the quick-start narrative, which adds minor integration friction.",
+        "recommendations": "Add a short “preflight checklist” section with exact minimum FIL/USDFC estimates and a decision tree: pre-funded wallet vs faucet-required. Also provide a canonical quick-start script template that logs tx hash, piece CID string normalization, and SHA-256 integrity checks for benchmark-grade reproducibility.",
+        "docsSnapshotHash": "2542a0e97ab61d178b3c38be9617de1cad51ab3387a4039e23d52af2fbc0d72e",
         "walletAddress": "0xF00DCE36817586672B47480FB48C94177A97278B",
         "fundingTxHash": "",
-        "depositTxHash": "",
-        "pieceCid": "bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy",
+        "depositTxHash": "0xe5cd55a877cfe8eac56a2fec57cf24b20ff1ac0c6a6b52779b64ccc2e16b43ba",
+        "pieceCid": "bafkzcibdwyaqjbyid5go2cvss3e4smm2l37i5fc3ao7cbigwa32bgbcr77whfsy7",
         "contentMatch": true,
-        "artifactBundleUri": "piececid:bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4",
-        "artifactBundleHash": "sha256:2a79640750e7501014d79118ad37966529592c569c6c0d2edfbb854f0c56a177",
-        "artifactBundleHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4",
-        "artifactIndexUri": "piececid:bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj",
-        "artifactIndexHash": "sha256:a8c0acdc0436b7246d81af506820351095795650dc586b98c71bf73e43c4dc87",
-        "artifactIndexHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj",
-        "operatorNotes": "artifact_publish: uploaded workspace bundle to piececid:bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4 and artifact index to piececid:bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj"
+        "artifactBundleUri": "piececid:bafkzcibdzqzqylk4qbixij4pzqnegas23hef5tduaxuq2zch6vwg5dyikz43rtbw",
+        "artifactBundleHash": "sha256:5641b66be62d20386e8d99bbcbf7d03c049aa221fddbe57bae1124359b15ca16",
+        "artifactBundleHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibdzqzqylk4qbixij4pzqnegas23hef5tduaxuq2zch6vwg5dyikz43rtbw",
+        "artifactIndexUri": "piececid:bafkzcibdrenqqxlwobh3jn6fqejvr2exydg3nz5qhma246hidrrgbrhygznpbkrl",
+        "artifactIndexHash": "sha256:c9987a4cac93e24e5b0c8fa962ac8973bfcd3fa9871dc3dccd74e0cc8ee4931c",
+        "artifactIndexHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibdrenqqxlwobh3jn6fqejvr2exydg3nz5qhma246hidrrgbrhygznpbkrl"
       },
       "meta": {
         "source": {
-          "runSummaryPath": "runs/20260306T000054Z-f0eb33/run-summary.json",
-          "validationResultPath": "runs/20260306T000054Z-f0eb33/validation-result.json",
-          "dashboardRecordsPath": "runs/20260306T000054Z-f0eb33/dashboard-records.json",
-          "artifactPublishResultPath": "runs/20260306T000054Z-f0eb33/artifact-publish-result.json",
-          "dashboardPublishResultPath": "runs/20260306T000054Z-f0eb33/dashboard-publish-result.json"
+          "runSummaryPath": "runs/20260306T031019Z-29dfee/run-summary.json",
+          "validationResultPath": "runs/20260306T031019Z-29dfee/validation-result.json",
+          "dashboardRecordsPath": "runs/20260306T031019Z-29dfee/dashboard-records.json",
+          "artifactPublishResultPath": "runs/20260306T031019Z-29dfee/artifact-publish-result.json",
+          "dashboardPublishResultPath": "runs/20260306T031019Z-29dfee/dashboard-publish-result.json"
         },
         "publishedArtifacts": [
           {
             "label": "Artifact index",
-            "path": "runs/20260306T000054Z-f0eb33/artifact-index.json",
-            "url": "https://calib.ezpdpz.net/piece/bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj",
-            "uri": "piececid:bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj",
-            "hash": "sha256:a8c0acdc0436b7246d81af506820351095795650dc586b98c71bf73e43c4dc87",
-            "pieceCid": "bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj"
+            "path": "runs/20260306T031019Z-29dfee/artifact-index.json",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibdrenqqxlwobh3jn6fqejvr2exydg3nz5qhma246hidrrgbrhygznpbkrl",
+            "uri": "piececid:bafkzcibdrenqqxlwobh3jn6fqejvr2exydg3nz5qhma246hidrrgbrhygznpbkrl",
+            "hash": "sha256:c9987a4cac93e24e5b0c8fa962ac8973bfcd3fa9871dc3dccd74e0cc8ee4931c",
+            "pieceCid": "bafkzcibdrenqqxlwobh3jn6fqejvr2exydg3nz5qhma246hidrrgbrhygznpbkrl"
           },
           {
             "label": "Report",
-            "path": "runs/20260306T000054Z-f0eb33/report.md",
-            "url": "https://calib.ezpdpz.net/piece/bafkzcibd7moqr4v37yybc2uht2ug4gv36tk33jtafohdx6w4eogyi5kavjaik7bz",
-            "uri": "piececid:bafkzcibd7moqr4v37yybc2uht2ug4gv36tk33jtafohdx6w4eogyi5kavjaik7bz",
-            "hash": "sha256:00924f4e8e9113ddf7426ee28671d904f4d5c509057dc4f7f8381a40dc890dba",
-            "pieceCid": "bafkzcibd7moqr4v37yybc2uht2ug4gv36tk33jtafohdx6w4eogyi5kavjaik7bz"
+            "path": "runs/20260306T031019Z-29dfee/report.md",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibdtadqodcb3q5pp726y6dtjzbcxktznloapotnex4hcnav7m33fzl7nprs",
+            "uri": "piececid:bafkzcibdtadqodcb3q5pp726y6dtjzbcxktznloapotnex4hcnav7m33fzl7nprs",
+            "hash": "sha256:09cefd9fb796b7eaa10ad5e63278a9abb917cbcaf57ea5e2e45f2270329f38d8",
+            "pieceCid": "bafkzcibdtadqodcb3q5pp726y6dtjzbcxktznloapotnex4hcnav7m33fzl7nprs"
           },
           {
             "label": "Stdout log",
-            "path": "runs/20260306T000054Z-f0eb33/stdout.log",
-            "url": "https://calib.ezpdpz.net/piece/bafkzcibd2qcame5hqwxf767glpibs4n637qf4hkgsrigmhhm6zkxstl2p5qqjxjs",
-            "uri": "piececid:bafkzcibd2qcame5hqwxf767glpibs4n637qf4hkgsrigmhhm6zkxstl2p5qqjxjs",
-            "hash": "sha256:c06320748d4bdf9fa33c432239af6cc4ed965eac80e7ff2a0e340e715e81fea7",
-            "pieceCid": "bafkzcibd2qcame5hqwxf767glpibs4n637qf4hkgsrigmhhm6zkxstl2p5qqjxjs"
+            "path": "runs/20260306T031019Z-29dfee/stdout.log",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibd4ecqnkhgsn6nha22ink3bnk6tk5ow3kjcp2bddxngdonphmg55uc4wic",
+            "uri": "piececid:bafkzcibd4ecqnkhgsn6nha22ink3bnk6tk5ow3kjcp2bddxngdonphmg55uc4wic",
+            "hash": "sha256:f4c348a626018d3695d3d7a2b9f25059b109e1ab59646b95fdc3a2851c8ba5cc",
+            "pieceCid": "bafkzcibd4ecqnkhgsn6nha22ink3bnk6tk5ow3kjcp2bddxngdonphmg55uc4wic"
           },
           {
             "label": "Stderr log",
-            "path": "runs/20260306T000054Z-f0eb33/stderr.log",
-            "url": "https://calib.ezpdpz.net/piece/bafkzcibeslwrmdzy6mq5gqzkvgisinbwwenqsbs272lsfshhod5eoidka3x7vsk5ga",
-            "uri": "piececid:bafkzcibeslwrmdzy6mq5gqzkvgisinbwwenqsbs272lsfshhod5eoidka3x7vsk5ga",
-            "hash": "sha256:276d7522ddf97eb1e96c2e468127cb49885889f1420fad23b5961b5dc780eedf",
-            "pieceCid": "bafkzcibeslwrmdzy6mq5gqzkvgisinbwwenqsbs272lsfshhod5eoidka3x7vsk5ga"
+            "path": "runs/20260306T031019Z-29dfee/stderr.log",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibexxarqd2vgude7fnovlr6kzp2chjsszxhtppibcvu3g5cdoiqum7jorebba",
+            "uri": "piececid:bafkzcibexxarqd2vgude7fnovlr6kzp2chjsszxhtppibcvu3g5cdoiqum7jorebba",
+            "hash": "sha256:2bef232e236bad5cfd07b31858f97e394b7ce56cc1fd481169ef6731c5672684",
+            "pieceCid": "bafkzcibexxarqd2vgude7fnovlr6kzp2chjsszxhtppibcvu3g5cdoiqum7jorebba"
           },
           {
             "label": "Uploaded payload",
-            "path": "runs/20260306T000054Z-f0eb33/payload-20260306T000054Z-f0eb33.txt",
-            "url": "https://calib.ezpdpz.net/piece/bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy",
-            "uri": "piececid:bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy",
-            "hash": "sha256:89363b0f992a072be5a0fea16a8b19324209799ec3b2662cb4fb9a5cffd00298",
-            "pieceCid": "bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy"
+            "path": "runs/20260306T031019Z-29dfee/payload-20260306T031019Z-29dfee.txt",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibdwyaqjbyid5go2cvss3e4smm2l37i5fc3ao7cbigwa32bgbcr77whfsy7",
+            "uri": "piececid:bafkzcibdwyaqjbyid5go2cvss3e4smm2l37i5fc3ao7cbigwa32bgbcr77whfsy7",
+            "hash": "sha256:2b2ae81b248f8624d6d9b175cbb07d348efb54417896716a95c8f1b7dc8379e1",
+            "pieceCid": "bafkzcibdwyaqjbyid5go2cvss3e4smm2l37i5fc3ao7cbigwa32bgbcr77whfsy7"
           },
           {
             "label": "Downloaded payload",
-            "path": "runs/20260306T000054Z-f0eb33/downloaded-20260306T000054Z-f0eb33.txt",
-            "url": "https://calib.ezpdpz.net/piece/bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy",
-            "uri": "piececid:bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy",
-            "hash": "sha256:89363b0f992a072be5a0fea16a8b19324209799ec3b2662cb4fb9a5cffd00298",
-            "pieceCid": "bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy"
+            "path": "runs/20260306T031019Z-29dfee/downloaded-20260306T031019Z-29dfee.bin",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibdwyaqjbyid5go2cvss3e4smm2l37i5fc3ao7cbigwa32bgbcr77whfsy7",
+            "uri": "piececid:bafkzcibdwyaqjbyid5go2cvss3e4smm2l37i5fc3ao7cbigwa32bgbcr77whfsy7",
+            "hash": "sha256:2b2ae81b248f8624d6d9b175cbb07d348efb54417896716a95c8f1b7dc8379e1",
+            "pieceCid": "bafkzcibdwyaqjbyid5go2cvss3e4smm2l37i5fc3ao7cbigwa32bgbcr77whfsy7"
           },
           {
             "label": "Agent result",
-            "path": "runs/20260306T000054Z-f0eb33/run-result.json",
-            "url": "https://calib.ezpdpz.net/piece/bafkzcibd5e2qswvemjjqmf4etlynxwsq2cypabdjwteasepbgmkvzw24dnqblkrb",
-            "uri": "piececid:bafkzcibd5e2qswvemjjqmf4etlynxwsq2cypabdjwteasepbgmkvzw24dnqblkrb",
-            "hash": "sha256:f2bef2c3730673497089f229166e71e9119166a4da64869394b9823ed5b00085",
-            "pieceCid": "bafkzcibd5e2qswvemjjqmf4etlynxwsq2cypabdjwteasepbgmkvzw24dnqblkrb"
+            "path": "runs/20260306T031019Z-29dfee/run-result.json",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibd54lareho7fezo3xszmfqvbjvmcjbkzb2yofjbvwoblg2mpqw2jybnnzc",
+            "uri": "piececid:bafkzcibd54lareho7fezo3xszmfqvbjvmcjbkzb2yofjbvwoblg2mpqw2jybnnzc",
+            "hash": "sha256:6c518551d48c082d41e9e868d5a0e904b3db5969f0da16e35550bc4533606aed",
+            "pieceCid": "bafkzcibd54lareho7fezo3xszmfqvbjvmcjbkzb2yofjbvwoblg2mpqw2jybnnzc"
           },
           {
             "label": "Validation result",
-            "path": "runs/20260306T000054Z-f0eb33/validation-result.json",
-            "url": "https://calib.ezpdpz.net/piece/bafkzcibcdybrxtxzb5aabj3bocvpe254u4zqarmrqqrobi6uybiibnhdd3pbwli",
-            "uri": "piececid:bafkzcibcdybrxtxzb5aabj3bocvpe254u4zqarmrqqrobi6uybiibnhdd3pbwli",
-            "hash": "sha256:af9575c63d1c6c12e5c59b09192e2d81cdb833ac3286687570ee04f3f543c0ed",
-            "pieceCid": "bafkzcibcdybrxtxzb5aabj3bocvpe254u4zqarmrqqrobi6uybiibnhdd3pbwli"
+            "path": "runs/20260306T031019Z-29dfee/validation-result.json",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibcdybynlmao5byz23ddylzhylhqsygjej462o232h7ysqv4a7acujwgbq",
+            "uri": "piececid:bafkzcibcdybynlmao5byz23ddylzhylhqsygjej462o232h7ysqv4a7acujwgbq",
+            "hash": "sha256:917cdd88d05ca4de1375c83b5ba2f34071ef5d044c18a2b0e48423d3b8ff8a10",
+            "pieceCid": "bafkzcibcdybynlmao5byz23ddylzhylhqsygjej462o232h7ysqv4a7acujwgbq"
           },
           {
             "label": "Docs snapshot",
-            "path": "runs/20260306T000054Z-f0eb33/docs-snapshot.html",
+            "path": "runs/20260306T031019Z-29dfee/docs-snapshot.html",
             "url": "https://calib.ezpdpz.net/piece/bafkzcibe73zqydzx5yaq7yx2isf57psybysypympwvrowsiycvhdhhjuwft2cxshgy",
             "uri": "piececid:bafkzcibe73zqydzx5yaq7yx2isf57psybysypympwvrowsiycvhdhhjuwft2cxshgy",
             "hash": "sha256:2542a0e97ab61d178b3c38be9617de1cad51ab3387a4039e23d52af2fbc0d72e",
@@ -114,11 +117,11 @@
           },
           {
             "label": "Artifact bundle",
-            "path": "runs/20260306T000054Z-f0eb33/workspace-output.tgz",
-            "url": "https://calib.ezpdpz.net/piece/bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4",
-            "uri": "piececid:bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4",
-            "hash": "sha256:2a79640750e7501014d79118ad37966529592c569c6c0d2edfbb854f0c56a177",
-            "pieceCid": "bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4"
+            "path": "runs/20260306T031019Z-29dfee/workspace-output.tgz",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibdzqzqylk4qbixij4pzqnegas23hef5tduaxuq2zch6vwg5dyikz43rtbw",
+            "uri": "piececid:bafkzcibdzqzqylk4qbixij4pzqnegas23hef5tduaxuq2zch6vwg5dyikz43rtbw",
+            "hash": "sha256:5641b66be62d20386e8d99bbcbf7d03c049aa221fddbe57bae1124359b15ca16",
+            "pieceCid": "bafkzcibdzqzqylk4qbixij4pzqnegas23hef5tduaxuq2zch6vwg5dyikz43rtbw"
           }
         ],
         "validation": {
@@ -127,21 +130,27 @@
           "schemaValid": true
         },
         "externalArtifacts": {
-          "artifactBundleUri": "piececid:bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4",
-          "artifactBundleHash": "sha256:2a79640750e7501014d79118ad37966529592c569c6c0d2edfbb854f0c56a177",
-          "artifactBundleHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4",
-          "artifactIndexUri": "piececid:bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj",
-          "artifactIndexHash": "sha256:a8c0acdc0436b7246d81af506820351095795650dc586b98c71bf73e43c4dc87",
-          "artifactIndexHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj"
+          "artifactBundleUri": "piececid:bafkzcibdzqzqylk4qbixij4pzqnegas23hef5tduaxuq2zch6vwg5dyikz43rtbw",
+          "artifactBundleHash": "sha256:5641b66be62d20386e8d99bbcbf7d03c049aa221fddbe57bae1124359b15ca16",
+          "artifactBundleHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibdzqzqylk4qbixij4pzqnegas23hef5tduaxuq2zch6vwg5dyikz43rtbw",
+          "artifactIndexUri": "piececid:bafkzcibdrenqqxlwobh3jn6fqejvr2exydg3nz5qhma246hidrrgbrhygznpbkrl",
+          "artifactIndexHash": "sha256:c9987a4cac93e24e5b0c8fa962ac8973bfcd3fa9871dc3dccd74e0cc8ee4931c",
+          "artifactIndexHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibdrenqqxlwobh3jn6fqejvr2exydg3nz5qhma246hidrrgbrhygznpbkrl"
         },
         "dashboardPublish": {
           "status": "success",
-          "attemptedAt": "2026-03-06T01:51:03.423Z",
-          "publishedAt": "2026-03-06T01:51:02.211Z",
+          "attemptedAt": "2026-03-06T03:38:33.637Z",
+          "publishedAt": "2026-03-06T03:35:33.918Z",
           "chainName": "filecoin_calibration",
-          "deploymentAddress": "0x7e046c569c4df5b829cd72f62b00d464e39ef50a",
-          "runRecordId": "2",
-          "runRecordHref": "/BenchmarkRun/?mode=view&id=2",
+          "deploymentAddress": "0xe79722646a2103b9a8037c4919c00037c1149046",
+          "runRecordId": "1",
+          "runRecordHref": "/BenchmarkRun/?mode=view&id=1",
+          "evidenceRecordId": "1",
+          "evidenceRecordHref": "/BenchmarkEvidence/?mode=view&id=1",
+          "artifactsRecordId": "1",
+          "artifactsRecordHref": "/BenchmarkArtifacts/?mode=view&id=1",
+          "feedbackRecordId": "1",
+          "feedbackRecordHref": "/BenchmarkFeedback/?mode=view&id=1",
           "incidentRecordIds": [],
           "incidentRecordHrefs": [],
           "error": null
@@ -150,74 +159,77 @@
           "headline": "Benchmark execution succeeded using inherited funded wallet flow",
           "summary": "This benchmark execution completed end to end and produced verifiable Filecoin-hosted evidence.",
           "bullets": [
-            "Credential strategy: inherited funded wallet; reused a pre-funded inherited wallet.",
-            "Storage result: uploaded and downloaded content successfully with integrity verified for piece bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy.",
+            "Credential strategy: inherited funded wallet; used wallet 0xF00DCE36817586672B47480FB48C94177A97278B.",
+            "Storage result: uploaded and downloaded content successfully with integrity verified for piece bafkzcibdwyaqjbyid5go2cvss3e4smm2l37i5fc3ao7cbigwa32bgbcr77whfsy7.",
             "Artifacts: published both the artifact index and full bundle to Filecoin Cloud retrieval URLs.",
-            "Timing: total wall time 9m 05s; longest measured agent phase was upload at 1m 20s.",
-            "Registry publication: published to Calibration at 0x7e046c569c4df5b829cd72f62b00d464e39ef50a as BenchmarkRun record 2.",
-            "Operator notes: artifact_publish: uploaded workspace bundle to piececid:bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4 and artifact index to piececid:bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj"
+            "Timing: total wall time 7m 39s; longest measured agent phase was upload at 1m 31s.",
+            "Registry publication: published to Calibration at 0xe79722646a2103b9a8037c4919c00037c1149046 as BenchmarkRun record 1.",
+            "Operator notes: artifact_publish: uploaded workspace bundle to piececid:bafkzcibdzqzqylk4qbixij4pzqnegas23hef5tduaxuq2zch6vwg5dyikz43rtbw and artifact index to piececid:bafkzcibdrenqqxlwobh3jn6fqejvr2exydg3nz5qhma246hidrrgbrhygznpbkrl"
           ],
           "timing": {
-            "outerWallTimeMs": 545000,
-            "outerWallTimeLabel": "9m 05s",
+            "outerWallTimeMs": 459000,
+            "outerWallTimeLabel": "7m 39s",
             "longestPhase": {
               "phase": "upload",
-              "durationMs": 79833,
-              "durationLabel": "1m 20s"
+              "durationMs": 91047,
+              "durationLabel": "1m 31s"
             },
             "phases": [
               {
-                "phase": "write-payload",
-                "durationMs": 4,
+                "phase": "initialize_sdk",
+                "durationMs": 24,
                 "durationLabel": "0m 00s",
-                "startedAt": "2026-03-06T00:07:11.492Z",
-                "endedAt": "2026-03-06T00:07:11.496Z"
+                "startedAt": "2026-03-06T03:10:20.000Z",
+                "endedAt": "2026-03-06T03:10:20.024Z"
               },
               {
-                "phase": "initialize-and-inspect-funding",
-                "durationMs": 2587,
-                "durationLabel": "0m 03s",
-                "startedAt": "2026-03-06T00:07:11.496Z",
-                "endedAt": "2026-03-06T00:07:14.083Z"
+                "phase": "preflight_balances",
+                "durationMs": 1731,
+                "durationLabel": "0m 02s",
+                "startedAt": "2026-03-06T03:10:20.024Z",
+                "endedAt": "2026-03-06T03:10:21.755Z"
               },
               {
-                "phase": "deposit-approval-check",
-                "durationMs": 0,
-                "durationLabel": "0m 00s",
-                "startedAt": "2026-03-06T00:07:14.084Z",
-                "endedAt": "2026-03-06T00:07:14.084Z"
+                "phase": "deposit_and_approve",
+                "durationMs": 62686,
+                "durationLabel": "1m 03s",
+                "startedAt": "2026-03-06T03:10:21.755Z",
+                "endedAt": "2026-03-06T03:11:24.441Z"
               },
               {
-                "phase": "preflight-upload",
-                "durationMs": 261,
+                "phase": "post_deposit_balances",
+                "durationMs": 1009,
+                "durationLabel": "0m 01s",
+                "startedAt": "2026-03-06T03:11:24.441Z",
+                "endedAt": "2026-03-06T03:11:25.450Z"
+              },
+              {
+                "phase": "build_payload",
+                "durationMs": 1,
                 "durationLabel": "0m 00s",
-                "startedAt": "2026-03-06T00:07:14.084Z",
-                "endedAt": "2026-03-06T00:07:14.345Z"
+                "startedAt": "2026-03-06T03:11:25.450Z",
+                "endedAt": "2026-03-06T03:11:25.451Z"
               },
               {
                 "phase": "upload",
-                "durationMs": 79833,
-                "durationLabel": "1m 20s",
-                "startedAt": "2026-03-06T00:07:14.345Z",
-                "endedAt": "2026-03-06T00:08:34.178Z"
+                "durationMs": 91047,
+                "durationLabel": "1m 31s",
+                "startedAt": "2026-03-06T03:11:25.451Z",
+                "endedAt": "2026-03-06T03:12:56.498Z"
               },
               {
-                "phase": "download-and-verify",
-                "durationMs": 1015,
+                "phase": "download_and_verify",
+                "durationMs": 983,
                 "durationLabel": "0m 01s",
-                "startedAt": "2026-03-06T00:08:34.178Z",
-                "endedAt": "2026-03-06T00:08:35.193Z"
-              },
-              {
-                "phase": "capture-post-run-state",
-                "durationMs": 811,
-                "durationLabel": "0m 01s",
-                "startedAt": "2026-03-06T00:08:35.193Z",
-                "endedAt": "2026-03-06T00:08:36.004Z"
+                "startedAt": "2026-03-06T03:12:56.498Z",
+                "endedAt": "2026-03-06T03:12:57.481Z"
               }
             ]
           }
-        }
+        },
+        "feedbackRecordHref": "/BenchmarkFeedback/?mode=view&id=1",
+        "evidenceRecordHref": "/BenchmarkEvidence/?mode=view&id=1",
+        "artifactsRecordHref": "/BenchmarkArtifacts/?mode=view&id=1"
       }
     }
   ],
