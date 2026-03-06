@@ -128,7 +128,7 @@ function buildUpdateArgs(abi, functionName, recordId, record) {
 }
 
 function buildViewHref(collectionName, recordId) {
-  return `/${collectionName}/view/?id=${encodeURIComponent(String(recordId))}`;
+  return `/${collectionName}/?mode=view&id=${encodeURIComponent(String(recordId))}`;
 }
 
 function toIsoTimestamp(value) {

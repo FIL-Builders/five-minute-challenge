@@ -14,7 +14,7 @@ contract App is Context {
   string public constant THS_VERSION = "2025-12";
   string public constant SCHEMA_VERSION = "0.1.0";
   string public constant APP_SLUG = "benchmark-registry";
-  bytes32 public constant SCHEMA_HASH = bytes32(0x5e281995f1d5301fb0de459d5515952e99424620459aae28ea6217233b11fd4c);
+  bytes32 public constant SCHEMA_HASH = bytes32(0x6d7c4b460d7085031c88c011eece544258cdec9f330a94918a24ad81aa17e32b);
   
   bool public constant ON_CHAIN_INDEXING = true;
   uint256 public constant MAX_LIST_LIMIT = 50;

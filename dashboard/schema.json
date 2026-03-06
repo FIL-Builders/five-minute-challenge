@@ -5,6 +5,14 @@
     "name": "Benchmark Registry",
     "slug": "benchmark-registry",
     "description": "Local run registry and dashboard for Filecoin Cloud benchmark history.",
+    "ui": {
+      "homePage": {
+        "mode": "custom"
+      },
+      "extensions": {
+        "directory": "ui-overrides"
+      }
+    },
     "features": {
       "uploads": false,
       "onChainIndexing": true,
@@ -22,7 +30,12 @@
         { "name": "promptVersion", "type": "string", "required": true },
         { "name": "model", "type": "string", "required": true },
         { "name": "repoSha", "type": "string", "required": true },
-        { "name": "docsUrl", "type": "string", "required": true },
+        {
+          "name": "docsUrl",
+          "type": "string",
+          "required": true,
+          "ui": { "component": "externalLink", "label": "Guide", "target": "_blank" }
+        },
         { "name": "docsSnapshotHash", "type": "string" },
         { "name": "status", "type": "string", "required": true },
         { "name": "failurePhase", "type": "string" },
@@ -36,10 +49,18 @@
         { "name": "contentMatch", "type": "bool", "required": true },
         { "name": "artifactBundleUri", "type": "string" },
         { "name": "artifactBundleHash", "type": "string" },
-        { "name": "artifactBundleHttpUrl", "type": "string" },
+        {
+          "name": "artifactBundleHttpUrl",
+          "type": "string",
+          "ui": { "component": "externalLink", "label": "Artifact bundle", "target": "_blank" }
+        },
         { "name": "artifactIndexUri", "type": "string" },
         { "name": "artifactIndexHash", "type": "string" },
-        { "name": "artifactIndexHttpUrl", "type": "string" },
+        {
+          "name": "artifactIndexHttpUrl",
+          "type": "string",
+          "ui": { "component": "externalLink", "label": "Artifact index", "target": "_blank" }
+        },
         { "name": "operatorNotes", "type": "string" }
       ],
       "createRules": {

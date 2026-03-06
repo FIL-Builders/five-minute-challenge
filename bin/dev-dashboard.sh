@@ -26,7 +26,7 @@ if [[ -f "${REPO_ROOT}/dashboard/generated/manifest.json" ]]; then
 fi
 
 if [[ ! -d "${UI_DIR}/node_modules" ]]; then
-  (cd "${UI_DIR}" && pnpm install --frozen-lockfile)
+  (cd "${UI_DIR}" && pnpm install)
 fi
 
 cd "${UI_DIR}"

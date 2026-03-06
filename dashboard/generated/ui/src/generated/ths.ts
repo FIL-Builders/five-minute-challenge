@@ -11,6 +11,14 @@ export const ths = {
     "name": "Benchmark Registry",
     "slug": "benchmark-registry",
     "description": "Local run registry and dashboard for Filecoin Cloud benchmark history.",
+    "ui": {
+      "homePage": {
+        "mode": "custom"
+      },
+      "extensions": {
+        "directory": "ui-overrides"
+      }
+    },
     "features": {
       "uploads": false,
       "onChainIndexing": true,
@@ -51,7 +59,12 @@ export const ths = {
         {
           "name": "docsUrl",
           "type": "string",
-          "required": true
+          "required": true,
+          "ui": {
+            "component": "externalLink",
+            "label": "Guide",
+            "target": "_blank"
+          }
         },
         {
           "name": "docsSnapshotHash",
@@ -112,7 +125,29 @@ export const ths = {
         },
         {
           "name": "artifactBundleHttpUrl",
+          "type": "string",
+          "ui": {
+            "component": "externalLink",
+            "label": "Artifact bundle",
+            "target": "_blank"
+          }
+        },
+        {
+          "name": "artifactIndexUri",
           "type": "string"
+        },
+        {
+          "name": "artifactIndexHash",
+          "type": "string"
+        },
+        {
+          "name": "artifactIndexHttpUrl",
+          "type": "string",
+          "ui": {
+            "component": "externalLink",
+            "label": "Artifact index",
+            "target": "_blank"
+          }
         },
         {
           "name": "operatorNotes",
@@ -158,6 +193,9 @@ export const ths = {
           "artifactBundleUri",
           "artifactBundleHash",
           "artifactBundleHttpUrl",
+          "artifactIndexUri",
+          "artifactIndexHash",
+          "artifactIndexHttpUrl",
           "operatorNotes"
         ],
         "access": "public"
