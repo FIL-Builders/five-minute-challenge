@@ -110,3 +110,17 @@ Local running log for benchmark-repo development.
 - Added a `runDir` fallback path in finalization so repaired runs can be re-normalized even after the original temp workspace has been cleaned up.
 - The local feed now reflects `20260305T230454Z-f3e09d` as a validated success in `inherited-key-follow-docs` mode.
 - One caveat remains on the current on-chain registry schema: `BenchmarkRun #2` was created from stale pre-repair data before local normalization was corrected, and the current contract only allows updating status/failure/artifact summary fields, not wallet or `pieceCid`; full on-chain repair would require either a contract schema change or redeploying the early-stage registry.
+
+### Filecoin-Hosted Artifact Index And Clean Registry Validation
+
+- Extended the benchmark registry schema with `artifactIndexUri`, `artifactIndexHash`, and `artifactIndexHttpUrl` so the on-chain run record can point to a Filecoin-hosted artifact directory as well as the raw bundle.
+- Reworked `scripts/upload-run-artifacts.mjs` to publish the workspace bundle, individual evidence files, and a Filecoin-hosted `artifact-index.json` for each run instead of relying on localhost artifact routes.
+- Updated dashboard record generation and the custom run detail page to render Filecoin-backed evidence URLs only.
+- Tightened `scripts/build-dashboard-feed.mjs` to scope the local feed to the current deployed registry by default, which keeps wiped/redeployed Calibration registries from mixing with stale local runs.
+- Fixed harness normalization for the newer inherited-key helper-run result shape by teaching `scripts/finalize-run.mjs` and `scripts/validate-run.mjs` to recognize pre-funded, already-approved wallets where no new deposit transaction is required.
+- Deployed a fresh benchmark registry to Filecoin Calibration at `0x10ce50e27b9dc9b333345aa4ce6cc5f39a2160ce`.
+- Ran inherited-key benchmark `20260306T000054Z-f0eb33` end to end as a validated success, then published:
+  - `BenchmarkRun #1` on-chain in the fresh registry
+  - bundle `piececid:bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4`
+  - artifact index `piececid:bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj`
+- Confirmed the local dashboard feed now contains only the current deployment’s run and no `/api/artifacts/...` links.

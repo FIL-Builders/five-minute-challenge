@@ -37,6 +37,9 @@
         { "name": "artifactBundleUri", "type": "string" },
         { "name": "artifactBundleHash", "type": "string" },
         { "name": "artifactBundleHttpUrl", "type": "string" },
+        { "name": "artifactIndexUri", "type": "string" },
+        { "name": "artifactIndexHash", "type": "string" },
+        { "name": "artifactIndexHttpUrl", "type": "string" },
         { "name": "operatorNotes", "type": "string" }
       ],
       "createRules": {
@@ -78,6 +81,9 @@
           "artifactBundleUri",
           "artifactBundleHash",
           "artifactBundleHttpUrl",
+          "artifactIndexUri",
+          "artifactIndexHash",
+          "artifactIndexHttpUrl",
           "operatorNotes"
         ],
         "access": "public"

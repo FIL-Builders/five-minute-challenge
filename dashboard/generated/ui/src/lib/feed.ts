@@ -2,6 +2,9 @@ export type ArtifactLink = {
   label: string;
   path: string;
   url: string | null;
+  uri?: string | null;
+  hash?: string | null;
+  pieceCid?: string | null;
 };
 
 export type DashboardPublishMeta = {
@@ -25,7 +28,7 @@ export type BenchmarkRunMeta = {
     artifactPublishResultPath: string | null;
     dashboardPublishResultPath?: string | null;
   };
-  localArtifacts: ArtifactLink[];
+  publishedArtifacts: ArtifactLink[];
   validation: {
     status: string | null;
     failurePhase: string | null;
@@ -35,6 +38,9 @@ export type BenchmarkRunMeta = {
     artifactBundleUri: string | null;
     artifactBundleHash: string | null;
     artifactBundleHttpUrl: string | null;
+    artifactIndexUri: string | null;
+    artifactIndexHash: string | null;
+    artifactIndexHttpUrl: string | null;
   };
   dashboardPublish: DashboardPublishMeta;
 };
@@ -60,6 +66,9 @@ export type BenchmarkRunRecord = {
   artifactBundleUri: string;
   artifactBundleHash: string;
   artifactBundleHttpUrl: string;
+  artifactIndexUri: string;
+  artifactIndexHash: string;
+  artifactIndexHttpUrl: string;
   operatorNotes: string;
 };
 

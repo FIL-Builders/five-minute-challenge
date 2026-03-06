@@ -109,6 +109,18 @@
           "type": "string"
         },
         {
+          "name": "artifactIndexUri",
+          "type": "string"
+        },
+        {
+          "name": "artifactIndexHash",
+          "type": "string"
+        },
+        {
+          "name": "artifactIndexHttpUrl",
+          "type": "string"
+        },
+        {
           "name": "operatorNotes",
           "type": "string"
         }
@@ -152,6 +164,9 @@
           "artifactBundleUri",
           "artifactBundleHash",
           "artifactBundleHttpUrl",
+          "artifactIndexUri",
+          "artifactIndexHash",
+          "artifactIndexHttpUrl",
           "operatorNotes"
         ],
         "access": "public"

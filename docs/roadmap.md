@@ -84,7 +84,7 @@ Status: local plus chain-backed baseline complete
 - [x] Make a single failed run inspectable without opening raw logs first.
 - [x] Deploy the benchmark registry schema to Filecoin Calibration.
 - [x] Publish at least one finalized `BenchmarkRun` record into the deployed registry.
-- [x] Expose local artifact links from the dashboard over HTTP instead of only showing piece CIDs.
+- [x] Publish per-run artifact bundles, evidence files, and an artifact index to Filecoin so dashboard artifact links do not depend on localhost.
 
 ## Phase 5: Scheduling And Alerting
 

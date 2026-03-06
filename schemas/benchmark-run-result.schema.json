@@ -183,6 +183,30 @@
             "string",
             "null"
           ]
+        },
+        "artifactBundleHttpUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "artifactIndexUri": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "artifactIndexHash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "artifactIndexHttpUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       }
     },
@@ -210,6 +234,9 @@
             "string",
             "null"
           ]
+        },
+        "depositRequirementSatisfied": {
+          "type": "boolean"
         },
         "pieceCid": {
           "type": [

@@ -35,6 +35,10 @@ function parseTimeoutMs(value, fallbackMs) {
   return parsed;
 }
 
+function parseBoolean(value) {
+  return ["1", "true", "yes", "on"].includes(String(value ?? "").trim().toLowerCase());
+}
+
 function normalizePrivateKey(value) {
   if (!value) throw new Error("DASHBOARD_PRIVATE_KEY, PRIVATE_KEY, or --private-key is required for dashboard publication.");
   return value.startsWith("0x") ? value : `0x${value}`;
@@ -95,6 +99,14 @@ function getCollectionSchema(schema, collectionName) {
   return collection;
 }
 
+function getFunctionAbi(abi, functionName) {
+  const entry = Array.isArray(abi)
+    ? abi.find((item) => item?.type === "function" && item?.name === functionName)
+    : null;
+  if (!entry) throw new Error(`Function not found in ABI: ${functionName}`);
+  return entry;
+}
+
 function buildCreateInput(schema, record) {
   const collection = getCollectionSchema(schema, record.collection);
   const data = record?.data ?? {};
@@ -103,6 +115,16 @@ function buildCreateInput(schema, record) {
     input[field.name] = inputValueForType(field.type, data[field.name]);
   }
   return input;
+}
+
+function buildUpdateArgs(abi, functionName, recordId, record) {
+  const fn = getFunctionAbi(abi, functionName);
+  const data = record?.data ?? {};
+  const args = [BigInt(recordId)];
+  for (const input of fn.inputs.slice(1)) {
+    args.push(inputValueForType(input.type, data[input.name]));
+  }
+  return args;
 }
 
 function buildViewHref(collectionName, recordId) {
@@ -136,7 +158,15 @@ function serializeError(error, extra = {}) {
   };
 }
 
-async function publishRecord({ publicClient, walletClient, account, abi, address, schema, record, timeoutMs }) {
+async function waitForReceipt({ publicClient, hash, timeoutMs, label }) {
+  await withTimeout(
+    publicClient.waitForTransactionReceipt({ hash }),
+    timeoutMs,
+    `Timed out waiting for ${label} transaction receipt after ${timeoutMs}ms: ${hash}`
+  );
+}
+
+async function createRecord({ publicClient, walletClient, account, abi, address, schema, record, timeoutMs }) {
   const functionName = `create${record.collection}`;
   const input = buildCreateInput(schema, record);
   const simulation = await publicClient.simulateContract({
@@ -151,11 +181,7 @@ async function publishRecord({ publicClient, walletClient, account, abi, address
     account
   });
   console.error(`Published ${record.collection} tx submitted: ${hash}`);
-  await withTimeout(
-    publicClient.waitForTransactionReceipt({ hash }),
-    timeoutMs,
-    `Timed out waiting for ${record.collection} transaction receipt after ${timeoutMs}ms: ${hash}`
-  );
+  await waitForReceipt({ publicClient, hash, timeoutMs, label: record.collection });
 
   return {
     collection: record.collection,
@@ -165,7 +191,50 @@ async function publishRecord({ publicClient, walletClient, account, abi, address
   };
 }
 
-async function recoverPublishedRun({ publicClient, abi, address, runId }) {
+async function updateRunRecord({ publicClient, walletClient, account, abi, address, recordId, record, timeoutMs }) {
+  const functionName = "updateBenchmarkRun";
+  const args = buildUpdateArgs(abi, functionName, recordId, record);
+  const simulation = await publicClient.simulateContract({
+    address,
+    abi,
+    functionName,
+    args,
+    account: account.address
+  });
+  const hash = await walletClient.writeContract({
+    ...simulation.request,
+    account
+  });
+  console.error(`Updated BenchmarkRun tx submitted: ${hash}`);
+  await waitForReceipt({ publicClient, hash, timeoutMs, label: "BenchmarkRun update" });
+
+  return {
+    collection: "BenchmarkRun",
+    recordId: String(recordId),
+    txHash: hash,
+    href: buildViewHref("BenchmarkRun", recordId)
+  };
+}
+
+async function deleteIncidentRecord({ publicClient, walletClient, account, abi, address, recordId, timeoutMs }) {
+  const functionName = "deleteBenchmarkIncident";
+  const simulation = await publicClient.simulateContract({
+    address,
+    abi,
+    functionName,
+    args: [BigInt(recordId)],
+    account: account.address
+  });
+  const hash = await walletClient.writeContract({
+    ...simulation.request,
+    account
+  });
+  console.error(`Deleted BenchmarkIncident tx submitted: ${hash}`);
+  await waitForReceipt({ publicClient, hash, timeoutMs, label: "BenchmarkIncident delete" });
+  return hash;
+}
+
+async function findBenchmarkRunByRunId({ publicClient, abi, address, runId }) {
   const count = Number(
     await publicClient.readContract({
       address,
@@ -192,11 +261,8 @@ async function recoverPublishedRun({ publicClient, abi, address, runId }) {
     });
     if (record?.runId === runId) {
       return {
-        collection: "BenchmarkRun",
-        recordId: String(record.id),
-        txHash: null,
-        href: buildViewHref("BenchmarkRun", record.id),
-        publishedAt: toIsoTimestamp(record.createdAt)
+        id: String(record.id),
+        createdAt: toIsoTimestamp(record.createdAt)
       };
     }
   }
@@ -204,7 +270,7 @@ async function recoverPublishedRun({ publicClient, abi, address, runId }) {
   return null;
 }
 
-async function recoverPublishedIncidents({ publicClient, abi, address, runId }) {
+async function listBenchmarkIncidentsByRunId({ publicClient, abi, address, runId }) {
   const count = Number(
     await publicClient.readContract({
       address,
@@ -232,117 +298,16 @@ async function recoverPublishedIncidents({ publicClient, abi, address, runId }) 
     });
     if (record?.runId === runId) {
       matches.push({
-        collection: "BenchmarkIncident",
-        recordId: String(record.id),
-        txHash: null,
-        href: buildViewHref("BenchmarkIncident", record.id),
-        publishedAt: toIsoTimestamp(record.createdAt)
+        id: String(record.id),
+        href: buildViewHref("BenchmarkIncident", id)
       });
     }
   }
 
-  return matches.sort((left, right) => Number(left.recordId) - Number(right.recordId));
+  return matches.sort((left, right) => Number(left.id) - Number(right.id));
 }
 
-async function main() {
-  const args = parseArgs(process.argv);
-  const repoRoot = args["repo-root"] ?? process.cwd();
-  const runDir = args["run-dir"];
-  const recordsPath = args["records"] ?? path.join(runDir, "dashboard-records.json");
-  const manifestPath = args["manifest"] ?? path.join(repoRoot, "dashboard", "generated", "manifest.json");
-  const compiledPath = args["compiled"] ?? path.join(repoRoot, "dashboard", "generated", "compiled", "App.json");
-  const schemaPath = args["schema"] ?? path.join(repoRoot, "dashboard", "schema.json");
-  const resultPath = args["output"] ?? path.join(runDir, "dashboard-publish-result.json");
-  const timeoutMs = parseTimeoutMs(args["timeout-ms"] ?? process.env.DASHBOARD_PUBLISH_TIMEOUT_MS ?? "", 180000);
-
-  if (!runDir) throw new Error("--run-dir is required.");
-  const existingResult = await maybeReadJson(resultPath);
-  if (existingResult?.status === "success") {
-    return;
-  }
-
-  const privateKey = normalizePrivateKey(args["private-key"] ?? process.env.DASHBOARD_PRIVATE_KEY ?? process.env.PRIVATE_KEY ?? "");
-  const [payload, manifest, compiled, schema] = await Promise.all([
-    readJson(recordsPath),
-    readJson(manifestPath),
-    readJson(compiledPath),
-    readJson(schemaPath)
-  ]);
-
-  const deployment = getPrimaryDeployment(manifest);
-  if (!deployment?.deploymentEntrypointAddress) {
-    throw new Error("Dashboard manifest is missing a primary deployment address.");
-  }
-  const chainConfigUrl = deployment?.chainConfig?.url;
-  const chainConfigPath = typeof chainConfigUrl === "string" && chainConfigUrl.startsWith("file://")
-    ? new URL(chainConfigUrl).pathname
-    : path.join(repoRoot, "dashboard", "generated", "chain-config", `${deployment.chainName}.json`);
-  const chainConfig = await readJson(chainConfigPath);
-  const chain = buildChain(chainConfig);
-  const account = privateKeyToAccount(privateKey);
-  const abi = compiled.abi;
-  const address = deployment.deploymentEntrypointAddress;
-
-  const publicClient = createPublicClient({
-    chain,
-    transport: http(chain.rpcUrls.default.http[0])
-  });
-  const walletClient = createWalletClient({
-    account,
-    chain,
-    transport: http(chain.rpcUrls.default.http[0])
-  });
-
-  let publishedRecords = [];
-  let failure = null;
-  for (const record of payload.records ?? []) {
-    try {
-      publishedRecords.push(await publishRecord({ publicClient, walletClient, account, abi, address, schema, record, timeoutMs }));
-    } catch (error) {
-      failure = serializeError(error, {
-        collection: record.collection
-      });
-      break;
-    }
-  }
-
-  let recovered = false;
-  let recoveredPublishedAt = null;
-  if (failure?.collection === "BenchmarkRun" && failure.message.includes("UniqueViolation()")) {
-    const recoveredRun = await recoverPublishedRun({ publicClient, abi, address, runId: payload.runId });
-    if (recoveredRun) {
-      const recoveredIncidents = await recoverPublishedIncidents({ publicClient, abi, address, runId: payload.runId });
-      publishedRecords = [recoveredRun, ...recoveredIncidents];
-      recovered = true;
-      recoveredPublishedAt = recoveredRun.publishedAt;
-      failure = null;
-    }
-  }
-
-  const runRecord = publishedRecords.find((record) => record.collection === "BenchmarkRun") ?? null;
-  const incidentRecords = publishedRecords.filter((record) => record.collection === "BenchmarkIncident");
-
-  const result = {
-    status: failure ? "failed" : "success",
-    publishedAt: failure ? null : (recoveredPublishedAt ?? new Date().toISOString()),
-    attemptedAt: new Date().toISOString(),
-    recovered,
-    runId: payload.runId,
-    chainId: Number(chain.id),
-    chainName: deployment.chainName ?? chain.name,
-    deploymentAddress: address,
-    manifestPath: path.relative(repoRoot, manifestPath),
-    recordsPath: path.relative(repoRoot, recordsPath),
-    timeoutMs,
-    publishedRecords,
-    runRecordId: runRecord?.recordId ?? null,
-    runRecordHref: runRecord?.href ?? null,
-    incidentRecordIds: incidentRecords.map((record) => record.recordId),
-    incidentRecordHrefs: incidentRecords.map((record) => record.href),
-    error: failure
-  };
-  await writeFile(resultPath, `${JSON.stringify(result, null, 2)}\n`);
-
+function refreshOutputs({ repoRoot, runDir }) {
   const refreshDashboardRecords = spawnSync(
     process.execPath,
     [
@@ -361,7 +326,6 @@ async function main() {
       encoding: "utf8"
     }
   );
-
   if (refreshDashboardRecords.status !== 0) {
     throw new Error(refreshDashboardRecords.stderr || refreshDashboardRecords.stdout || "Failed to refresh dashboard records after on-chain publication.");
   }
@@ -374,10 +338,155 @@ async function main() {
       encoding: "utf8"
     }
   );
-
   if (refreshFeed.status !== 0) {
     throw new Error(refreshFeed.stderr || refreshFeed.stdout || "Failed to refresh dashboard feed after on-chain publication.");
   }
+}
+
+async function main() {
+  const args = parseArgs(process.argv);
+  const repoRoot = args["repo-root"] ?? process.cwd();
+  const runDir = args["run-dir"];
+  const recordsPath = args["records"] ?? path.join(runDir, "dashboard-records.json");
+  const manifestPath = args["manifest"] ?? path.join(repoRoot, "dashboard", "generated", "manifest.json");
+  const compiledPath = args["compiled"] ?? path.join(repoRoot, "dashboard", "generated", "compiled", "App.json");
+  const schemaPath = args["schema"] ?? path.join(repoRoot, "dashboard", "schema.json");
+  const resultPath = args["output"] ?? path.join(runDir, "dashboard-publish-result.json");
+  const timeoutMs = parseTimeoutMs(args["timeout-ms"] ?? process.env.DASHBOARD_PUBLISH_TIMEOUT_MS ?? "", 180000);
+  const force = parseBoolean(args["force"] ?? "0");
+
+  if (!runDir) throw new Error("--run-dir is required.");
+
+  const privateKey = normalizePrivateKey(args["private-key"] ?? process.env.DASHBOARD_PRIVATE_KEY ?? process.env.PRIVATE_KEY ?? "");
+  const [payload, manifest, compiled, schema, existingResult] = await Promise.all([
+    readJson(recordsPath),
+    readJson(manifestPath),
+    readJson(compiledPath),
+    readJson(schemaPath),
+    maybeReadJson(resultPath)
+  ]);
+
+  const deployment = getPrimaryDeployment(manifest);
+  if (!deployment?.deploymentEntrypointAddress) {
+    throw new Error("Dashboard manifest is missing a primary deployment address.");
+  }
+  const chainConfigUrl = deployment?.chainConfig?.url;
+  const chainConfigPath = typeof chainConfigUrl === "string" && chainConfigUrl.startsWith("file://")
+    ? new URL(chainConfigUrl).pathname
+    : path.join(repoRoot, "dashboard", "generated", "chain-config", `${deployment.chainName}.json`);
+  const chainConfig = await readJson(chainConfigPath);
+  const chain = buildChain(chainConfig);
+  const account = privateKeyToAccount(privateKey);
+  const abi = compiled.abi;
+  const address = deployment.deploymentEntrypointAddress;
+
+  if (existingResult?.status === "success" && existingResult.deploymentAddress === address && !force) {
+    return;
+  }
+
+  const publicClient = createPublicClient({
+    chain,
+    transport: http(chain.rpcUrls.default.http[0])
+  });
+  const walletClient = createWalletClient({
+    account,
+    chain,
+    transport: http(chain.rpcUrls.default.http[0])
+  });
+
+  const runRecord = (payload.records ?? []).find((record) => record.collection === "BenchmarkRun");
+  if (!runRecord) throw new Error(`No BenchmarkRun record found in ${recordsPath}.`);
+  const desiredIncidents = (payload.records ?? []).filter((record) => record.collection === "BenchmarkIncident");
+
+  let failure = null;
+  let runPublication = null;
+  let deletedIncidentIds = [];
+  let publishedIncidents = [];
+  let reconciled = false;
+
+  try {
+    const existingRun = await findBenchmarkRunByRunId({ publicClient, abi, address, runId: payload.runId });
+    if (existingRun) {
+      reconciled = true;
+      runPublication = await updateRunRecord({
+        publicClient,
+        walletClient,
+        account,
+        abi,
+        address,
+        recordId: existingRun.id,
+        record: runRecord,
+        timeoutMs
+      });
+      runPublication.publishedAt = existingRun.createdAt;
+    } else {
+      runPublication = await createRecord({
+        publicClient,
+        walletClient,
+        account,
+        abi,
+        address,
+        schema,
+        record: runRecord,
+        timeoutMs
+      });
+      runPublication.publishedAt = new Date().toISOString();
+    }
+
+    const existingIncidents = await listBenchmarkIncidentsByRunId({ publicClient, abi, address, runId: payload.runId });
+    for (const incident of existingIncidents) {
+      await deleteIncidentRecord({
+        publicClient,
+        walletClient,
+        account,
+        abi,
+        address,
+        recordId: incident.id,
+        timeoutMs
+      });
+      deletedIncidentIds.push(String(incident.id));
+      reconciled = true;
+    }
+
+    for (const record of desiredIncidents) {
+      publishedIncidents.push(await createRecord({
+        publicClient,
+        walletClient,
+        account,
+        abi,
+        address,
+        schema,
+        record,
+        timeoutMs
+      }));
+    }
+  } catch (error) {
+    failure = serializeError(error);
+  }
+
+  const result = {
+    status: failure ? "failed" : "success",
+    publishedAt: failure ? null : (runPublication?.publishedAt ?? new Date().toISOString()),
+    attemptedAt: new Date().toISOString(),
+    reconciled,
+    runId: payload.runId,
+    chainId: Number(chain.id),
+    chainName: deployment.chainName ?? chain.name,
+    deploymentAddress: address,
+    manifestPath: path.relative(repoRoot, manifestPath),
+    recordsPath: path.relative(repoRoot, recordsPath),
+    timeoutMs,
+    deletedIncidentIds,
+    publishedRecords: [runPublication, ...publishedIncidents].filter(Boolean),
+    runRecordId: runPublication?.recordId ?? null,
+    runRecordHref: runPublication?.href ?? null,
+    incidentRecordIds: publishedIncidents.map((record) => record.recordId),
+    incidentRecordHrefs: publishedIncidents.map((record) => record.href),
+    error: failure
+  };
+  await writeFile(resultPath, `${JSON.stringify(result, null, 2)}\n`);
+
+  refreshOutputs({ repoRoot, runDir });
 
   if (failure) {
     throw new Error(failure.message);

@@ -1,320 +1,124 @@
 {
-  "generatedAt": "2026-03-05T23:24:22.216Z",
-  "runCount": 4,
-  "incidentCount": 11,
+  "generatedAt": "2026-03-06T00:32:15.747Z",
+  "runCount": 1,
+  "incidentCount": 0,
   "runs": [
     {
       "collection": "BenchmarkRun",
       "data": {
-        "runId": "20260305T230454Z-f3e09d",
+        "runId": "20260306T000054Z-f0eb33",
         "mode": "inherited-key-follow-docs",
         "promptVersion": "inherited-key-follow-docs-v1",
         "model": "gpt-5.3-codex",
-        "repoSha": "1f84e37dc98b5aac741c85360eba2b6f2be7146e",
+        "repoSha": "78b8e8fe0d560348f684ac5b5962f071bf4c1d73",
         "docsUrl": "https://docs.filecoin.cloud/getting-started/",
         "docsSnapshotHash": "2542a0e97ab61d178b3c38be9617de1cad51ab3387a4039e23d52af2fbc0d72e",
         "status": "success",
         "failurePhase": "",
-        "startedAt": "2026-03-05T23:04:55Z",
-        "endedAt": "2026-03-05T23:16:05Z",
-        "outerWallTimeMs": "670000",
+        "startedAt": "2026-03-06T00:00:54Z",
+        "endedAt": "2026-03-06T00:09:59Z",
+        "outerWallTimeMs": "545000",
         "walletAddress": "0xF00DCE36817586672B47480FB48C94177A97278B",
         "fundingTxHash": "",
-        "depositTxHash": "0x9e087880cd6a6715ecc190d181e49c17edf1d454c87c3032c9857fabdb1a554d",
-        "pieceCid": "bafkzcibds4aqi6sdagubuvbnh655u6ui42acbd2n2x4klqjk3ehoeig7lnkxfhys",
-        "contentMatch": true,
-        "artifactBundleUri": "piececid:bafkzcibdraxquqxltscvg32rqhd6eqqkzkmp72dxpdmzlxcbiihjkwy7yg6yfsb7",
-        "artifactBundleHash": "sha256:3002adb1ba23937db2fbd6137bb3d86dece67f209f09e434fccc1b634bc1dc8e",
-        "artifactBundleHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibdraxquqxltscvg32rqhd6eqqkzkmp72dxpdmzlxcbiihjkwy7yg6yfsb7",
-        "operatorNotes": ""
-      },
-      "meta": {
-        "source": {
-          "runSummaryPath": "runs/20260305T230454Z-f3e09d/run-summary.json",
-          "validationResultPath": "runs/20260305T230454Z-f3e09d/validation-result.json",
-          "dashboardRecordsPath": "runs/20260305T230454Z-f3e09d/dashboard-records.json",
-          "artifactPublishResultPath": "runs/20260305T230454Z-f3e09d/artifact-publish-result.json",
-          "dashboardPublishResultPath": "runs/20260305T230454Z-f3e09d/dashboard-publish-result.json"
-        },
-        "localArtifacts": [
-          {
-            "label": "Report",
-            "path": "runs/20260305T230454Z-f3e09d/report.md",
-            "url": "/api/artifacts/20260305T230454Z-f3e09d/report.md"
-          },
-          {
-            "label": "Stdout log",
-            "path": "runs/20260305T230454Z-f3e09d/stdout.log",
-            "url": "/api/artifacts/20260305T230454Z-f3e09d/stdout.log"
-          },
-          {
-            "label": "Stderr log",
-            "path": "runs/20260305T230454Z-f3e09d/stderr.log",
-            "url": "/api/artifacts/20260305T230454Z-f3e09d/stderr.log"
-          },
-          {
-            "label": "Agent log",
-            "path": "runs/20260305T230454Z-f3e09d/execution.log",
-            "url": "/api/artifacts/20260305T230454Z-f3e09d/execution.log"
-          },
-          {
-            "label": "Uploaded payload",
-            "path": "runs/20260305T230454Z-f3e09d/payload-20260305T230454Z-f3e09d.txt",
-            "url": "/api/artifacts/20260305T230454Z-f3e09d/payload-20260305T230454Z-f3e09d.txt"
-          },
-          {
-            "label": "Downloaded payload",
-            "path": "runs/20260305T230454Z-f3e09d/downloaded-20260305T230454Z-f3e09d.bin",
-            "url": "/api/artifacts/20260305T230454Z-f3e09d/downloaded-20260305T230454Z-f3e09d.bin"
-          },
-          {
-            "label": "Run summary",
-            "path": "runs/20260305T230454Z-f3e09d/run-summary.json",
-            "url": "/api/artifacts/20260305T230454Z-f3e09d/run-summary.json"
-          },
-          {
-            "label": "Validation result",
-            "path": "runs/20260305T230454Z-f3e09d/validation-result.json",
-            "url": "/api/artifacts/20260305T230454Z-f3e09d/validation-result.json"
-          },
-          {
-            "label": "Dashboard records",
-            "path": "runs/20260305T230454Z-f3e09d/dashboard-records.json",
-            "url": "/api/artifacts/20260305T230454Z-f3e09d/dashboard-records.json"
-          },
-          {
-            "label": "Artifact publish result",
-            "path": "runs/20260305T230454Z-f3e09d/artifact-publish-result.json",
-            "url": "/api/artifacts/20260305T230454Z-f3e09d/artifact-publish-result.json"
-          },
-          {
-            "label": "Dashboard publish result",
-            "path": "runs/20260305T230454Z-f3e09d/dashboard-publish-result.json",
-            "url": "/api/artifacts/20260305T230454Z-f3e09d/dashboard-publish-result.json"
-          }
-        ],
-        "validation": {
-          "status": "success",
-          "failurePhase": null,
-          "schemaValid": true
-        },
-        "externalArtifacts": {
-          "artifactBundleUri": "piececid:bafkzcibdraxquqxltscvg32rqhd6eqqkzkmp72dxpdmzlxcbiihjkwy7yg6yfsb7",
-          "artifactBundleHash": "sha256:3002adb1ba23937db2fbd6137bb3d86dece67f209f09e434fccc1b634bc1dc8e",
-          "artifactBundleHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibdraxquqxltscvg32rqhd6eqqkzkmp72dxpdmzlxcbiihjkwy7yg6yfsb7"
-        },
-        "dashboardPublish": {
-          "status": "success",
-          "attemptedAt": "2026-03-05T23:22:33.881Z",
-          "publishedAt": "2026-03-05T23:22:33.881Z",
-          "chainName": "filecoin_calibration",
-          "deploymentAddress": "0x74af3ad6de10623f909b11c6d9ed27dfea59533a",
-          "runRecordId": "2",
-          "runRecordHref": "/BenchmarkRun/view/?id=2",
-          "incidentRecordIds": [
-            "6",
-            "7",
-            "8",
-            "9"
-          ],
-          "incidentRecordHrefs": [
-            "/BenchmarkIncident/view/?id=6",
-            "/BenchmarkIncident/view/?id=7",
-            "/BenchmarkIncident/view/?id=8",
-            "/BenchmarkIncident/view/?id=9"
-          ],
-          "error": null
-        }
-      }
-    },
-    {
-      "collection": "BenchmarkRun",
-      "data": {
-        "runId": "20260305T223418Z-b085f4",
-        "mode": "fresh-follow-docs",
-        "promptVersion": "fresh-follow-docs-v1",
-        "model": "gpt-5.3-codex",
-        "repoSha": "4f88625fd92e4548b2aef18ec7fac296036cce0e",
-        "docsUrl": "https://docs.filecoin.cloud/getting-started/",
-        "docsSnapshotHash": "2542a0e97ab61d178b3c38be9617de1cad51ab3387a4039e23d52af2fbc0d72e",
-        "status": "failure",
-        "failurePhase": "funding",
-        "startedAt": "2026-03-05T22:34:19Z",
-        "endedAt": "2026-03-05T22:46:38Z",
-        "outerWallTimeMs": "739401",
-        "walletAddress": "0x7F17908401B8635054c17a5D67CF175eF11Bf735",
-        "fundingTxHash": "",
         "depositTxHash": "",
-        "pieceCid": "",
-        "contentMatch": false,
-        "artifactBundleUri": "piececid:bafkzcibe6tdbyd7thupd2ivoroytcf2l5woacvkomf2cw5kh6xvvaqbli63mbgw3cm",
-        "artifactBundleHash": "sha256:15bdaedd84c388d123432c8bd38744a4489bb6497e1ce121f526e7bd4fb6f2d0",
-        "artifactBundleHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibe6tdbyd7thupd2ivoroytcf2l5woacvkomf2cw5kh6xvvaqbli63mbgw3cm",
-        "operatorNotes": "artifact_publish: uploaded workspace bundle to piececid:bafkzcibe6tdbyd7thupd2ivoroytcf2l5woacvkomf2cw5kh6xvvaqbli63mbgw3cm funding: Missing funding evidence. | deposit: Missing deposit or approval transaction evidence. | upload: Missing uploaded piece CID. | download: Missing downloaded payload artifact path. | verification: Downloaded payload did not verify as matching uploaded content."
-      },
-      "meta": {
-        "source": {
-          "runSummaryPath": "runs/20260305T223418Z-b085f4/run-summary.json",
-          "validationResultPath": "runs/20260305T223418Z-b085f4/validation-result.json",
-          "dashboardRecordsPath": "runs/20260305T223418Z-b085f4/dashboard-records.json",
-          "artifactPublishResultPath": "runs/20260305T223418Z-b085f4/artifact-publish-result.json",
-          "dashboardPublishResultPath": "runs/20260305T223418Z-b085f4/dashboard-publish-result.json"
-        },
-        "localArtifacts": [
-          {
-            "label": "Report",
-            "path": "runs/20260305T223418Z-b085f4/report.md",
-            "url": "/api/artifacts/20260305T223418Z-b085f4/report.md"
-          },
-          {
-            "label": "Stdout log",
-            "path": "runs/20260305T223418Z-b085f4/stdout.log",
-            "url": "/api/artifacts/20260305T223418Z-b085f4/stdout.log"
-          },
-          {
-            "label": "Stderr log",
-            "path": "runs/20260305T223418Z-b085f4/stderr.log",
-            "url": "/api/artifacts/20260305T223418Z-b085f4/stderr.log"
-          },
-          {
-            "label": "Run summary",
-            "path": "runs/20260305T223418Z-b085f4/run-summary.json",
-            "url": "/api/artifacts/20260305T223418Z-b085f4/run-summary.json"
-          },
-          {
-            "label": "Validation result",
-            "path": "runs/20260305T223418Z-b085f4/validation-result.json",
-            "url": "/api/artifacts/20260305T223418Z-b085f4/validation-result.json"
-          },
-          {
-            "label": "Dashboard records",
-            "path": "runs/20260305T223418Z-b085f4/dashboard-records.json",
-            "url": "/api/artifacts/20260305T223418Z-b085f4/dashboard-records.json"
-          },
-          {
-            "label": "Artifact publish result",
-            "path": "runs/20260305T223418Z-b085f4/artifact-publish-result.json",
-            "url": "/api/artifacts/20260305T223418Z-b085f4/artifact-publish-result.json"
-          },
-          {
-            "label": "Dashboard publish result",
-            "path": "runs/20260305T223418Z-b085f4/dashboard-publish-result.json",
-            "url": "/api/artifacts/20260305T223418Z-b085f4/dashboard-publish-result.json"
-          }
-        ],
-        "validation": {
-          "status": "failure",
-          "failurePhase": "funding",
-          "schemaValid": true
-        },
-        "externalArtifacts": {
-          "artifactBundleUri": "piececid:bafkzcibe6tdbyd7thupd2ivoroytcf2l5woacvkomf2cw5kh6xvvaqbli63mbgw3cm",
-          "artifactBundleHash": "sha256:15bdaedd84c388d123432c8bd38744a4489bb6497e1ce121f526e7bd4fb6f2d0",
-          "artifactBundleHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibe6tdbyd7thupd2ivoroytcf2l5woacvkomf2cw5kh6xvvaqbli63mbgw3cm"
-        },
-        "dashboardPublish": {
-          "status": "success",
-          "attemptedAt": "2026-03-05T22:55:16.323Z",
-          "publishedAt": "2026-03-05T22:48:30.000Z",
-          "chainName": "filecoin_calibration",
-          "deploymentAddress": "0x74af3ad6de10623f909b11c6d9ed27dfea59533a",
-          "runRecordId": "1",
-          "runRecordHref": "/BenchmarkRun/view/?id=1",
-          "incidentRecordIds": [
-            "1",
-            "2",
-            "3",
-            "4",
-            "5"
-          ],
-          "incidentRecordHrefs": [
-            "/BenchmarkIncident/view/?id=1",
-            "/BenchmarkIncident/view/?id=2",
-            "/BenchmarkIncident/view/?id=3",
-            "/BenchmarkIncident/view/?id=4",
-            "/BenchmarkIncident/view/?id=5"
-          ],
-          "error": null
-        }
-      }
-    },
-    {
-      "collection": "BenchmarkRun",
-      "data": {
-        "runId": "20260305T205630Z-fa9abd",
-        "mode": "fresh-follow-docs",
-        "promptVersion": "fresh-follow-docs-v1",
-        "model": "gpt-5.3-codex",
-        "repoSha": "3c89dbec06e0d34baef1c5e990c7ed841f4f6b5f",
-        "docsUrl": "https://docs.filecoin.cloud/getting-started/",
-        "docsSnapshotHash": "2542a0e97ab61d178b3c38be9617de1cad51ab3387a4039e23d52af2fbc0d72e",
-        "status": "success",
-        "failurePhase": "",
-        "startedAt": "2026-03-05T20:56:31Z",
-        "endedAt": "2026-03-05T21:09:47Z",
-        "outerWallTimeMs": "796093",
-        "walletAddress": "0x470884E8e4dd7C50Ea08626eE9995da63462E8Ee",
-        "fundingTxHash": "0x093bdea26f50ec16d2042df453df7e67cd7bee76d72fa220fc04664815d47865,0x5e0cbe00d15f3f7cbae5e0bd3635f2e246acab56481c036568cb9d8e6f9275fd",
-        "depositTxHash": "0x697b754c7f627c84fb896d1d20ccccd9d3bc9511232ac101b3e343e4d9b2174a",
-        "pieceCid": "bafkzcibd4uaqjgvfrkkzcqzyqwq35txdcyo6gcn4uigh7n7wfkad7yzr6ric27ja",
+        "pieceCid": "bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy",
         "contentMatch": true,
-        "artifactBundleUri": "piececid:bafkzcibf76r6yaqtme3vslvnhf5jnjmk56jp2fgy7aigdqvutf4uk4uxxdxojzy4hmbq",
-        "artifactBundleHash": "sha256:d85dee117dfd87945fff4abd385638f54478e25c5a10ede1f1e7ad42bd5fc2f8",
-        "artifactBundleHttpUrl": "",
-        "operatorNotes": ""
+        "artifactBundleUri": "piececid:bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4",
+        "artifactBundleHash": "sha256:2a79640750e7501014d79118ad37966529592c569c6c0d2edfbb854f0c56a177",
+        "artifactBundleHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4",
+        "artifactIndexUri": "piececid:bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj",
+        "artifactIndexHash": "sha256:a8c0acdc0436b7246d81af506820351095795650dc586b98c71bf73e43c4dc87",
+        "artifactIndexHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj",
+        "operatorNotes": "artifact_publish: uploaded workspace bundle to piececid:bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4 and artifact index to piececid:bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj"
       },
       "meta": {
         "source": {
-          "runSummaryPath": "runs/20260305T205630Z-fa9abd/run-summary.json",
-          "validationResultPath": "runs/20260305T205630Z-fa9abd/validation-result.json",
-          "dashboardRecordsPath": "runs/20260305T205630Z-fa9abd/dashboard-records.json",
-          "artifactPublishResultPath": "runs/20260305T205630Z-fa9abd/artifact-publish-result.json"
+          "runSummaryPath": "runs/20260306T000054Z-f0eb33/run-summary.json",
+          "validationResultPath": "runs/20260306T000054Z-f0eb33/validation-result.json",
+          "dashboardRecordsPath": "runs/20260306T000054Z-f0eb33/dashboard-records.json",
+          "artifactPublishResultPath": "runs/20260306T000054Z-f0eb33/artifact-publish-result.json",
+          "dashboardPublishResultPath": "runs/20260306T000054Z-f0eb33/dashboard-publish-result.json"
         },
-        "localArtifacts": [
+        "publishedArtifacts": [
+          {
+            "label": "Artifact index",
+            "path": "runs/20260306T000054Z-f0eb33/artifact-index.json",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj",
+            "uri": "piececid:bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj",
+            "hash": "sha256:a8c0acdc0436b7246d81af506820351095795650dc586b98c71bf73e43c4dc87",
+            "pieceCid": "bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj"
+          },
           {
             "label": "Report",
-            "path": "runs/20260305T205630Z-fa9abd/report.md",
-            "url": "/api/artifacts/20260305T205630Z-fa9abd/report.md"
+            "path": "runs/20260306T000054Z-f0eb33/report.md",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibd7moqr4v37yybc2uht2ug4gv36tk33jtafohdx6w4eogyi5kavjaik7bz",
+            "uri": "piececid:bafkzcibd7moqr4v37yybc2uht2ug4gv36tk33jtafohdx6w4eogyi5kavjaik7bz",
+            "hash": "sha256:00924f4e8e9113ddf7426ee28671d904f4d5c509057dc4f7f8381a40dc890dba",
+            "pieceCid": "bafkzcibd7moqr4v37yybc2uht2ug4gv36tk33jtafohdx6w4eogyi5kavjaik7bz"
           },
           {
             "label": "Stdout log",
-            "path": "runs/20260305T205630Z-fa9abd/stdout.log",
-            "url": "/api/artifacts/20260305T205630Z-fa9abd/stdout.log"
+            "path": "runs/20260306T000054Z-f0eb33/stdout.log",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibd2qcame5hqwxf767glpibs4n637qf4hkgsrigmhhm6zkxstl2p5qqjxjs",
+            "uri": "piececid:bafkzcibd2qcame5hqwxf767glpibs4n637qf4hkgsrigmhhm6zkxstl2p5qqjxjs",
+            "hash": "sha256:c06320748d4bdf9fa33c432239af6cc4ed965eac80e7ff2a0e340e715e81fea7",
+            "pieceCid": "bafkzcibd2qcame5hqwxf767glpibs4n637qf4hkgsrigmhhm6zkxstl2p5qqjxjs"
           },
           {
             "label": "Stderr log",
-            "path": "runs/20260305T205630Z-fa9abd/stderr.log",
-            "url": "/api/artifacts/20260305T205630Z-fa9abd/stderr.log"
+            "path": "runs/20260306T000054Z-f0eb33/stderr.log",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibeslwrmdzy6mq5gqzkvgisinbwwenqsbs272lsfshhod5eoidka3x7vsk5ga",
+            "uri": "piececid:bafkzcibeslwrmdzy6mq5gqzkvgisinbwwenqsbs272lsfshhod5eoidka3x7vsk5ga",
+            "hash": "sha256:276d7522ddf97eb1e96c2e468127cb49885889f1420fad23b5961b5dc780eedf",
+            "pieceCid": "bafkzcibeslwrmdzy6mq5gqzkvgisinbwwenqsbs272lsfshhod5eoidka3x7vsk5ga"
           },
           {
             "label": "Uploaded payload",
-            "path": "runs/20260305T205630Z-fa9abd/payload-20260305T205630Z-fa9abd.txt",
-            "url": "/api/artifacts/20260305T205630Z-fa9abd/payload-20260305T205630Z-fa9abd.txt"
+            "path": "runs/20260306T000054Z-f0eb33/payload-20260306T000054Z-f0eb33.txt",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy",
+            "uri": "piececid:bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy",
+            "hash": "sha256:89363b0f992a072be5a0fea16a8b19324209799ec3b2662cb4fb9a5cffd00298",
+            "pieceCid": "bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy"
           },
           {
             "label": "Downloaded payload",
-            "path": "runs/20260305T205630Z-fa9abd/downloaded-20260305T205630Z-fa9abd.txt",
-            "url": "/api/artifacts/20260305T205630Z-fa9abd/downloaded-20260305T205630Z-fa9abd.txt"
+            "path": "runs/20260306T000054Z-f0eb33/downloaded-20260306T000054Z-f0eb33.txt",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy",
+            "uri": "piececid:bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy",
+            "hash": "sha256:89363b0f992a072be5a0fea16a8b19324209799ec3b2662cb4fb9a5cffd00298",
+            "pieceCid": "bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy"
           },
           {
-            "label": "Run summary",
-            "path": "runs/20260305T205630Z-fa9abd/run-summary.json",
-            "url": "/api/artifacts/20260305T205630Z-fa9abd/run-summary.json"
+            "label": "Agent result",
+            "path": "runs/20260306T000054Z-f0eb33/run-result.json",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibd5e2qswvemjjqmf4etlynxwsq2cypabdjwteasepbgmkvzw24dnqblkrb",
+            "uri": "piececid:bafkzcibd5e2qswvemjjqmf4etlynxwsq2cypabdjwteasepbgmkvzw24dnqblkrb",
+            "hash": "sha256:f2bef2c3730673497089f229166e71e9119166a4da64869394b9823ed5b00085",
+            "pieceCid": "bafkzcibd5e2qswvemjjqmf4etlynxwsq2cypabdjwteasepbgmkvzw24dnqblkrb"
           },
           {
             "label": "Validation result",
-            "path": "runs/20260305T205630Z-fa9abd/validation-result.json",
-            "url": "/api/artifacts/20260305T205630Z-fa9abd/validation-result.json"
+            "path": "runs/20260306T000054Z-f0eb33/validation-result.json",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibcdybrxtxzb5aabj3bocvpe254u4zqarmrqqrobi6uybiibnhdd3pbwli",
+            "uri": "piececid:bafkzcibcdybrxtxzb5aabj3bocvpe254u4zqarmrqqrobi6uybiibnhdd3pbwli",
+            "hash": "sha256:af9575c63d1c6c12e5c59b09192e2d81cdb833ac3286687570ee04f3f543c0ed",
+            "pieceCid": "bafkzcibcdybrxtxzb5aabj3bocvpe254u4zqarmrqqrobi6uybiibnhdd3pbwli"
           },
           {
-            "label": "Dashboard records",
-            "path": "runs/20260305T205630Z-fa9abd/dashboard-records.json",
-            "url": "/api/artifacts/20260305T205630Z-fa9abd/dashboard-records.json"
+            "label": "Docs snapshot",
+            "path": "runs/20260306T000054Z-f0eb33/docs-snapshot.html",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibe73zqydzx5yaq7yx2isf57psybysypympwvrowsiycvhdhhjuwft2cxshgy",
+            "uri": "piececid:bafkzcibe73zqydzx5yaq7yx2isf57psybysypympwvrowsiycvhdhhjuwft2cxshgy",
+            "hash": "sha256:2542a0e97ab61d178b3c38be9617de1cad51ab3387a4039e23d52af2fbc0d72e",
+            "pieceCid": "bafkzcibe73zqydzx5yaq7yx2isf57psybysypympwvrowsiycvhdhhjuwft2cxshgy"
           },
           {
-            "label": "Artifact publish result",
-            "path": "runs/20260305T205630Z-fa9abd/artifact-publish-result.json",
-            "url": "/api/artifacts/20260305T205630Z-fa9abd/artifact-publish-result.json"
+            "label": "Artifact bundle",
+            "path": "runs/20260306T000054Z-f0eb33/workspace-output.tgz",
+            "url": "https://calib.ezpdpz.net/piece/bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4",
+            "uri": "piececid:bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4",
+            "hash": "sha256:2a79640750e7501014d79118ad37966529592c569c6c0d2edfbb854f0c56a177",
+            "pieceCid": "bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4"
           }
         ],
         "validation": {
@@ -323,179 +127,27 @@
           "schemaValid": true
         },
         "externalArtifacts": {
-          "artifactBundleUri": "piececid:bafkzcibf76r6yaqtme3vslvnhf5jnjmk56jp2fgy7aigdqvutf4uk4uxxdxojzy4hmbq",
-          "artifactBundleHash": "sha256:d85dee117dfd87945fff4abd385638f54478e25c5a10ede1f1e7ad42bd5fc2f8",
-          "artifactBundleHttpUrl": null
+          "artifactBundleUri": "piececid:bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4",
+          "artifactBundleHash": "sha256:2a79640750e7501014d79118ad37966529592c569c6c0d2edfbb854f0c56a177",
+          "artifactBundleHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4",
+          "artifactIndexUri": "piececid:bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj",
+          "artifactIndexHash": "sha256:a8c0acdc0436b7246d81af506820351095795650dc586b98c71bf73e43c4dc87",
+          "artifactIndexHttpUrl": "https://calib.ezpdpz.net/piece/bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj"
         },
         "dashboardPublish": {
-          "publishedAt": "2026-03-05T22:14:33.014Z",
+          "status": "success",
+          "attemptedAt": "2026-03-06T00:31:31.791Z",
+          "publishedAt": "2026-03-06T00:31:31.608Z",
           "chainName": "filecoin_calibration",
-          "deploymentAddress": "0xb0b97c5f2cfebe842ba7a1b38cde1893ec06e517",
+          "deploymentAddress": "0x10ce50e27b9dc9b333345aa4ce6cc5f39a2160ce",
           "runRecordId": "1",
           "runRecordHref": "/BenchmarkRun/view/?id=1",
           "incidentRecordIds": [],
-          "incidentRecordHrefs": []
+          "incidentRecordHrefs": [],
+          "error": null
         }
-      }
-    },
-    {
-      "collection": "BenchmarkRun",
-      "data": {
-        "runId": "20260305T202023Z-d2f16d",
-        "mode": "fresh-follow-docs",
-        "promptVersion": "fresh-follow-docs-v1",
-        "model": "gpt-5.3-codex",
-        "repoSha": "b0d647bb89202e0356729f9d800f6ede70ab8f8a",
-        "docsUrl": "https://docs.filecoin.cloud/getting-started/",
-        "docsSnapshotHash": "2542a0e97ab61d178b3c38be9617de1cad51ab3387a4039e23d52af2fbc0d72e",
-        "status": "failure",
-        "failurePhase": "wallet_generation",
-        "startedAt": "2026-03-05T20:20:23Z",
-        "endedAt": "2026-03-05T20:37:53Z",
-        "outerWallTimeMs": "1050186",
-        "walletAddress": "0x0000000000000000000000000000000000000000",
-        "fundingTxHash": "",
-        "depositTxHash": "",
-        "pieceCid": "",
-        "contentMatch": false,
-        "artifactBundleUri": "piececid:bafkzcibe3s6ckegga4gosep3aym7dcetd3okv7qbccct3q6c4dmw4qzairhb3itzcy",
-        "artifactBundleHash": "sha256:ce7c4d036b1ae44ece3d01fd607f47089b7e400fb82966070886789983d18b51",
-        "operatorNotes": "artifact_publish: uploaded workspace bundle to piececid:bafkzcibe3s6ckegga4gosep3aym7dcetd3okv7qbccct3q6c4dmw4qzairhb3itzcy wallet_generation: Missing generated wallet address. | funding: Missing funding evidence. | deposit: Missing deposit or approval transaction evidence. | upload: Missing uploaded piece CID. | download: Missing downloaded payload artifact path. | verification: Downloaded payload did not verify as matching uploaded content."
       }
     }
   ],
-  "incidents": [
-    {
-      "collection": "BenchmarkIncident",
-      "data": {
-        "runId": "20260305T223418Z-b085f4",
-        "severity": "failure",
-        "title": "20260305T223418Z-b085f4 funding",
-        "status": "open",
-        "openedAt": "2026-03-05T22:46:38Z",
-        "closedAt": "",
-        "notes": "funding: Missing funding evidence. [finding 1]"
-      }
-    },
-    {
-      "collection": "BenchmarkIncident",
-      "data": {
-        "runId": "20260305T223418Z-b085f4",
-        "severity": "failure",
-        "title": "20260305T223418Z-b085f4 deposit",
-        "status": "open",
-        "openedAt": "2026-03-05T22:46:38Z",
-        "closedAt": "",
-        "notes": "deposit: Missing deposit or approval transaction evidence. [finding 2]"
-      }
-    },
-    {
-      "collection": "BenchmarkIncident",
-      "data": {
-        "runId": "20260305T223418Z-b085f4",
-        "severity": "failure",
-        "title": "20260305T223418Z-b085f4 upload",
-        "status": "open",
-        "openedAt": "2026-03-05T22:46:38Z",
-        "closedAt": "",
-        "notes": "upload: Missing uploaded piece CID. [finding 3]"
-      }
-    },
-    {
-      "collection": "BenchmarkIncident",
-      "data": {
-        "runId": "20260305T223418Z-b085f4",
-        "severity": "failure",
-        "title": "20260305T223418Z-b085f4 download",
-        "status": "open",
-        "openedAt": "2026-03-05T22:46:38Z",
-        "closedAt": "",
-        "notes": "download: Missing downloaded payload artifact path. [finding 4]"
-      }
-    },
-    {
-      "collection": "BenchmarkIncident",
-      "data": {
-        "runId": "20260305T223418Z-b085f4",
-        "severity": "failure",
-        "title": "20260305T223418Z-b085f4 verification",
-        "status": "open",
-        "openedAt": "2026-03-05T22:46:38Z",
-        "closedAt": "",
-        "notes": "verification: Downloaded payload did not verify as matching uploaded content. [finding 5]"
-      }
-    },
-    {
-      "collection": "BenchmarkIncident",
-      "data": {
-        "runId": "20260305T202023Z-d2f16d",
-        "severity": "failure",
-        "title": "20260305T202023Z-d2f16d wallet_generation",
-        "status": "open",
-        "openedAt": "2026-03-05T20:37:53Z",
-        "closedAt": "",
-        "notes": "wallet_generation: Missing generated wallet address. [finding 1]"
-      }
-    },
-    {
-      "collection": "BenchmarkIncident",
-      "data": {
-        "runId": "20260305T202023Z-d2f16d",
-        "severity": "failure",
-        "title": "20260305T202023Z-d2f16d funding",
-        "status": "open",
-        "openedAt": "2026-03-05T20:37:53Z",
-        "closedAt": "",
-        "notes": "funding: Missing funding evidence. [finding 2]"
-      }
-    },
-    {
-      "collection": "BenchmarkIncident",
-      "data": {
-        "runId": "20260305T202023Z-d2f16d",
-        "severity": "failure",
-        "title": "20260305T202023Z-d2f16d deposit",
-        "status": "open",
-        "openedAt": "2026-03-05T20:37:53Z",
-        "closedAt": "",
-        "notes": "deposit: Missing deposit or approval transaction evidence. [finding 3]"
-      }
-    },
-    {
-      "collection": "BenchmarkIncident",
-      "data": {
-        "runId": "20260305T202023Z-d2f16d",
-        "severity": "failure",
-        "title": "20260305T202023Z-d2f16d upload",
-        "status": "open",
-        "openedAt": "2026-03-05T20:37:53Z",
-        "closedAt": "",
-        "notes": "upload: Missing uploaded piece CID. [finding 4]"
-      }
-    },
-    {
-      "collection": "BenchmarkIncident",
-      "data": {
-        "runId": "20260305T202023Z-d2f16d",
-        "severity": "failure",
-        "title": "20260305T202023Z-d2f16d download",
-        "status": "open",
-        "openedAt": "2026-03-05T20:37:53Z",
-        "closedAt": "",
-        "notes": "download: Missing downloaded payload artifact path. [finding 5]"
-      }
-    },
-    {
-      "collection": "BenchmarkIncident",
-      "data": {
-        "runId": "20260305T202023Z-d2f16d",
-        "severity": "failure",
-        "title": "20260305T202023Z-d2f16d verification",
-        "status": "open",
-        "openedAt": "2026-03-05T20:37:53Z",
-        "closedAt": "",
-        "notes": "verification: Downloaded payload did not verify as matching uploaded content. [finding 6]"
-      }
-    }
-  ]
+  "incidents": []
 }

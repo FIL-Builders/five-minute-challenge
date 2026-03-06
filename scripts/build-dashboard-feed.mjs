@@ -21,13 +21,25 @@ async function maybeReadJson(filePath) {
   }
 }
 
+function getRunRecord(payload) {
+  const records = Array.isArray(payload?.records) ? payload.records : [];
+  return records.find((record) => record?.collection === "BenchmarkRun") ?? null;
+}
+
 async function main() {
   const args = parseArgs(process.argv);
   const repoRoot = args["repo-root"] ?? process.cwd();
   const runsDir = args["runs-dir"] ?? path.join(repoRoot, "runs");
   const outputPath = args["output"] ?? path.join(repoRoot, "dashboard", "local-feed.json");
+  const manifestPath = args["manifest"] ?? path.join(repoRoot, "dashboard", "generated", "manifest.json");
 
-  const entries = await readdir(runsDir, { withFileTypes: true }).catch(() => []);
+  const [entries, manifest] = await Promise.all([
+    readdir(runsDir, { withFileTypes: true }).catch(() => []),
+    maybeReadJson(manifestPath)
+  ]);
+  const targetDeploymentAddress = Array.isArray(manifest?.deployments)
+    ? manifest.deployments.find((deployment) => deployment?.role === "primary")?.deploymentEntrypointAddress ?? manifest.deployments[0]?.deploymentEntrypointAddress ?? null
+    : null;
   const feeds = [];
 
   for (const entry of entries) {
@@ -35,6 +47,11 @@ async function main() {
     const filePath = path.join(runsDir, entry.name, "dashboard-records.json");
     const payload = await maybeReadJson(filePath);
     if (!payload) continue;
+    if (targetDeploymentAddress) {
+      const runRecord = getRunRecord(payload);
+      const publishedToCurrentDeployment = runRecord?.meta?.dashboardPublish?.deploymentAddress === targetDeploymentAddress;
+      if (!publishedToCurrentDeployment) continue;
+    }
     feeds.push(payload);
   }
 

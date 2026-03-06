@@ -143,7 +143,17 @@ function validateSchema(summary) {
         pushError(errors, `$.artifacts.${required}`, "Must be a non-empty string.");
       }
     }
-    for (const optional of ["agentLogPath", "uploadedPayloadPath", "downloadedPayloadPath", "artifactBundleUri", "artifactBundleHash", "artifactBundleHttpUrl"]) {
+    for (const optional of [
+      "agentLogPath",
+      "uploadedPayloadPath",
+      "downloadedPayloadPath",
+      "artifactBundleUri",
+      "artifactBundleHash",
+      "artifactBundleHttpUrl",
+      "artifactIndexUri",
+      "artifactIndexHash",
+      "artifactIndexHttpUrl"
+    ]) {
       if (!(summary.artifacts[optional] === undefined || isNullableString(summary.artifacts[optional]))) {
         pushError(errors, `$.artifacts.${optional}`, "Must be null or a string.");
       }
@@ -160,6 +170,9 @@ function validateSchema(summary) {
     }
     if (typeof summary.evidence.contentMatch !== "boolean") {
       pushError(errors, "$.evidence.contentMatch", "Must be a boolean.");
+    }
+    if (!(summary.evidence.depositRequirementSatisfied === undefined || typeof summary.evidence.depositRequirementSatisfied === "boolean")) {
+      pushError(errors, "$.evidence.depositRequirementSatisfied", "Must be a boolean when present.");
     }
   }
 
@@ -200,7 +213,8 @@ function evaluateRun(summary) {
     fail("funding", "Missing funding evidence.");
   }
 
-  if (requiresDepositEvidence && !summary.evidence?.depositTxHash) {
+  const depositRequirementSatisfied = summary.evidence?.depositRequirementSatisfied === true || !!summary.evidence?.depositTxHash;
+  if (requiresDepositEvidence && !depositRequirementSatisfied) {
     fail("deposit", "Missing deposit or approval transaction evidence.");
   }
 

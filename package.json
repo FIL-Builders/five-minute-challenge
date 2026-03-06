@@ -13,6 +13,8 @@
     "dashboard:generate": "./bin/generate-dashboard.sh",
     "dashboard:dev": "./bin/dev-dashboard.sh",
     "dashboard:publish": "./bin/publish-dashboard-latest.sh",
+    "dashboard:republish-history": "./bin/republish-dashboard-history.sh",
+    "dashboard:reset": "./bin/reset-dashboard-registry.sh",
     "dashboard:up": "./bin/up-dashboard-app.sh"
   },
   "dependencies": {

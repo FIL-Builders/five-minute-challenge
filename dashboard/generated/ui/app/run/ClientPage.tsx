@@ -84,24 +84,21 @@ export default function RunClientPage() {
               {kv('docsSnapshotHash', run.docsSnapshotHash)}
               {kv('artifactBundleUri', run.artifactBundleUri)}
               {kv('artifactBundleHttpUrl', run.artifactBundleHttpUrl)}
+              {kv('artifactIndexUri', run.artifactIndexUri)}
+              {kv('artifactIndexHttpUrl', run.artifactIndexHttpUrl)}
             </div>
 
             <div className="card" style={{ marginTop: 20 }}>
               <h2>Artifacts</h2>
-              <div className="muted">Local run evidence and published bundle retrieval links.</div>
+              <div className="muted">Filecoin-hosted run evidence, artifact index, and bundle retrieval links.</div>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16 }}>
-                {(run.meta?.localArtifacts ?? []).map((artifact) => (
+                {(run.meta?.publishedArtifacts ?? []).map((artifact) => (
                   artifact.url ? (
                     <a key={`${artifact.label}-${artifact.path}`} className="btn" href={artifact.url} target="_blank" rel="noreferrer">
                       {artifact.label}
                     </a>
                   ) : null
                 ))}
-                {run.artifactBundleHttpUrl ? (
-                  <a className="btn primary" href={run.artifactBundleHttpUrl} target="_blank" rel="noreferrer">
-                    Artifact bundle
-                  </a>
-                ) : null}
               </div>
             </div>
 

@@ -14,7 +14,7 @@ contract App is Context {
   string public constant THS_VERSION = "2025-12";
   string public constant SCHEMA_VERSION = "0.1.0";
   string public constant APP_SLUG = "benchmark-registry";
-  bytes32 public constant SCHEMA_HASH = bytes32(0xe96c22756b9cbc00214299329f1db896696f5cf5e51167b2252da617275662b2);
+  bytes32 public constant SCHEMA_HASH = bytes32(0x5e281995f1d5301fb0de459d5515952e99424620459aae28ea6217233b11fd4c);
   
   bool public constant ON_CHAIN_INDEXING = true;
   uint256 public constant MAX_LIST_LIMIT = 50;
@@ -95,6 +95,9 @@ contract App is Context {
     string artifactBundleUri;
     string artifactBundleHash;
     string artifactBundleHttpUrl;
+    string artifactIndexUri;
+    string artifactIndexHash;
+    string artifactIndexHttpUrl;
     string operatorNotes;
   }
   
@@ -119,6 +122,9 @@ contract App is Context {
     string artifactBundleUri;
     string artifactBundleHash;
     string artifactBundleHttpUrl;
+    string artifactIndexUri;
+    string artifactIndexHash;
+    string artifactIndexHttpUrl;
     string operatorNotes;
   }
   
@@ -159,6 +165,9 @@ contract App is Context {
     r.artifactBundleUri = input.artifactBundleUri;
     r.artifactBundleHash = input.artifactBundleHash;
     r.artifactBundleHttpUrl = input.artifactBundleHttpUrl;
+    r.artifactIndexUri = input.artifactIndexUri;
+    r.artifactIndexHash = input.artifactIndexHash;
+    r.artifactIndexHttpUrl = input.artifactIndexHttpUrl;
     r.operatorNotes = input.operatorNotes;
   }
   

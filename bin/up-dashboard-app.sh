@@ -9,6 +9,7 @@ HOST="${DASHBOARD_HOST:-127.0.0.1}"
 PORT="${DASHBOARD_PORT:-3001}"
 CHAIN="${DASHBOARD_CHAIN:-filecoin_calibration}"
 PRIVATE_KEY="${DASHBOARD_PRIVATE_KEY:-${PRIVATE_KEY:-}}"
+COMPILER_PROFILE="${DASHBOARD_COMPILER_PROFILE:-large-app}"
 
 if [[ ! -d "${TOKENHOST_REPO}" ]]; then
   printf 'Token Host Builder repo not found: %s\n' "${TOKENHOST_REPO}" >&2
@@ -25,6 +26,7 @@ pnpm th up "${SCHEMA_PATH}" \
   --out "${OUT_DIR}" \
   --chain "${CHAIN}" \
   --private-key "${PRIVATE_KEY}" \
+  --compiler-profile "${COMPILER_PROFILE}" \
   --host "${HOST}" \
   --port "${PORT}" \
   --no-preview \

@@ -41,6 +41,16 @@ function isObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function normalizeMaybeString(value) {
+  if (typeof value === "string" && value.length > 0) return value;
+  if (isObject(value) && typeof value["/"] === "string") return value["/"];
+  if (value && typeof value.toString === "function") {
+    const normalized = value.toString();
+    return typeof normalized === "string" && normalized.length > 0 ? normalized : null;
+  }
+  return null;
+}
+
 function normalizeAgentStatus(agentResult, agentExitCode, artifactValidationFailed) {
   if (artifactValidationFailed) return "invalid";
   if (typeof agentResult?.status === "string") {
@@ -97,18 +107,38 @@ function normalizeEvidence(agentResult) {
   const fundingTxHashes = Array.isArray(agentResult?.funding?.txHashes)
     ? agentResult.funding.txHashes.filter((value) => typeof value === "string" && value.length > 0)
     : [];
-  const inheritedFundingSource = agentResult?.funding?.inheritedWalletPreFunded
+  const inheritedFundingSource = agentResult?.funding?.inheritedWalletPreFunded || agentResult?.funding?.wasPrefunded
     ? "inherited_wallet_prefunded"
     : (agentResult?.funding?.topUpPerformed ? (agentResult?.funding?.topUpMethod ?? "inherited_wallet_topped_up") : null);
+  const depositRequirementSatisfied = Boolean(
+    agentResult?.evidence?.depositRequirementSatisfied
+      ?? agentResult?.funding?.depositApprovalTxHash
+      ?? agentResult?.deposit?.txHash
+      ?? agentResult?.payment?.depositAndApprovalTxHash
+      ?? agentResult?.funding?.depositApprovalNeeded === false
+      ?? agentResult?.funding?.depositApprovalAction === "not_needed"
+  );
 
   return {
     fundingSource: agentResult?.evidence?.fundingSource ?? agentResult?.funding?.faucetUrl ?? inheritedFundingSource,
     fundingTxHash: agentResult?.evidence?.fundingTxHash ?? (fundingTxHashes.length > 0 ? fundingTxHashes.join(",") : null),
-    depositTxHash: agentResult?.evidence?.depositTxHash ?? agentResult?.deposit?.txHash ?? agentResult?.payment?.depositAndApprovalTxHash ?? null,
-    pieceCid: agentResult?.evidence?.pieceCid ?? agentResult?.upload?.pieceCid ?? agentResult?.download?.pieceCid ?? null,
-    contentMatch: Boolean(agentResult?.evidence?.contentMatch ?? agentResult?.download?.integrityOk ?? agentResult?.download?.integrityMatch),
-    originalSha256: agentResult?.evidence?.originalSha256 ?? agentResult?.upload?.originalSha256 ?? agentResult?.upload?.payloadSha256 ?? agentResult?.payload?.sha256 ?? agentResult?.download?.downloadedSha256 ?? null,
-    downloadedSha256: agentResult?.evidence?.downloadedSha256 ?? agentResult?.download?.downloadedSha256 ?? null
+    depositTxHash: agentResult?.evidence?.depositTxHash ?? agentResult?.deposit?.txHash ?? agentResult?.payment?.depositAndApprovalTxHash ?? agentResult?.funding?.depositApprovalTxHash ?? null,
+    depositRequirementSatisfied,
+    pieceCid: normalizeMaybeString(
+      agentResult?.evidence?.pieceCid
+        ?? agentResult?.upload?.pieceCid
+        ?? agentResult?.download?.pieceCid
+        ?? agentResult?.storage?.upload?.pieceCid
+        ?? agentResult?.storage?.download?.pieceCid
+    ),
+    contentMatch: Boolean(
+      agentResult?.evidence?.contentMatch
+        ?? agentResult?.download?.integrityOk
+        ?? agentResult?.download?.integrityMatch
+        ?? agentResult?.storage?.integrityVerified
+    ),
+    originalSha256: agentResult?.evidence?.originalSha256 ?? agentResult?.upload?.originalSha256 ?? agentResult?.upload?.payloadSha256 ?? agentResult?.payload?.sha256 ?? agentResult?.storage?.payloadSha256 ?? null,
+    downloadedSha256: agentResult?.evidence?.downloadedSha256 ?? agentResult?.download?.downloadedSha256 ?? agentResult?.storage?.downloadedSha256 ?? null
   };
 }
 
@@ -121,23 +151,33 @@ function normalizeArtifacts(runId, runDir, agentResult) {
     ? path.basename(agentResult.artifacts.agentLogPath)
     : (typeof agentResult?.artifacts?.runLog === "string"
       ? path.basename(agentResult.artifacts.runLog)
+      : (typeof agentResult?.artifacts?.benchmarkLogPath === "string"
+        ? path.basename(agentResult.artifacts.benchmarkLogPath)
       : (Array.isArray(agentResult?.artifacts)
         ? path.basename(agentResult.artifacts.find((value) => typeof value === "string" && value.endsWith("execution.log")) ?? "agent.log")
-        : "agent.log"));
+        : "benchmark-run.log")));
   const uploadedPayloadFile = typeof agentResult?.artifacts?.uploadedPayloadPath === "string"
     ? path.basename(agentResult.artifacts.uploadedPayloadPath)
     : (typeof agentResult?.artifacts?.payloadFile === "string"
       ? path.basename(agentResult.artifacts.payloadFile)
+      : (typeof agentResult?.artifacts?.payloadTextPath === "string"
+        ? path.basename(agentResult.artifacts.payloadTextPath)
       : (typeof agentResult?.payload?.file === "string"
         ? path.basename(agentResult.payload.file)
-        : (typeof agentResult?.upload?.payloadFile === "string" ? path.basename(agentResult.upload.payloadFile) : "uploaded-payload.txt")));
+        : (typeof agentResult?.upload?.payloadFile === "string"
+          ? path.basename(agentResult.upload.payloadFile)
+          : (typeof agentResult?.storage?.payloadFile === "string" ? path.basename(agentResult.storage.payloadFile) : "uploaded-payload.txt")))));
   const downloadedPayloadFile = typeof agentResult?.artifacts?.downloadedPayloadPath === "string"
     ? path.basename(agentResult.artifacts.downloadedPayloadPath)
     : (typeof agentResult?.artifacts?.downloadedTextFile === "string"
       ? path.basename(agentResult.artifacts.downloadedTextFile)
+      : (typeof agentResult?.artifacts?.downloadedTextPath === "string"
+        ? path.basename(agentResult.artifacts.downloadedTextPath)
       : (typeof agentResult?.artifacts?.downloadedFile === "string"
         ? path.basename(agentResult.artifacts.downloadedFile)
-        : (typeof agentResult?.download?.downloadedFile === "string" ? path.basename(agentResult.download.downloadedFile) : "downloaded-payload.txt")));
+        : (typeof agentResult?.download?.downloadedFile === "string"
+          ? path.basename(agentResult.download.downloadedFile)
+          : (typeof agentResult?.storage?.downloadedFile === "string" ? path.basename(agentResult.storage.downloadedFile) : "downloaded-payload.txt")))));
   const agentLogPath = path.join(runDir, agentLogFile);
   const uploadedPayloadPath = path.join(runDir, uploadedPayloadFile);
   const downloadedPayloadPath = path.join(runDir, downloadedPayloadFile);
@@ -193,7 +233,7 @@ function collectWorkspaceArtifacts(agentResult) {
     }
   }
 
-  for (const name of ["agent.log", "run.log", "run-attempt1.log", "benchmark-run.mjs", "execution.log", "execution-attempt1.log", "run-benchmark.mjs"]) {
+    for (const name of ["agent.log", "run.log", "run-attempt1.log", "benchmark-run.log", "benchmark-run.mjs", "execution.log", "execution-attempt1.log", "run-benchmark.mjs"]) {
     files.add(name);
   }
 

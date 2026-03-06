@@ -29,7 +29,7 @@ Build a local aggregate feed from benchmark runs:
 npm run dashboard:feed
 ```
 
-That writes `dashboard/local-feed.json` from any `runs/*/dashboard-records.json` files present locally.
+That writes `dashboard/local-feed.json` from `runs/*/dashboard-records.json`, scoped to the current deployed registry by default so old deployments do not leak into the active dashboard.
 
 Run the local dashboard UI against the current local feed:
 
@@ -55,9 +55,19 @@ Defaults for schema deployment:
 - chain: `filecoin_calibration`
 - wallet env: `PRIVATE_KEY` by default, or `DASHBOARD_PRIVATE_KEY` to override
 
+History republish helpers:
+
+```bash
+npm run dashboard:republish-history
+npm run dashboard:reset
+```
+
+- `dashboard:republish-history` republishes all local finalized runs into the current deployment
+- `dashboard:reset` deploys a fresh registry and republishes local run history into it
+
 ## Deployment Direction
 
 - target chain: Filecoin Calibration
 - local dev server first
 - later hosted as a static-style frontend on a Vercel or Netlify class platform
-- full logs remain off-chain; the app stores compact summaries and artifact bundle references
+- full logs remain off-chain; the app stores compact summaries plus Filecoin-hosted artifact bundle and artifact-index references

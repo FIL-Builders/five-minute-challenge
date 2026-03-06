@@ -29,35 +29,57 @@ function normalizeNotes(value) {
   return typeof value === "string" && value.trim() ? value.trim() : null;
 }
 
-function artifactUrl(runId, relativePath) {
+function buildArtifactEntry(label, relativePath, url, extra = {}) {
   if (typeof relativePath !== "string" || !relativePath.trim()) return null;
-  return `/api/artifacts/${encodeURIComponent(runId)}/${encodeURIComponent(path.basename(relativePath))}`;
-}
-
-function buildArtifactEntry(runId, label, relativePath) {
-  if (typeof relativePath !== "string" || !relativePath.trim()) return null;
+  if (typeof url !== "string" || !url.trim()) return null;
   return {
     label,
     path: relativePath,
-    url: artifactUrl(runId, relativePath)
+    url,
+    ...extra
   };
 }
 
-function buildRunRecord(summary, validation, publishResult, outputPath) {
+function buildPublishedArtifacts(summary, artifactPublishResult) {
+  const entries = Array.isArray(artifactPublishResult?.publishedArtifacts)
+    ? artifactPublishResult.publishedArtifacts
+    : [];
+
+  const publishedArtifacts = entries
+    .map((entry) =>
+      buildArtifactEntry(entry.label, entry.path, entry.httpUrl, {
+        uri: entry.uri ?? null,
+        hash: entry.hash ?? null,
+        pieceCid: entry.pieceCid ?? null
+      }))
+    .filter(Boolean);
+
+  if (summary.artifacts?.artifactIndexHttpUrl) {
+    publishedArtifacts.unshift(
+      buildArtifactEntry("Artifact index", `runs/${summary.runId}/artifact-index.json`, summary.artifacts.artifactIndexHttpUrl, {
+        uri: summary.artifacts?.artifactIndexUri ?? null,
+        hash: summary.artifacts?.artifactIndexHash ?? null,
+        pieceCid: artifactPublishResult?.artifactIndex?.pieceCid ?? null
+      })
+    );
+  }
+
+  if (summary.artifacts?.artifactBundleHttpUrl) {
+    publishedArtifacts.push(
+      buildArtifactEntry("Artifact bundle", `runs/${summary.runId}/workspace-output.tgz`, summary.artifacts.artifactBundleHttpUrl, {
+        uri: summary.artifacts?.artifactBundleUri ?? null,
+        hash: summary.artifacts?.artifactBundleHash ?? null,
+        pieceCid: artifactPublishResult?.artifactBundle?.pieceCid ?? null
+      })
+    );
+  }
+
+  return publishedArtifacts.filter(Boolean);
+}
+
+function buildRunRecord(summary, validation, artifactPublishResult, publishResult, outputPath) {
   const runId = summary.runId;
-  const localArtifacts = [
-    buildArtifactEntry(runId, "Report", summary.artifacts?.reportPath),
-    buildArtifactEntry(runId, "Stdout log", summary.artifacts?.stdoutLogPath),
-    buildArtifactEntry(runId, "Stderr log", summary.artifacts?.stderrLogPath),
-    buildArtifactEntry(runId, "Agent log", summary.artifacts?.agentLogPath),
-    buildArtifactEntry(runId, "Uploaded payload", summary.artifacts?.uploadedPayloadPath),
-    buildArtifactEntry(runId, "Downloaded payload", summary.artifacts?.downloadedPayloadPath),
-    buildArtifactEntry(runId, "Run summary", `runs/${runId}/run-summary.json`),
-    buildArtifactEntry(runId, "Validation result", `runs/${runId}/validation-result.json`),
-    buildArtifactEntry(runId, "Dashboard records", `runs/${runId}/${path.basename(outputPath)}`),
-    buildArtifactEntry(runId, "Artifact publish result", `runs/${runId}/artifact-publish-result.json`),
-    publishResult ? buildArtifactEntry(runId, "Dashboard publish result", `runs/${runId}/dashboard-publish-result.json`) : null
-  ].filter(Boolean);
+  const publishedArtifacts = buildPublishedArtifacts(summary, artifactPublishResult);
 
   return {
     collection: "BenchmarkRun",
@@ -82,6 +104,9 @@ function buildRunRecord(summary, validation, publishResult, outputPath) {
       artifactBundleUri: summary.artifacts?.artifactBundleUri ?? "",
       artifactBundleHash: summary.artifacts?.artifactBundleHash ?? "",
       artifactBundleHttpUrl: summary.artifacts?.artifactBundleHttpUrl ?? "",
+      artifactIndexUri: summary.artifacts?.artifactIndexUri ?? "",
+      artifactIndexHash: summary.artifacts?.artifactIndexHash ?? "",
+      artifactIndexHttpUrl: summary.artifacts?.artifactIndexHttpUrl ?? "",
       operatorNotes: normalizeNotes(summary.operatorNotes) ?? ""
     },
     meta: {
@@ -89,10 +114,10 @@ function buildRunRecord(summary, validation, publishResult, outputPath) {
         runSummaryPath: `runs/${runId}/run-summary.json`,
         validationResultPath: `runs/${runId}/validation-result.json`,
         dashboardRecordsPath: `runs/${runId}/${path.basename(outputPath)}`,
-        artifactPublishResultPath: publishResult ? `runs/${runId}/artifact-publish-result.json` : null,
+        artifactPublishResultPath: artifactPublishResult ? `runs/${runId}/artifact-publish-result.json` : null,
         dashboardPublishResultPath: publishResult ? `runs/${runId}/dashboard-publish-result.json` : null
       },
-      localArtifacts,
+      publishedArtifacts,
       validation: {
         status: validation?.status ?? null,
         failurePhase: validation?.failurePhase ?? null,
@@ -101,7 +126,10 @@ function buildRunRecord(summary, validation, publishResult, outputPath) {
       externalArtifacts: {
         artifactBundleUri: summary.artifacts?.artifactBundleUri ?? null,
         artifactBundleHash: summary.artifacts?.artifactBundleHash ?? null,
-        artifactBundleHttpUrl: summary.artifacts?.artifactBundleHttpUrl ?? null
+        artifactBundleHttpUrl: summary.artifacts?.artifactBundleHttpUrl ?? null,
+        artifactIndexUri: summary.artifacts?.artifactIndexUri ?? null,
+        artifactIndexHash: summary.artifacts?.artifactIndexHash ?? null,
+        artifactIndexHttpUrl: summary.artifacts?.artifactIndexHttpUrl ?? null
       },
       dashboardPublish: publishResult
         ? {
@@ -145,13 +173,14 @@ async function main() {
   const validationPath = args["validation"] ?? path.join(runDir, "validation-result.json");
   const outputPath = args["output"] ?? path.join(runDir, "dashboard-records.json");
 
-  const [summary, validation, publishResult] = await Promise.all([
+  const [summary, validation, artifactPublishResult, dashboardPublishResult] = await Promise.all([
     readJson(summaryPath),
     readJson(validationPath),
+    maybeReadJson(path.join(runDir, "artifact-publish-result.json")),
     maybeReadJson(path.join(runDir, "dashboard-publish-result.json"))
   ]);
 
-  const records = [buildRunRecord(summary, validation, publishResult, outputPath), ...buildIncidentRecords(summary, validation)];
+  const records = [buildRunRecord(summary, validation, artifactPublishResult, dashboardPublishResult, outputPath), ...buildIncidentRecords(summary, validation)];
   const payload = {
     runId: summary.runId,
     generatedAt: new Date().toISOString(),
