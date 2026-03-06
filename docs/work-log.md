@@ -124,3 +124,11 @@ Local running log for benchmark-repo development.
   - bundle `piececid:bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4`
   - artifact index `piececid:bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj`
 - Confirmed the local dashboard feed now contains only the current deployment’s run and no `/api/artifacts/...` links.
+
+### Token Host UI Sync And Artifact Modal Preview
+
+- Added first-class `th ui sync` support in `tokenhost-builder` and introduced `npm run dashboard:ui-sync` so dashboard UI changes can be refreshed locally without recompiling Solidity or redeploying the registry contract.
+- Preserved existing generated deployment manifests during UI-only sync so chain-backed collection pages continue to resolve the active Calibration deployment after a refresh.
+- Reworked the benchmark run detail page so published Filecoin artifact links now open in a modal rather than always navigating away immediately.
+- The modal fetches and previews text-like artifacts inline (`artifact-index.json`, reports, logs, payload text, JSON results, and docs snapshot HTML as source text) and still offers a direct raw artifact link for every entry.
+- Left binary-only artifacts like the workspace bundle as modal metadata plus raw-open behavior rather than attempting unsafe in-browser preview.

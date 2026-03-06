@@ -71,6 +71,7 @@ Current dashboard behavior:
 
 Useful commands:
 - `npm run dashboard:dev`: start the local Next dashboard with the current manifest, ABI, and feed copied into `public/`
+- `npm run dashboard:ui-sync`: refresh only the generated dashboard UI from the current schema, compiled ABI, manifest, and UI overrides without redeploying the registry contract
 - `npm run dashboard:up`: deploy the dashboard schema to Filecoin Calibration and refresh the generated manifest
 - `npm run dashboard:publish`: publish the latest finalized run into the deployed `BenchmarkRun` registry
 - `npm run dashboard:republish-history`: republish all local `runs/*/dashboard-records.json` into the current deployment

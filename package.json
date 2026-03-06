@@ -11,6 +11,7 @@
     "benchmark:validate": "node scripts/validate-run.mjs",
     "dashboard:feed": "node scripts/build-dashboard-feed.mjs --repo-root .",
     "dashboard:generate": "./bin/generate-dashboard.sh",
+    "dashboard:ui-sync": "./bin/sync-dashboard-ui.sh",
     "dashboard:dev": "./bin/dev-dashboard.sh",
     "dashboard:publish": "./bin/publish-dashboard-latest.sh",
     "dashboard:republish-history": "./bin/republish-dashboard-history.sh",

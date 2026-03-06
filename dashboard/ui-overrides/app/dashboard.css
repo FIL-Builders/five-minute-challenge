@@ -222,6 +222,95 @@
   white-space: pre-wrap;
 }
 
+.artifactGrid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.artifactButton {
+  cursor: pointer;
+}
+
+.artifactModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(8, 19, 39, 0.62);
+  backdrop-filter: blur(8px);
+}
+
+.artifactModal {
+  width: min(980px, 100%);
+  max-height: min(88vh, 920px);
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  gap: 16px;
+  padding: 22px;
+  border-radius: 24px;
+  border: 1px solid rgba(199, 216, 255, 0.7);
+  background:
+    radial-gradient(circle at top right, #ffe7a6 0, #ffe7a600 24%),
+    linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+  box-shadow: 0 30px 90px rgba(7, 22, 54, 0.28);
+}
+
+.artifactModalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.artifactModalHeader h2 {
+  margin: 8px 0 0;
+}
+
+.artifactModalClose {
+  flex-shrink: 0;
+}
+
+.artifactMeta {
+  display: grid;
+  grid-template-columns: minmax(140px, 180px) minmax(0, 1fr);
+  gap: 10px 14px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--th-border);
+}
+
+.artifactActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.artifactModalBody {
+  min-height: 0;
+  overflow: auto;
+}
+
+.artifactPreview {
+  margin: 0;
+  min-height: 320px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #081b39;
+  color: #edf5ff;
+  border: 1px solid #21457f;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--th-font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 @media (max-width: 820px) {
   .heroPanel,
   .detailStrip,
@@ -233,5 +322,19 @@
   .dashboardGrid .span4,
   .metricsGrid .statCard {
     grid-column: span 12;
+  }
+
+  .artifactModal {
+    padding: 18px;
+  }
+
+  .artifactModalHeader,
+  .artifactActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .artifactMeta {
+    grid-template-columns: 1fr;
   }
 }
