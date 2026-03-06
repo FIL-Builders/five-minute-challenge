@@ -77,6 +77,116 @@ function buildPublishedArtifacts(summary, artifactPublishResult) {
   return publishedArtifacts.filter(Boolean);
 }
 
+function formatDuration(ms) {
+  const value = Number(ms);
+  if (!Number.isFinite(value) || value < 0) return "n/a";
+  const totalSeconds = Math.round(value / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}m ${String(seconds).padStart(2, "0")}s`;
+}
+
+function humanizeMode(mode) {
+  if (mode === "fresh-follow-docs") return "fresh wallet";
+  if (mode === "inherited-key-follow-docs") return "inherited funded wallet";
+  return mode || "unknown mode";
+}
+
+function summarizeFunding(summary) {
+  const fundingSource = summary?.evidence?.fundingSource ?? null;
+  if (fundingSource === "inherited_wallet_prefunded") return "reused a pre-funded inherited wallet";
+  if (summary?.evidence?.fundingTxHash) return "generated a wallet and acquired funds during the run";
+  if (summary?.walletAddress) return "used wallet " + summary.walletAddress;
+  return "wallet setup details were incomplete";
+}
+
+function summarizeStorage(summary) {
+  if (summary?.evidence?.pieceCid && summary?.evidence?.contentMatch) {
+    return `uploaded and downloaded content successfully with integrity verified for piece ${summary.evidence.pieceCid}`;
+  }
+  if (summary?.failurePhase) {
+    return `stopped during ${summary.failurePhase}`;
+  }
+  return "storage outcome was not fully captured";
+}
+
+function summarizeArtifacts(summary) {
+  if (summary?.artifacts?.artifactIndexHttpUrl && summary?.artifacts?.artifactBundleHttpUrl) {
+    return "published both the artifact index and full bundle to Filecoin Cloud retrieval URLs";
+  }
+  if (summary?.artifacts?.artifactBundleHttpUrl) {
+    return "published the bundle to Filecoin Cloud but artifact indexing is incomplete";
+  }
+  return "artifact publication has not completed";
+}
+
+function buildTimingInsights(summary) {
+  const phases = Array.isArray(summary?.agentPhaseData) ? summary.agentPhaseData : [];
+  const longestPhase = phases
+    .filter((phase) => Number.isFinite(Number(phase?.durationMs)))
+    .sort((a, b) => Number(b.durationMs) - Number(a.durationMs))[0] ?? null;
+  return {
+    outerWallTimeMs: Number(summary?.outerWallTimeMs ?? 0),
+    outerWallTimeLabel: formatDuration(summary?.outerWallTimeMs ?? 0),
+    longestPhase: longestPhase
+      ? {
+          phase: String(longestPhase.phase ?? "unknown"),
+          durationMs: Number(longestPhase.durationMs),
+          durationLabel: formatDuration(longestPhase.durationMs)
+        }
+      : null,
+    phases: phases.map((phase) => ({
+      phase: String(phase?.phase ?? "unknown"),
+      durationMs: Number(phase?.durationMs ?? 0),
+      durationLabel: formatDuration(phase?.durationMs ?? 0),
+      startedAt: phase?.startedAt ?? null,
+      endedAt: phase?.endedAt ?? null
+    }))
+  };
+}
+
+function buildInsights(summary, validation, artifactPublishResult, publishResult) {
+  const status = summary?.status ?? "unknown";
+  const modeLabel = humanizeMode(summary?.mode);
+  const failurePhase = summary?.failurePhase ?? validation?.failurePhase ?? null;
+  const timing = buildTimingInsights(summary);
+  const findings = Array.isArray(validation?.findings) ? validation.findings : [];
+
+  let headline = `Benchmark execution ${summary?.runId} ${status}`;
+  if (status === "success") {
+    headline = `Benchmark execution succeeded using ${modeLabel} flow`;
+  } else if (failurePhase) {
+    headline = `Benchmark execution failed during ${failurePhase}`;
+  }
+
+  const bullets = [
+    `Credential strategy: ${modeLabel}; ${summarizeFunding(summary)}.`,
+    `Storage result: ${summarizeStorage(summary)}.`,
+    `Artifacts: ${summarizeArtifacts(summary)}.`,
+    `Timing: total wall time ${timing.outerWallTimeLabel}${timing.longestPhase ? `; longest measured agent phase was ${timing.longestPhase.phase} at ${timing.longestPhase.durationLabel}` : ""}.`
+  ];
+
+  if (publishResult?.deploymentAddress && publishResult?.runRecordId) {
+    bullets.push(`Registry publication: published to Calibration at ${publishResult.deploymentAddress} as BenchmarkRun record ${publishResult.runRecordId}.`);
+  }
+  if (findings.length > 0) {
+    bullets.push(`Validator findings: ${findings.map((finding) => `${finding.phase}: ${finding.message}`).join(" | ")}.`);
+  }
+  if (typeof summary?.operatorNotes === "string" && summary.operatorNotes.trim()) {
+    bullets.push(`Operator notes: ${summary.operatorNotes.trim()}`);
+  }
+
+  return {
+    headline,
+    summary:
+      status === "success"
+        ? "This benchmark execution completed end to end and produced verifiable Filecoin-hosted evidence."
+        : "This benchmark execution did not complete successfully; see the failure phase and evidence trail below.",
+    bullets,
+    timing
+  };
+}
+
 function buildRunRecord(summary, validation, artifactPublishResult, publishResult, outputPath) {
   const runId = summary.runId;
   const publishedArtifacts = buildPublishedArtifacts(summary, artifactPublishResult);
@@ -144,7 +254,8 @@ function buildRunRecord(summary, validation, artifactPublishResult, publishResul
             incidentRecordHrefs: Array.isArray(publishResult.incidentRecordHrefs) ? publishResult.incidentRecordHrefs : [],
             error: publishResult.error?.message ?? null
           }
-        : null
+        : null,
+      insights: buildInsights(summary, validation, artifactPublishResult, publishResult)
     }
   };
 }

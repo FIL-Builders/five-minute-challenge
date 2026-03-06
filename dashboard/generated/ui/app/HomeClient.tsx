@@ -1,32 +1,37 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   fetchBenchmarkFeed,
   formatDuration,
+  humanizeMode,
   percentile,
   type BenchmarkIncidentRecord,
-  type BenchmarkRunRecord
+  type BenchmarkRunFeedRecord
 } from '../src/lib/feed';
 
 type FeedState = {
-  runs: BenchmarkRunRecord[];
+  runs: BenchmarkRunFeedRecord[];
   incidents: BenchmarkIncidentRecord[];
   generatedAt: string | null;
 };
 
-function summarize(runs: BenchmarkRunRecord[]) {
+function summarize(runs: BenchmarkRunFeedRecord[]) {
   const samples = runs
     .map((run) => Number(run.outerWallTimeMs))
     .filter((value) => Number.isFinite(value) && value >= 0);
   const successCount = runs.filter((run) => run.status === 'success').length;
+  const freshWalletRuns = runs.filter((run) => run.mode === 'fresh-follow-docs').length;
+  const inheritedRuns = runs.filter((run) => run.mode === 'inherited-key-follow-docs').length;
   return {
     total: runs.length,
     successRate: runs.length ? Math.round((successCount / runs.length) * 100) : 0,
     p50: percentile(samples, 0.5),
-    p95: percentile(samples, 0.95)
+    p95: percentile(samples, 0.95),
+    freshWalletRuns,
+    inheritedRuns
   };
 }
 
@@ -61,40 +66,94 @@ export default function HomeClient() {
     };
   }, []);
 
-  const latestRuns = [...state.runs].sort((a, b) => b.startedAt.localeCompare(a.startedAt)).slice(0, 12);
-  const openIncidents = state.incidents.filter((incident) => incident.status === 'open').slice(0, 8);
+  const latestRuns = useMemo(
+    () => [...state.runs].sort((a, b) => b.startedAt.localeCompare(a.startedAt)).slice(0, 12),
+    [state.runs]
+  );
+  const openIncidents = useMemo(
+    () => state.incidents.filter((incident) => incident.status === 'open').slice(0, 8),
+    [state.incidents]
+  );
   const metrics = summarize(state.runs);
+  const latestRun = latestRuns[0] ?? null;
 
   return (
     <>
-      <div className="heroPanel">
-        <div>
-          <span className="eyebrow">Filecoin Cloud Benchmark</span>
-          <h2 className="heroTitle">Run history, failures, and latency trends from local harness evidence.</h2>
+      <section className="heroPanel heroPanelNew">
+        <div className="heroCopy">
+          <span className="eyebrow">Five Minute Challenge</span>
+          <h1 className="heroTitle">A live benchmark registry for agents attempting the Filecoin Cloud getting-started flow.</h1>
           <p className="heroLead">
-            This overview reads a local benchmark feed built from validated runs. The chain-backed registry remains available through the generated
-            collection views.
+            Each benchmark execution measures whether an agent can follow the Filecoin Cloud guide, fund or reuse the required wallet path,
+            upload a payload, download it again, and publish verifiable evidence. This dashboard is the operator view over those benchmark executions.
           </p>
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16 }}>
-            <Link className="btn" href="/BenchmarkRun">On-chain runs</Link>
-            <Link className="btn" href="/BenchmarkIncident">On-chain incidents</Link>
+          <div className="heroCallout">
+            <strong>Where the dynamic data lives</strong>
+            <p>
+              Benchmark status and registry records are published on Filecoin Calibration. Evidence bundles, logs, reports, payloads, and artifact
+              indexes are published to Filecoin Onchain Cloud retrieval URLs. This UI is generated with the Token Host framework and then extended
+              with benchmark-specific views.
+            </p>
+          </div>
+          <div className="heroActions">
+            <Link className="btn" href={latestRun ? `/run/?id=${encodeURIComponent(latestRun.runId)}` : '/BenchmarkRun'}>
+              {latestRun ? 'Open latest benchmark execution' : 'Open benchmark registry'}
+            </Link>
+            <a className="btn" href="https://github.com/tokenhost/tokenhost-builder/" target="_blank" rel="noreferrer">
+              Token Host framework
+            </a>
+            <Link className="btn" href="/BenchmarkRun">
+              Chain-backed registry view
+            </Link>
           </div>
         </div>
-        <div className="heroMeta">
-          <div className="heroMetaItem">
-            <span className="heroMetaLabel">Feed generated</span>
+
+        <div className="heroRail">
+          <div className="heroRailCard">
+            <span className="heroMetaLabel">Feed built</span>
             <strong>{state.generatedAt ?? 'not built yet'}</strong>
           </div>
-          <div className="heroMetaItem">
+          <div className="heroRailCard">
+            <span className="heroMetaLabel">Latest benchmark execution</span>
+            <strong>{latestRun?.runId ?? 'none yet'}</strong>
+            <div className="muted">{latestRun ? humanizeMode(latestRun.mode) : 'No local feed entries yet.'}</div>
+          </div>
+          <div className="heroRailCard">
             <span className="heroMetaLabel">Open incidents</span>
             <strong>{openIncidents.length}</strong>
+            <div className="muted">Validator findings requiring operator review.</div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <section className="architectureGrid">
+        <div className="card architectureCard">
+          <span className="statLabel">Control plane</span>
+          <h2>Benchmark harness</h2>
+          <p>
+            The local runner launches a benchmark execution, measures full wall time, validates artifacts, and publishes a normalized result.
+          </p>
+        </div>
+        <div className="card architectureCard">
+          <span className="statLabel">Registry</span>
+          <h2>Calibration records</h2>
+          <p>
+            The on-chain <code>BenchmarkRun</code> collection is the registry record. On this page, we call each observed attempt a
+            <strong> benchmark execution</strong> to avoid mixing the runtime event with the on-chain collection name.
+          </p>
+        </div>
+        <div className="card architectureCard">
+          <span className="statLabel">Evidence</span>
+          <h2>Filecoin-hosted artifacts</h2>
+          <p>
+            Reports, logs, payloads, validation output, docs snapshots, and bundles are stored on Filecoin Onchain Cloud and linked directly from each execution page.
+          </p>
+        </div>
+      </section>
 
       <div className="grid metricsGrid">
         <div className="card statCard">
-          <span className="statLabel">Total runs</span>
+          <span className="statLabel">Benchmark executions</span>
           <div className="statValue">{metrics.total}</div>
         </div>
         <div className="card statCard">
@@ -111,38 +170,58 @@ export default function HomeClient() {
         </div>
       </div>
 
+      <section className="modeStrip">
+        <div className="modeCard">
+          <span className="statLabel">Fresh wallet mode</span>
+          <strong>{metrics.freshWalletRuns}</strong>
+          <div className="muted">The agent must generate and fund its own wallet through documented public flows.</div>
+        </div>
+        <div className="modeCard">
+          <span className="statLabel">Inherited wallet mode</span>
+          <strong>{metrics.inheritedRuns}</strong>
+          <div className="muted">The agent inherits a funded key and is measured on the storage path rather than faucet acquisition.</div>
+        </div>
+      </section>
+
       <div className="grid dashboardGrid">
         <div className="card span8">
           <div className="sectionRow">
             <div>
-              <h2>Recent runs</h2>
-              <div className="muted">Latest benchmark output derived from local `runs/` artifacts.</div>
+              <h2>Recent benchmark executions</h2>
+              <div className="muted">
+                Each row is one measured execution of the benchmark. The chain-backed registry view is available separately as the raw
+                <code> BenchmarkRun</code> collection.
+              </div>
             </div>
           </div>
 
           {loading ? <div className="emptyState">Loading benchmark feed...</div> : null}
           {error ? <div className="emptyState dangerBox">{error}</div> : null}
-          {!loading && !error && latestRuns.length === 0 ? <div className="emptyState">No runs found yet. Run a benchmark and rebuild the feed.</div> : null}
+          {!loading && !error && latestRuns.length === 0 ? <div className="emptyState">No benchmark executions found yet. Run a benchmark and rebuild the feed.</div> : null}
 
-          <div className="runTable">
+          <div className="runTable runTableDetailed">
             {latestRuns.map((run) => (
-              <div key={run.runId} className="runRow">
-                <div>
+              <div key={run.runId} className="runRow runRowDetailed">
+                <div className="runPrimaryBlock">
                   <div className="runPrimary">
-                    <Link className="runLink" href={`/run?id=${encodeURIComponent(run.runId)}`}>
+                    <Link className="runLink" href={`/run/?id=${encodeURIComponent(run.runId)}`}>
                       {run.runId}
                     </Link>
                     <span className={`statusPill ${tone(run.status)}`}>{run.status}</span>
                   </div>
                   <div className="runSecondary">
-                    <span>{run.mode}</span>
-                    <span>{run.promptVersion}</span>
+                    <span>{humanizeMode(run.mode)}</span>
                     <span>{run.model}</span>
+                    <span>{run.promptVersion}</span>
+                  </div>
+                  <div className="runInsightLine">
+                    {run.meta?.insights?.headline ?? run.operatorNotes ?? 'No derived benchmark insight yet.'}
                   </div>
                 </div>
-                <div className="runStats">
+                <div className="runStats runStatsDetailed">
                   <span>{formatDuration(run.outerWallTimeMs)}</span>
-                  <span>{run.failurePhase || 'ok'}</span>
+                  <span>{run.failurePhase || 'completed'}</span>
+                  <span>{run.contentMatch ? 'verified' : 'not verified'}</span>
                 </div>
               </div>
             ))}
@@ -151,7 +230,7 @@ export default function HomeClient() {
 
         <div className="card span4">
           <h2>Open incidents</h2>
-          <div className="muted">Validator findings turned into operator-facing records.</div>
+          <div className="muted">Validator findings promoted into operator-facing alerts.</div>
           <div className="incidentList">
             {openIncidents.map((incident) => (
               <div key={`${incident.runId}-${incident.title}`} className="incidentItem">
@@ -160,7 +239,7 @@ export default function HomeClient() {
                 <div className="incidentNotes">{incident.notes}</div>
               </div>
             ))}
-            {!loading && !error && openIncidents.length === 0 ? <div className="emptyState">No open incidents in the local feed.</div> : null}
+            {!loading && !error && openIncidents.length === 0 ? <div className="emptyState">No open incidents in the current feed.</div> : null}
           </div>
         </div>
       </div>

@@ -132,3 +132,11 @@ Local running log for benchmark-repo development.
 - Reworked the benchmark run detail page so published Filecoin artifact links now open in a modal rather than always navigating away immediately.
 - The modal fetches and previews text-like artifacts inline (`artifact-index.json`, reports, logs, payload text, JSON results, and docs snapshot HTML as source text) and still offers a direct raw artifact link for every entry.
 - Left binary-only artifacts like the workspace bundle as modal metadata plus raw-open behavior rather than attempting unsafe in-browser preview.
+
+### Dashboard Terminology, Insight, And Theme Refresh
+
+- Introduced explicit derived execution insights in dashboard record generation so each benchmark execution now carries a readable headline, summary, timing highlights, and operator-facing bullets instead of only raw notes.
+- Clarified the terminology split between a benchmark execution and the on-chain `BenchmarkRun` registry record, and updated the home page and execution detail page to explain that distinction directly.
+- Rewrote the home page to explain what the benchmark measures, where dynamic data lives, and how Token Host generates the underlying app before benchmark-specific overrides are applied.
+- Reworked the execution detail page around readable sections for verdict, evidence, timing, metadata, and registry publication instead of a flat key-value dump.
+- Swapped the previous blue dashboard styling for a warmer editorial operations theme to make the custom benchmark surface look materially different from the generic generated CRUD pages.

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-06T02:19:02.557Z",
+  "generatedAt": "2026-03-06T02:39:02.531Z",
   "runCount": 1,
   "incidentCount": 0,
   "runs": [
@@ -145,6 +145,78 @@
           "incidentRecordIds": [],
           "incidentRecordHrefs": [],
           "error": null
+        },
+        "insights": {
+          "headline": "Benchmark execution succeeded using inherited funded wallet flow",
+          "summary": "This benchmark execution completed end to end and produced verifiable Filecoin-hosted evidence.",
+          "bullets": [
+            "Credential strategy: inherited funded wallet; reused a pre-funded inherited wallet.",
+            "Storage result: uploaded and downloaded content successfully with integrity verified for piece bafkzcibcfqcesyesclexrzrzxbxh26gils3aezdzio6nrxbds5bqhrtqfd7bacy.",
+            "Artifacts: published both the artifact index and full bundle to Filecoin Cloud retrieval URLs.",
+            "Timing: total wall time 9m 05s; longest measured agent phase was upload at 1m 20s.",
+            "Registry publication: published to Calibration at 0x7e046c569c4df5b829cd72f62b00d464e39ef50a as BenchmarkRun record 2.",
+            "Operator notes: artifact_publish: uploaded workspace bundle to piececid:bafkzcibeqxmqmdj6yml3lqq7afnaw57jadfcsu5xh4ezh343crl5uxnxglg367sxc4 and artifact index to piececid:bafkzcibdrenqqtcqh2dgfjb5bkxo7rfsp62thiakhg6hgd3c54tm5rjghtsff2qj"
+          ],
+          "timing": {
+            "outerWallTimeMs": 545000,
+            "outerWallTimeLabel": "9m 05s",
+            "longestPhase": {
+              "phase": "upload",
+              "durationMs": 79833,
+              "durationLabel": "1m 20s"
+            },
+            "phases": [
+              {
+                "phase": "write-payload",
+                "durationMs": 4,
+                "durationLabel": "0m 00s",
+                "startedAt": "2026-03-06T00:07:11.492Z",
+                "endedAt": "2026-03-06T00:07:11.496Z"
+              },
+              {
+                "phase": "initialize-and-inspect-funding",
+                "durationMs": 2587,
+                "durationLabel": "0m 03s",
+                "startedAt": "2026-03-06T00:07:11.496Z",
+                "endedAt": "2026-03-06T00:07:14.083Z"
+              },
+              {
+                "phase": "deposit-approval-check",
+                "durationMs": 0,
+                "durationLabel": "0m 00s",
+                "startedAt": "2026-03-06T00:07:14.084Z",
+                "endedAt": "2026-03-06T00:07:14.084Z"
+              },
+              {
+                "phase": "preflight-upload",
+                "durationMs": 261,
+                "durationLabel": "0m 00s",
+                "startedAt": "2026-03-06T00:07:14.084Z",
+                "endedAt": "2026-03-06T00:07:14.345Z"
+              },
+              {
+                "phase": "upload",
+                "durationMs": 79833,
+                "durationLabel": "1m 20s",
+                "startedAt": "2026-03-06T00:07:14.345Z",
+                "endedAt": "2026-03-06T00:08:34.178Z"
+              },
+              {
+                "phase": "download-and-verify",
+                "durationMs": 1015,
+                "durationLabel": "0m 01s",
+                "startedAt": "2026-03-06T00:08:34.178Z",
+                "endedAt": "2026-03-06T00:08:35.193Z"
+              },
+              {
+                "phase": "capture-post-run-state",
+                "durationMs": 811,
+                "durationLabel": "0m 01s",
+                "startedAt": "2026-03-06T00:08:35.193Z",
+                "endedAt": "2026-03-06T00:08:36.004Z"
+              }
+            ]
+          }
         }
       }
     }

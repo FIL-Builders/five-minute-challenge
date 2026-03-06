@@ -43,6 +43,27 @@ export type BenchmarkRunMeta = {
     artifactIndexHttpUrl: string | null;
   };
   dashboardPublish: DashboardPublishMeta;
+  insights?: {
+    headline: string;
+    summary: string;
+    bullets: string[];
+    timing: {
+      outerWallTimeMs: number;
+      outerWallTimeLabel: string;
+      longestPhase: {
+        phase: string;
+        durationMs: number;
+        durationLabel: string;
+      } | null;
+      phases: Array<{
+        phase: string;
+        durationMs: number;
+        durationLabel: string;
+        startedAt: string | null;
+        endedAt: string | null;
+      }>;
+    };
+  };
 };
 
 export type BenchmarkRunRecord = {
@@ -129,6 +150,12 @@ export function formatDuration(msString: string): string {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   return `${minutes}m ${String(seconds).padStart(2, '0')}s`;
+}
+
+export function humanizeMode(mode: string): string {
+  if (mode === 'fresh-follow-docs') return 'Fresh wallet benchmark';
+  if (mode === 'inherited-key-follow-docs') return 'Inherited wallet benchmark';
+  return mode;
 }
 
 export function percentile(values: number[], ratio: number): number | null {
