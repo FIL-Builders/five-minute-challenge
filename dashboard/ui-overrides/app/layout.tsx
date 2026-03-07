@@ -62,7 +62,6 @@ export default function RootLayout(props: { children: React.ReactNode }) {
                       <span className="brandWordBase">five minute</span>
                       <span className="brandWordAccent">challenge</span>
                     </span>
-                    <span className="badge">schema {ths.schemaVersion}</span>
                   </div>
                 </div>
               </Link>
@@ -110,7 +109,9 @@ export default function RootLayout(props: { children: React.ReactNode }) {
                   </div>
                 </div>
               </div>
-              <FooterDeploymentMeta />
+              <FooterDeploymentMeta>
+                <span className="badge">schema {ths.schemaVersion}</span>
+              </FooterDeploymentMeta>
             </div>
           </footer>
         </div>
