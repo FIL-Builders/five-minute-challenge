@@ -11,6 +11,7 @@ import {
   type BenchmarkIncidentRecord,
   type BenchmarkRunFeedRecord
 } from '../src/lib/feed';
+import { formatDateTime } from '../src/lib/format';
 
 type FeedState = {
   runs: BenchmarkRunFeedRecord[];
@@ -111,16 +112,17 @@ export default function HomeClient() {
         <div className="heroRail">
           <div className="heroRailCard">
             <span className="heroMetaLabel">Feed built</span>
-            <strong>{state.generatedAt ?? 'not built yet'}</strong>
+            <strong className="heroRailValue">{state.generatedAt ? formatDateTime(state.generatedAt, 'compact') : 'not built yet'}</strong>
           </div>
           <div className="heroRailCard">
             <span className="heroMetaLabel">Latest benchmark execution</span>
-            <strong>{latestRun?.runId ?? 'none yet'}</strong>
+            <strong className="heroRailValue">{latestRun?.startedAt ? formatDateTime(latestRun.startedAt, 'compact') : 'none yet'}</strong>
+            {latestRun ? <div className="heroRailCode">{latestRun.runId}</div> : null}
             <div className="muted">{latestRun ? humanizeMode(latestRun.mode) : 'No local feed entries yet.'}</div>
           </div>
           <div className="heroRailCard">
             <span className="heroMetaLabel">Open incidents</span>
-            <strong>{openIncidents.length}</strong>
+            <strong className="heroRailValue">{openIncidents.length}</strong>
             <div className="muted">Validator findings requiring operator review.</div>
           </div>
         </div>
@@ -128,14 +130,14 @@ export default function HomeClient() {
 
       <section className="architectureGrid">
         <div className="card architectureCard">
-          <span className="statLabel">Control plane</span>
+          <span className="sectionLabel">Control plane</span>
           <h2>Benchmark harness</h2>
           <p>
             The local runner launches a benchmark execution, measures full wall time, validates artifacts, and publishes a normalized result.
           </p>
         </div>
         <div className="card architectureCard">
-          <span className="statLabel">Registry</span>
+          <span className="sectionLabel">Registry</span>
           <h2>Calibration records</h2>
           <p>
             The on-chain <code>BenchmarkRun</code> collection is the registry record. On this page, we call each observed attempt a
@@ -143,7 +145,7 @@ export default function HomeClient() {
           </p>
         </div>
         <div className="card architectureCard">
-          <span className="statLabel">Evidence</span>
+          <span className="sectionLabel">Evidence</span>
           <h2>Filecoin-hosted artifacts</h2>
           <p>
             Reports, logs, payloads, validation output, docs snapshots, and bundles are stored on Filecoin Onchain Cloud and linked directly from each execution page.
@@ -235,7 +237,7 @@ export default function HomeClient() {
             {openIncidents.map((incident) => (
               <div key={`${incident.runId}-${incident.title}`} className="incidentItem">
                 <div className="incidentTitle">{incident.title}</div>
-                <div className="incidentMeta">{incident.openedAt}</div>
+                <div className="incidentMeta">{formatDateTime(incident.openedAt)}</div>
                 <div className="incidentNotes">{incident.notes}</div>
               </div>
             ))}

@@ -1,48 +1,162 @@
-.txStatusLink {
-  color: #b84b1f;
-  font-weight: 700;
+.nav,
+.siteContent,
+.siteShell {
+  max-width: var(--th-shell-width);
 }
 
 .eyebrow {
-  display: inline-flex;
   align-items: center;
+  color: var(--th-muted);
+  display: inline-flex;
   gap: 8px;
   font-family: var(--th-font-mono);
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #a44b23;
+}
+
+.heroPanelNew,
+.heroCallout,
+.heroRailCard,
+.modeCard,
+.detailStat,
+.runHeroCard,
+.phaseRow,
+.runRow,
+.incidentItem,
+.notesPanel,
+.summaryBullet,
+.artifactMeta,
+.artifactModal {
+  border: 1px solid var(--th-border);
+  box-shadow: var(--th-shadow);
+  position: relative;
+}
+
+.heroPanelNew::before,
+.heroPanelNew::after,
+.heroCallout::before,
+.heroCallout::after,
+.heroRailCard::before,
+.heroRailCard::after,
+.modeCard::before,
+.modeCard::after,
+.detailStat::before,
+.detailStat::after,
+.runHeroCard::before,
+.runHeroCard::after,
+.phaseRow::before,
+.phaseRow::after,
+.runRow::before,
+.runRow::after,
+.incidentItem::before,
+.incidentItem::after,
+.notesPanel::before,
+.notesPanel::after,
+.summaryBullet::before,
+.summaryBullet::after,
+.artifactMeta::before,
+.artifactMeta::after,
+.artifactModal::before,
+.artifactModal::after {
+  content: '';
+  height: 20px;
+  pointer-events: none;
+  position: absolute;
+  width: 20px;
+}
+
+.heroPanelNew::before,
+.heroCallout::before,
+.heroRailCard::before,
+.modeCard::before,
+.detailStat::before,
+.runHeroCard::before,
+.phaseRow::before,
+.runRow::before,
+.incidentItem::before,
+.notesPanel::before,
+.summaryBullet::before,
+.artifactMeta::before,
+.artifactModal::before {
+  border-left: 1.5px solid var(--th-primary);
+  border-top: 1.5px solid var(--th-primary);
+  left: -1px;
+  top: -1px;
+}
+
+.heroPanelNew::after,
+.heroCallout::after,
+.heroRailCard::after,
+.modeCard::after,
+.detailStat::after,
+.runHeroCard::after,
+.phaseRow::after,
+.runRow::after,
+.incidentItem::after,
+.notesPanel::after,
+.summaryBullet::after,
+.artifactMeta::after,
+.artifactModal::after {
+  border-bottom: 1.5px solid var(--th-primary);
+  border-right: 1.5px solid var(--th-primary);
+  bottom: -1px;
+  right: -1px;
+}
+
+html[data-theme='dark'] .heroPanelNew,
+html[data-theme='dark'] .heroCallout,
+html[data-theme='dark'] .heroRailCard,
+html[data-theme='dark'] .modeCard,
+html[data-theme='dark'] .detailStat,
+html[data-theme='dark'] .runHeroCard,
+html[data-theme='dark'] .phaseRow,
+html[data-theme='dark'] .runRow,
+html[data-theme='dark'] .incidentItem,
+html[data-theme='dark'] .notesPanel,
+html[data-theme='dark'] .summaryBullet,
+html[data-theme='dark'] .artifactMeta,
+html[data-theme='dark'] .artifactModal {
+  box-shadow: none;
+}
+
+.heroPanelNew,
+.runHeroCard {
+  background: var(--th-panel);
+  display: grid;
+  gap: 24px;
+  overflow: hidden;
+  padding: clamp(24px, 4vw, 34px);
 }
 
 .heroPanelNew {
-  margin-top: var(--th-space-md);
-  padding: 32px;
-  border-radius: 32px;
-  border: 1px solid rgba(132, 55, 22, 0.12);
-  background:
-    radial-gradient(circle at top right, rgba(255, 214, 152, 0.55) 0, rgba(255, 214, 152, 0) 30%),
-    radial-gradient(circle at bottom left, rgba(170, 92, 42, 0.12) 0, rgba(170, 92, 42, 0) 24%),
-    linear-gradient(135deg, #fff8ed 0%, #fff1dd 38%, #f6e0c4 100%);
-  color: #26160f;
-  display: grid;
-  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 0.9fr);
-  gap: 24px;
-  box-shadow: 0 28px 80px rgba(85, 39, 18, 0.12);
+  grid-template-columns: minmax(0, 1.42fr) minmax(300px, 0.88fr);
+}
+
+.runHeroCard {
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.9fr);
 }
 
 .heroCopy,
-.heroRail {
+.heroRail,
+.runHeroMetrics {
   display: grid;
   gap: 18px;
 }
 
+.heroRail,
+.runHeroMetrics {
+  align-content: start;
+  min-width: 0;
+}
+
 .heroTitle {
-  margin: 8px 0 0;
+  color: var(--th-text);
   font-size: clamp(42px, 6vw, 72px);
+  letter-spacing: -0.06em;
   line-height: 0.92;
-  letter-spacing: -0.04em;
+  margin: 8px 0 0;
   max-width: 12ch;
-  color: #23110a;
 }
 
 .heroLead,
@@ -50,73 +164,118 @@
 .runHeroLead,
 .architectureCard p,
 .heroCallout p {
+  color: var(--th-muted);
   font-size: 15px;
   line-height: 1.75;
-  color: #553428;
 }
 
 .heroCallout {
+  background: var(--th-panel);
   padding: 18px 20px;
-  border-radius: 22px;
-  border: 1px solid rgba(132, 55, 22, 0.14);
-  background: rgba(255, 250, 243, 0.85);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .heroCallout strong,
 .architectureCard h2,
 .pageTitle,
+.runHeroCard h2,
+.incidentTitle,
+.phaseTitle {
+  color: var(--th-text);
+}
+
 .runHeroCard h2 {
-  color: #23110a;
+  font-family: var(--th-font-display);
+  font-size: clamp(1.9rem, 4vw, 2.9rem);
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  margin: 8px 0 0;
 }
 
 .heroActions,
 .pageActions,
 .artifactActions {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
 .heroRailCard,
 .modeCard,
 .detailStat,
-.architectureCard,
-.runHeroCard,
 .phaseRow,
 .runRow,
 .incidentItem {
-  border-radius: 22px;
-  border: 1px solid rgba(132, 55, 22, 0.12);
-  background: rgba(255, 251, 246, 0.92);
-  box-shadow: 0 18px 44px rgba(71, 33, 15, 0.08);
-}
-
-.heroRailCard,
-.modeCard,
-.detailStat,
-.architectureCard,
-.phaseRow,
-.runRow,
-.incidentItem {
+  background: var(--th-panel);
   padding: 16px 18px;
 }
 
+.heroRailCard strong,
+.detailStat strong {
+  color: var(--th-text);
+  display: block;
+  font-family: var(--th-font-display);
+  font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+  letter-spacing: -0.04em;
+  line-height: 1.12;
+  margin-top: 10px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .heroMetaLabel,
-.statLabel {
+.detailKv > div:nth-child(odd),
+.artifactMeta > div:nth-child(odd) {
+  color: var(--th-muted);
   display: block;
   font-family: var(--th-font-mono);
   font-size: 11px;
-  text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: #8f613f;
+  text-transform: uppercase;
+}
+
+.sectionLabel {
+  color: var(--th-muted);
+  display: block;
+  font-family: var(--th-font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.heroRailValue {
+  max-width: 100%;
+}
+
+.heroRailCode {
+  color: var(--th-text);
+  font-family: var(--th-font-mono);
+  font-size: 12px;
+  line-height: 1.55;
+  margin-top: 10px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.statLabel {
+  color: var(--th-text);
+  display: block;
+  font-family: var(--th-font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .architectureGrid {
-  margin-top: 22px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 22px;
+}
+
+.architectureCard {
+  min-height: 100%;
 }
 
 .architectureCard p {
@@ -128,33 +287,34 @@
 }
 
 .metricsGrid .statCard {
+  background: var(--th-panel);
   grid-column: span 3;
-  border-radius: 24px;
-  background: linear-gradient(180deg, #fff9ef 0%, #ffefd6 100%);
-  border: 1px solid rgba(132, 55, 22, 0.12);
+}
+
+.statValue,
+.modeCard strong,
+.phaseDuration {
+  color: var(--th-primary);
+  font-family: var(--th-font-display);
+  line-height: 1;
 }
 
 .statValue {
-  margin-top: 10px;
   font-size: 34px;
-  line-height: 1;
-  font-family: var(--th-font-display);
-  color: #23110a;
+  margin-top: 10px;
 }
 
 .modeStrip {
-  margin-top: 18px;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 18px;
 }
 
 .modeCard strong {
   display: block;
-  margin-top: 8px;
   font-size: 30px;
-  line-height: 1;
-  color: #23110a;
+  margin-top: 8px;
 }
 
 .dashboardGrid .span8 {
@@ -167,66 +327,86 @@
 
 .sectionRow,
 .pageHeader {
-  display: flex;
-  justify-content: space-between;
   align-items: flex-start;
+  display: flex;
   gap: var(--th-space-md);
+  justify-content: space-between;
 }
 
 .pageHeader {
-  margin-top: var(--th-space-md);
   margin-bottom: 20px;
+  margin-top: var(--th-space-md);
 }
 
 .pageTitle {
-  margin: 8px 0 0;
   font-size: clamp(34px, 4vw, 52px);
   line-height: 0.98;
+  margin: 8px 0 0;
 }
 
 .emptyState {
+  background: var(--th-panel-muted);
+  border: 1px dashed var(--th-border-strong);
+  color: var(--th-muted);
   padding: 16px;
-  border: 1px dashed rgba(132, 55, 22, 0.2);
-  border-radius: 18px;
-  color: #7d624d;
-  background: #fffaf4;
 }
 
 .dangerBox {
+  background: var(--th-danger-surface);
+  border-color: var(--th-danger-border);
   border-style: solid;
-  border-color: #efb3bc;
-  background: #fff2f4;
-  color: #8b2030;
+  color: var(--th-text);
+}
+
+.runTable,
+.incidentList,
+.summaryBulletList,
+.feedbackSectionList,
+.phaseList {
+  display: grid;
+  gap: 12px;
+}
+
+.summaryBulletList,
+.feedbackSectionList,
+.phaseList {
+  margin-top: 16px;
 }
 
 .runTable {
-  display: grid;
   gap: 14px;
 }
 
 .runRow {
   display: grid;
+  gap: 18px;
   grid-template-columns: minmax(0, 1.5fr) minmax(220px, 0.8fr);
+}
+
+.runPrimaryBlock,
+.feedbackSectionCard,
+.runPage,
+.runContentGrid {
+  display: grid;
   gap: 18px;
 }
 
 .runPrimaryBlock {
-  display: grid;
   gap: 8px;
 }
 
 .runPrimary {
-  display: flex;
   align-items: center;
-  gap: 10px;
+  display: flex;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
 .runLink {
+  color: var(--th-text);
   font-weight: 700;
-  color: #25140d;
   text-decoration: underline;
-  text-decoration-color: #e0b188;
+  text-decoration-color: color-mix(in srgb, var(--th-primary) 55%, transparent);
   text-underline-offset: 4px;
 }
 
@@ -237,7 +417,7 @@
 .phaseMeta,
 .runInsightLine,
 .muted {
-  color: #7d624d;
+  color: var(--th-muted);
   font-size: 13px;
 }
 
@@ -245,12 +425,14 @@
 .runStats,
 .phaseMeta {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
-.runInsightLine {
-  line-height: 1.6;
+.runInsightLine,
+.summaryBullet,
+.notesPanel {
+  line-height: 1.7;
 }
 
 .runStatsDetailed {
@@ -259,85 +441,55 @@
 }
 
 .statusPill {
-  display: inline-flex;
   align-items: center;
-  padding: 4px 8px;
+  border: 1px solid transparent;
   border-radius: 999px;
-  font-size: 11px;
+  display: inline-flex;
   font-family: var(--th-font-mono);
+  font-size: 11px;
+  padding: 4px 8px;
   text-transform: uppercase;
 }
 
 .toneSuccess {
-  background: #e4f7e8;
-  color: #14633d;
+  background: color-mix(in srgb, var(--th-success) 18%, var(--th-panel));
+  border-color: color-mix(in srgb, var(--th-success) 40%, transparent);
+  color: color-mix(in srgb, var(--th-success) 72%, var(--th-text));
 }
 
 .toneWarn {
-  background: #fff2d6;
-  color: #915a00;
+  background: color-mix(in srgb, var(--th-accent) 18%, var(--th-panel));
+  border-color: color-mix(in srgb, var(--th-accent) 42%, transparent);
+  color: color-mix(in srgb, var(--th-accent) 76%, var(--th-text));
 }
 
 .toneDanger {
-  background: #fff0f2;
-  color: #a52c3f;
+  background: color-mix(in srgb, var(--th-danger) 18%, var(--th-panel));
+  border-color: color-mix(in srgb, var(--th-danger) 40%, transparent);
+  color: color-mix(in srgb, var(--th-danger) 74%, var(--th-text));
 }
 
 .incidentList {
-  display: grid;
-  gap: 12px;
   margin-top: var(--th-space-md);
-}
-
-.incidentTitle,
-.phaseTitle {
-  font-weight: 700;
-  color: #23110a;
 }
 
 .detailKv {
   margin-top: var(--th-space-md);
 }
 
-.detailKv > div:nth-child(odd),
-.artifactMeta > div:nth-child(odd) {
-  font-family: var(--th-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #8f613f;
-}
-
 .notesPanel,
-.summaryBullet {
-  border-radius: 18px;
-  border: 1px solid rgba(132, 55, 22, 0.1);
-  background: linear-gradient(180deg, #fffdf9 0%, #fff6ea 100%);
+.summaryBullet,
+.artifactMeta,
+.artifactModal {
+  background: var(--th-panel);
 }
 
 .notesPanel {
+  color: var(--th-text);
   margin-top: var(--th-space-md);
   min-height: 180px;
   padding: 16px;
   white-space: pre-wrap;
-  color: #4f3428;
-}
-
-.summaryBulletList {
-  display: grid;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.feedbackSectionList {
-  display: grid;
-  gap: 14px;
-  margin-top: 16px;
-}
-
-.feedbackSectionCard {
-  display: grid;
-  gap: 8px;
 }
 
 .feedbackPanel {
@@ -347,33 +499,6 @@
 
 .summaryBullet {
   padding: 14px 16px;
-  line-height: 1.7;
-  color: #41271c;
-}
-
-.runPage {
-  display: grid;
-  gap: 18px;
-}
-
-.runHeroCard {
-  padding: 26px;
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.9fr);
-  gap: 20px;
-  background:
-    radial-gradient(circle at top right, rgba(255, 215, 170, 0.5) 0, rgba(255, 215, 170, 0) 28%),
-    linear-gradient(180deg, #fff7eb 0%, #fbe6ca 100%);
-}
-
-.runHeroMetrics {
-  display: grid;
-  gap: 14px;
-}
-
-.runContentGrid {
-  display: grid;
-  gap: 18px;
 }
 
 .sectionCard {
@@ -382,8 +507,8 @@
 
 .artifactGrid {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 10px;
   margin-top: 16px;
 }
 
@@ -396,61 +521,48 @@
 }
 
 .timingHeader {
-  margin-top: 16px;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
-}
-
-.phaseList {
-  display: grid;
-  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-top: 16px;
 }
 
 .phaseRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
   align-items: center;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .phaseDuration {
   font-family: var(--th-font-mono);
-  color: #8f613f;
 }
 
 .artifactModalOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
+  backdrop-filter: blur(10px);
+  background: hsl(240 15% 4% / 0.68);
   display: grid;
-  place-items: center;
+  inset: 0;
   padding: 20px;
-  background: rgba(27, 15, 9, 0.62);
-  backdrop-filter: blur(8px);
+  place-items: center;
+  position: fixed;
+  z-index: 60;
 }
 
 .artifactModal {
-  width: min(980px, 100%);
-  max-height: min(88vh, 920px);
   display: grid;
-  grid-template-rows: auto auto auto minmax(0, 1fr);
   gap: 16px;
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  max-height: min(88vh, 920px);
   padding: 22px;
-  border-radius: 28px;
-  border: 1px solid rgba(224, 178, 135, 0.35);
-  background:
-    radial-gradient(circle at top right, rgba(255, 214, 152, 0.42) 0, rgba(255, 214, 152, 0) 24%),
-    linear-gradient(180deg, #fffaf3 0%, #fff0df 100%);
-  box-shadow: 0 30px 90px rgba(38, 18, 10, 0.28);
+  width: min(980px, 100%);
 }
 
 .artifactModalHeader {
-  display: flex;
-  justify-content: space-between;
   align-items: flex-start;
+  display: flex;
   gap: 16px;
+  justify-content: space-between;
 }
 
 .artifactModalHeader h2 {
@@ -463,12 +575,9 @@
 
 .artifactMeta {
   display: grid;
-  grid-template-columns: minmax(140px, 180px) minmax(0, 1fr);
   gap: 10px 14px;
+  grid-template-columns: minmax(140px, 180px) minmax(0, 1fr);
   padding: 14px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(132, 55, 22, 0.12);
 }
 
 .artifactModalBody {
@@ -477,19 +586,25 @@
 }
 
 .artifactPreview {
-  margin: 0;
-  min-height: 320px;
-  padding: 16px;
-  border-radius: 18px;
-  background: #1e140e;
-  color: #f9efe4;
-  border: 1px solid #72472f;
-  overflow: auto;
-  white-space: pre-wrap;
-  word-break: break-word;
+  border: 1px solid var(--th-border-strong);
+  color: hsl(210 30% 96%);
   font-family: var(--th-font-mono);
   font-size: 13px;
   line-height: 1.6;
+  margin: 0;
+  min-height: 320px;
+  overflow: auto;
+  padding: 16px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+html[data-theme='light'] .artifactPreview {
+  background: hsl(222 47% 11%);
+}
+
+html[data-theme='dark'] .artifactPreview {
+  background: hsl(240 10% 8%);
 }
 
 @media (max-width: 960px) {
@@ -523,8 +638,8 @@
   .artifactActions,
   .pageActions,
   .heroActions {
-    flex-direction: column;
     align-items: stretch;
+    flex-direction: column;
   }
 
   .artifactMeta {

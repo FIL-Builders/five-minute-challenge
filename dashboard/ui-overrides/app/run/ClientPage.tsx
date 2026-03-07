@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import { fetchBenchmarkFeed, formatDuration, humanizeMode, type ArtifactLink, type BenchmarkRunFeedRecord } from '../../src/lib/feed';
+import { formatDateTime } from '../../src/lib/format';
 
 function kv(label: string, value: string) {
   return (
@@ -207,8 +208,8 @@ export default function RunClientPage() {
                   {kv('model', run.model)}
                   {kv('promptVersion', run.promptVersion)}
                   {kv('repoSha', run.repoSha)}
-                  {kv('startedAt', run.startedAt)}
-                  {kv('endedAt', run.endedAt)}
+                  {kv('startedAt', formatDateTime(run.startedAt))}
+                  {kv('endedAt', formatDateTime(run.endedAt))}
                   {kv('failurePhase', run.failurePhase)}
                   {kv('walletAddress', run.walletAddress)}
                   {kv('fundingTxHash', run.fundingTxHash)}
@@ -284,8 +285,8 @@ export default function RunClientPage() {
                       <div>
                         <div className="phaseTitle">{formatPhaseName(phase.phase)}</div>
                         <div className="phaseMeta">
-                          <span>{phase.startedAt ?? 'n/a'}</span>
-                          <span>{phase.endedAt ?? 'n/a'}</span>
+                          <span>{phase.startedAt ? formatDateTime(phase.startedAt) : 'n/a'}</span>
+                          <span>{phase.endedAt ? formatDateTime(phase.endedAt) : 'n/a'}</span>
                         </div>
                       </div>
                       <div className="phaseDuration">{phase.durationLabel}</div>
@@ -304,7 +305,7 @@ export default function RunClientPage() {
                   {kv('chainName', run.meta?.dashboardPublish?.chainName ?? '')}
                   {kv('deploymentAddress', run.meta?.dashboardPublish?.deploymentAddress ?? '')}
                   {kv('runRecordId', run.meta?.dashboardPublish?.runRecordId ?? '')}
-                  {kv('publishedAt', run.meta?.dashboardPublish?.publishedAt ?? '')}
+                  {kv('publishedAt', formatDateTime(run.meta?.dashboardPublish?.publishedAt ?? ''))}
                   {kv('registryStatus', run.meta?.dashboardPublish?.status ?? '')}
                 </div>
               </section>
