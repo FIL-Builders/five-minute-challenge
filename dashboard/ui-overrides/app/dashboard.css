@@ -20,6 +20,7 @@
 .heroRailCard,
 .modeCard,
 .detailStat,
+.pageHeader,
 .runHeroCard,
 .phaseRow,
 .runRow,
@@ -43,6 +44,8 @@
 .modeCard::after,
 .detailStat::before,
 .detailStat::after,
+.pageHeader::before,
+.pageHeader::after,
 .runHeroCard::before,
 .runHeroCard::after,
 .phaseRow::before,
@@ -71,6 +74,7 @@
 .heroRailCard::before,
 .modeCard::before,
 .detailStat::before,
+.pageHeader::before,
 .runHeroCard::before,
 .phaseRow::before,
 .runRow::before,
@@ -90,6 +94,7 @@
 .heroRailCard::after,
 .modeCard::after,
 .detailStat::after,
+.pageHeader::after,
 .runHeroCard::after,
 .phaseRow::after,
 .runRow::after,
@@ -109,6 +114,7 @@ html[data-theme='dark'] .heroCallout,
 html[data-theme='dark'] .heroRailCard,
 html[data-theme='dark'] .modeCard,
 html[data-theme='dark'] .detailStat,
+html[data-theme='dark'] .pageHeader,
 html[data-theme='dark'] .runHeroCard,
 html[data-theme='dark'] .phaseRow,
 html[data-theme='dark'] .runRow,
@@ -135,6 +141,7 @@ html[data-theme='dark'] .artifactModal {
 
 .runHeroCard {
   grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.9fr);
+  overflow: visible;
 }
 
 .heroCopy,
@@ -202,6 +209,7 @@ html[data-theme='dark'] .artifactModal {
 .heroRailCard,
 .modeCard,
 .detailStat,
+.pageHeader,
 .phaseRow,
 .runRow,
 .incidentItem {
@@ -334,8 +342,12 @@ html[data-theme='dark'] .artifactModal {
 }
 
 .pageHeader {
+  background: var(--th-panel);
+  flex-wrap: wrap;
   margin-bottom: 20px;
   margin-top: var(--th-space-md);
+  overflow: visible;
+  padding: clamp(24px, 4vw, 34px);
 }
 
 .pageTitle {

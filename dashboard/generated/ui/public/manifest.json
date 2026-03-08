@@ -2,7 +2,7 @@
   "manifestVersion": "0.1.0",
   "thsVersion": "2025-12",
   "schemaVersion": "0.1.0",
-  "schemaHash": "sha256:cc03564a1ef7055ee44a21910d7331dcbc068b5106ea3b6bdffa9c3fbe6e25b3",
+  "schemaHash": "sha256:558780c19fbcde166b9aed1a2ef05375cd58999b6d29a37f7815148d893c1027",
   "generatorVersion": "0.0.0",
   "toolchain": {
     "node": "24.1.0",
@@ -10,9 +10,9 @@
     "compilerProfile": "large-app(viaIR)"
   },
   "release": {
-    "releaseId": "rel_local_1772765855415",
+    "releaseId": "rel_local_1772887754022",
     "supersedesReleaseId": null,
-    "publishedAt": "2026-03-06T02:57:35.415Z"
+    "publishedAt": "2026-03-07T12:49:14.022Z"
   },
   "app": {
     "name": "Benchmark Registry",
@@ -46,11 +46,11 @@
   ],
   "artifacts": {
     "soliditySources": {
-      "digest": "sha256:ebcbe7da6cbe92a51b1c4d2e1bd0f1e806726a3d1ee98892a2342625b1b0f3e0",
+      "digest": "sha256:a2e0912e2065b3445f5fd173d0024cd20f115e05bfae13b69fee67b49ef66105",
       "url": "file:///home/mikers/dev/fil-builders/five-minute-challenge/dashboard/generated/sources.tgz"
     },
     "compiledContracts": {
-      "digest": "sha256:c4a5c97de7cbbabca0259699381860e49067664a9a0b69c84b68e4034542e4d3",
+      "digest": "sha256:d6947ef1e2616f8fc3a53e54fa38ad26cbed36ba3369d90dce5e18c02db3efe4",
       "url": "file:///home/mikers/dev/fil-builders/five-minute-challenge/dashboard/generated/compiled.tgz"
     }
   },
@@ -60,29 +60,29 @@
       "chainId": 314159,
       "chainName": "filecoin_calibration",
       "deploymentMode": "single",
-      "deploymentEntrypointAddress": "0xe79722646a2103b9a8037c4919c00037c1149046",
+      "deploymentEntrypointAddress": "0x0942033e6292581e842af44a06b080fcf82814b6",
       "adminAddress": "0xF00DCE36817586672B47480FB48C94177A97278B",
       "treasuryAddress": null,
       "contracts": [
         {
           "role": "app",
-          "address": "0xe79722646a2103b9a8037c4919c00037c1149046",
-          "verified": true,
-          "bytecodeDigest": "sha256:3b4a8062360928165d4d3d7e0dc515de12c6decdf0c21e2e95fd3ab4037f7290",
-          "abiDigest": "sha256:64faf011b1251e9e7290345389afea8142d00390ae33a7d430114eab3b75ba99"
+          "address": "0x0942033e6292581e842af44a06b080fcf82814b6",
+          "verified": false,
+          "bytecodeDigest": "sha256:5f7914c6d951eaf068010f3fda6934d51d13ce87c05955555e20e9b01102ed4e",
+          "abiDigest": "sha256:1bfc378dfb610e4356ea6d4343b5410dba37f1470bde3baee1ed28bc7b213510"
         }
       ],
-      "verified": true,
-      "blockNumber": 3514650,
+      "verified": false,
+      "blockNumber": 3518714,
       "chainConfig": {
         "url": "file:///home/mikers/dev/fil-builders/five-minute-challenge/dashboard/generated/chain-config/filecoin_calibration.json",
-        "digest": "sha256:f497b2390791acb100e6a3c9c23ae579daf3d061cc3f61361cae989d3c728406",
+        "digest": "sha256:a3379772e994f5a7aef7d010b5f1036f63f94188a0aef628e2230bc0cb25cb6b",
         "chainConfigVersion": "1.0.0"
       }
     }
   ],
   "ui": {
-    "bundleHash": "sha256:8885926dcfb45ac58212cbd0db437cfade09fd65298fde7aacc612b0a6024085",
+    "bundleHash": "sha256:edde476225d1186c4eab8ca07bf1ad0ff1883c75028d408caf807f8d8d02e6ec",
     "baseUrl": "file:///home/mikers/dev/fil-builders/five-minute-challenge/dashboard/generated/ui-site/",
     "wellKnown": "/.well-known/tokenhost/manifest.json"
   },
@@ -95,21 +95,6 @@
   "extensions": {
     "tx": {
       "mode": "userPays"
-    },
-    "verification": {
-      "314159": {
-        "at": "2026-03-06T07:43:54.199Z",
-        "filfox": {
-          "ok": true,
-          "status": 201,
-          "cmd": "POST https://calibration.filfox.info/api/v1/tools/verifyContract",
-          "stdoutTail": "view\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"cursorIdExclusive\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"limit\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"bool\\\",\\\"name\\\":\\\"includeDeleted\\\",\\\"type\\\":\\\"bool\\\"}],\\\"name\\\":\\\"listIdsBenchmarkConfig\\\",\\\"outputs\\\":[{\\\"internalType\\\":\\\"uint256[]\\\",\\\"name\\\":\\\"\\\",\\\"type\\\":\\\"uint256[]\\\"}],\\\"stateMutability\\\":\\\"view\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"cursorIdExclusive\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"limit\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"bool\\\",\\\"name\\\":\\\"includeDeleted\\\",\\\"type\\\":\\\"bool\\\"}],\\\"name\\\":\\\"listIdsBenchmarkEvidence\\\",\\\"outputs\\\":[{\\\"internalType\\\":\\\"uint256[]\\\",\\\"name\\\":\\\"\\\",\\\"type\\\":\\\"uint256[]\\\"}],\\\"stateMutability\\\":\\\"view\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"cursorIdExclusive\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"limit\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"bool\\\",\\\"name\\\":\\\"includeDeleted\\\",\\\"type\\\":\\\"bool\\\"}],\\\"name\\\":\\\"listIdsBenchmarkFeedback\\\",\\\"outputs\\\":[{\\\"internalType\\\":\\\"uint256[]\\\",\\\"name\\\":\\\"\\\",\\\"type\\\":\\\"uint256[]\\\"}],\\\"stateMutability\\\":\\\"view\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"cursorIdExclusive\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"limit\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"bool\\\",\\\"name\\\":\\\"includeDeleted\\\",\\\"type\\\":\\\"bool\\\"}],\\\"name\\\":\\\"listIdsBenchmarkIncident\\\",\\\"outputs\\\":[{\\\"internalType\\\":\\\"uint256[]\\\",\\\"name\\\":\\\"\\\",\\\"type\\\":\\\"uint256[]\\\"}],\\\"stateMutability\\\":\\\"view\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"cursorIdExclusive\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"limit\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"bool\\\",\\\"name\\\":\\\"includeDeleted\\\",\\\"type\\\":\\\"bool\\\"}],\\\"name\\\":\\\"listIdsBenchmarkRun\\\",\\\"outputs\\\":[{\\\"internalType\\\":\\\"uint256[]\\\",\\\"name\\\":\\\"\\\",\\\"type\\\":\\\"uint256[]\\\"}],\\\"stateMutability\\\":\\\"view\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"bytes[]\\\",\\\"name\\\":\\\"calls\\\",\\\"type\\\":\\\"bytes[]\\\"}],\\\"name\\\":\\\"multicall\\\",\\\"outputs\\\":[{\\\"internalType\\\":\\\"bytes[]\\\",\\\"name\\\":\\\"results\\\",\\\"type\\\":\\\"bytes[]\\\"}],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[],\\\"name\\\":\\\"nextIdBenchmarkArtifacts\\\",\\\"outputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"\\\",\\\"type\\\":\\\"uint256\\\"}],\\\"stateMutability\\\":\\\"view\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[],\\\"name\\\":\\\"nextIdBenchmarkConfig\\\",\\\"outputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"\\\",\\\"type\\\":\\\"uint256\\\"}],\\\"stateMutability\\\":\\\"view\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[],\\\"name\\\":\\\"nextIdBenchmarkEvidence\\\",\\\"outputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"\\\",\\\"type\\\":\\\"uint256\\\"}],\\\"stateMutability\\\":\\\"view\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[],\\\"name\\\":\\\"nextIdBenchmarkFeedback\\\",\\\"outputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"\\\",\\\"type\\\":\\\"uint256\\\"}],\\\"stateMutability\\\":\\\"view\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[],\\\"name\\\":\\\"nextIdBenchmarkIncident\\\",\\\"outputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"\\\",\\\"type\\\":\\\"uint256\\\"}],\\\"stateMutability\\\":\\\"view\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[],\\\"name\\\":\\\"nextIdBenchmarkRun\\\",\\\"outputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"\\\",\\\"type\\\":\\\"uint256\\\"}],\\\"stateMutability\\\":\\\"view\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"id\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"address\\\",\\\"name\\\":\\\"to\\\",\\\"type\\\":\\\"address\\\"}],\\\"name\\\":\\\"transferBenchmarkArtifacts\\\",\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"id\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"address\\\",\\\"name\\\":\\\"to\\\",\\\"type\\\":\\\"address\\\"}],\\\"name\\\":\\\"transferBenchmarkConfig\\\",\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"id\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"address\\\",\\\"name\\\":\\\"to\\\",\\\"type\\\":\\\"address\\\"}],\\\"name\\\":\\\"transferBenchmarkEvidence\\\",\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"id\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"address\\\",\\\"name\\\":\\\"to\\\",\\\"type\\\":\\\"address\\\"}],\\\"name\\\":\\\"transferBenchmarkFeedback\\\",\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"id\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"address\\\",\\\"name\\\":\\\"to\\\",\\\"type\\\":\\\"address\\\"}],\\\"name\\\":\\\"transferBenchmarkIncident\\\",\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"id\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"address\\\",\\\"name\\\":\\\"to\\\",\\\"type\\\":\\\"address\\\"}],\\\"name\\\":\\\"transferBenchmarkRun\\\",\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"id\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"artifactBundleUri\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"artifactBundleHash\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"artifactBundleHttpUrl\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"artifactIndexUri\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"artifactIndexHash\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"artifactIndexHttpUrl\\\",\\\"type\\\":\\\"string\\\"}],\\\"name\\\":\\\"updateBenchmarkArtifacts\\\",\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"id\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"value\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"description\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"bool\\\",\\\"name\\\":\\\"active\\\",\\\"type\\\":\\\"bool\\\"}],\\\"name\\\":\\\"updateBenchmarkConfig\\\",\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"id\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"docsSnapshotHash\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"address\\\",\\\"name\\\":\\\"walletAddress\\\",\\\"type\\\":\\\"address\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"fundingTxHash\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"depositTxHash\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"pieceCid\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"bool\\\",\\\"name\\\":\\\"contentMatch\\\",\\\"type\\\":\\\"bool\\\"}],\\\"name\\\":\\\"updateBenchmarkEvidence\\\",\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"id\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"whatWorkedWell\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"frictionFailures\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"recommendations\\\",\\\"type\\\":\\\"string\\\"}],\\\"name\\\":\\\"updateBenchmarkFeedback\\\",\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"id\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"status\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"closedAt\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"notes\\\",\\\"type\\\":\\\"string\\\"}],\\\"name\\\":\\\"updateBenchmarkIncident\\\",\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"id\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"status\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"failurePhase\\\",\\\"type\\\":\\\"string\\\"},{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"operatorNotes\\\",\\\"type\\\":\\\"string\\\"}],\\\"name\\\":\\\"updateBenchmarkRun\\\",\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"function\\\"}]\"\n}",
-          "stderrTail": ""
-        },
-        "sourcify": {
-          "ok": null
-        }
-      }
     }
   },
   "signatures": [

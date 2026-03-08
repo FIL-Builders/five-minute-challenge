@@ -85,6 +85,10 @@
           "required": true
         },
         {
+          "name": "phaseTimingsJson",
+          "type": "string"
+        },
+        {
           "name": "operatorNotes",
           "type": "string"
         }
@@ -118,6 +122,7 @@
           "startedAt",
           "endedAt",
           "outerWallTimeMs",
+          "phaseTimingsJson",
           "operatorNotes"
         ],
         "access": "public"
@@ -126,6 +131,7 @@
         "mutable": [
           "status",
           "failurePhase",
+          "phaseTimingsJson",
           "operatorNotes"
         ],
         "access": "owner",
@@ -296,6 +302,10 @@
             "label": "Artifact index",
             "target": "_blank"
           }
+        },
+        {
+          "name": "publishedArtifactsJson",
+          "type": "string"
         }
       ],
       "createRules": {
@@ -313,7 +323,8 @@
           "artifactBundleHttpUrl",
           "artifactIndexUri",
           "artifactIndexHash",
-          "artifactIndexHttpUrl"
+          "artifactIndexHttpUrl",
+          "publishedArtifactsJson"
         ],
         "access": "public"
       },
@@ -324,7 +335,8 @@
           "artifactBundleHttpUrl",
           "artifactIndexUri",
           "artifactIndexHash",
-          "artifactIndexHttpUrl"
+          "artifactIndexHttpUrl",
+          "publishedArtifactsJson"
         ],
         "access": "owner",
         "optimisticConcurrency": false

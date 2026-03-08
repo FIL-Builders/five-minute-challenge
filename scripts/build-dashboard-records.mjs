@@ -205,6 +205,7 @@ function buildRunRecord(summary, validation, artifactPublishResult, publishResul
       startedAt: summary.startedAt,
       endedAt: summary.endedAt,
       outerWallTimeMs: String(summary.outerWallTimeMs),
+      phaseTimingsJson: JSON.stringify(buildTimingInsights(summary).phases),
       operatorNotes: normalizeNotes(summary.operatorNotes) ?? ""
     },
     meta: {
@@ -269,7 +270,7 @@ function buildEvidenceRecord(summary) {
   };
 }
 
-function buildArtifactsRecord(summary) {
+function buildArtifactsRecord(summary, artifactPublishResult) {
   return {
     collection: "BenchmarkArtifacts",
     data: {
@@ -279,7 +280,8 @@ function buildArtifactsRecord(summary) {
       artifactBundleHttpUrl: summary.artifacts?.artifactBundleHttpUrl ?? "",
       artifactIndexUri: summary.artifacts?.artifactIndexUri ?? "",
       artifactIndexHash: summary.artifacts?.artifactIndexHash ?? "",
-      artifactIndexHttpUrl: summary.artifacts?.artifactIndexHttpUrl ?? ""
+      artifactIndexHttpUrl: summary.artifacts?.artifactIndexHttpUrl ?? "",
+      publishedArtifactsJson: JSON.stringify(buildPublishedArtifacts(summary, artifactPublishResult))
     }
   };
 }
@@ -336,7 +338,7 @@ async function main() {
   const records = [
     buildRunRecord(summary, validation, artifactPublishResult, dashboardPublishResult, outputPath),
     buildEvidenceRecord(summary),
-    buildArtifactsRecord(summary),
+    buildArtifactsRecord(summary, artifactPublishResult),
     ...(feedbackRecord ? [feedbackRecord] : []),
     ...buildIncidentRecords(summary, validation)
   ];

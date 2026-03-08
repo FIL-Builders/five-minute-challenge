@@ -50,7 +50,7 @@ async function main() {
     });
   }
 
-  runs.sort((left, right) => String(left.startedAt).localeCompare(String(right.startedAt)));
+  runs.sort((left, right) => String(right.startedAt).localeCompare(String(left.startedAt)));
 
   for (const run of runs) {
     const child = spawnSync(

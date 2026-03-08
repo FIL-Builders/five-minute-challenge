@@ -14,7 +14,7 @@ contract App is Context {
   string public constant THS_VERSION = "2025-12";
   string public constant SCHEMA_VERSION = "0.1.0";
   string public constant APP_SLUG = "benchmark-registry";
-  bytes32 public constant SCHEMA_HASH = bytes32(0xcc03564a1ef7055ee44a21910d7331dcbc068b5106ea3b6bdffa9c3fbe6e25b3);
+  bytes32 public constant SCHEMA_HASH = bytes32(0x558780c19fbcde166b9aed1a2ef05375cd58999b6d29a37f7815148d893c1027);
   
   bool public constant ON_CHAIN_INDEXING = true;
   uint256 public constant MAX_LIST_LIMIT = 50;
@@ -92,6 +92,7 @@ contract App is Context {
     string startedAt;
     string endedAt;
     uint256 outerWallTimeMs;
+    string phaseTimingsJson;
     string operatorNotes;
   }
   
@@ -107,6 +108,7 @@ contract App is Context {
     string startedAt;
     string endedAt;
     uint256 outerWallTimeMs;
+    string phaseTimingsJson;
     string operatorNotes;
   }
   
@@ -138,6 +140,7 @@ contract App is Context {
     r.startedAt = input.startedAt;
     r.endedAt = input.endedAt;
     r.outerWallTimeMs = input.outerWallTimeMs;
+    r.phaseTimingsJson = input.phaseTimingsJson;
     r.operatorNotes = input.operatorNotes;
   }
   
@@ -228,13 +231,14 @@ contract App is Context {
     return id;
   }
   
-  function updateBenchmarkRun(uint256 id, string calldata status, string calldata failurePhase, string calldata operatorNotes) external {
+  function updateBenchmarkRun(uint256 id, string calldata status, string calldata failurePhase, string calldata phaseTimingsJson, string calldata operatorNotes) external {
     RecordBenchmarkRun storage r = benchmarkRunRecords[id];
     if (r.createdBy == address(0)) revert RecordNotFound();
     if (r.isDeleted) revert RecordIsDeleted();
     if (r.owner != _msgSender()) revert Unauthorized();
     r.status = status;
     r.failurePhase = failurePhase;
+    r.phaseTimingsJson = phaseTimingsJson;
     r.operatorNotes = operatorNotes;
     r.updatedAt = block.timestamp;
     r.updatedBy = _msgSender();
@@ -482,6 +486,7 @@ contract App is Context {
     string artifactIndexUri;
     string artifactIndexHash;
     string artifactIndexHttpUrl;
+    string publishedArtifactsJson;
   }
   
   struct CreateBenchmarkArtifactsInput {
@@ -492,6 +497,7 @@ contract App is Context {
     string artifactIndexUri;
     string artifactIndexHash;
     string artifactIndexHttpUrl;
+    string publishedArtifactsJson;
   }
   
   function _hashRecordBenchmarkArtifacts(RecordBenchmarkArtifacts memory r) internal pure returns (bytes32) {
@@ -518,6 +524,7 @@ contract App is Context {
     r.artifactIndexUri = input.artifactIndexUri;
     r.artifactIndexHash = input.artifactIndexHash;
     r.artifactIndexHttpUrl = input.artifactIndexHttpUrl;
+    r.publishedArtifactsJson = input.publishedArtifactsJson;
   }
   
   function _emitCreatedBenchmarkArtifacts(uint256 id) internal {
@@ -599,7 +606,7 @@ contract App is Context {
     return id;
   }
   
-  function updateBenchmarkArtifacts(uint256 id, string calldata artifactBundleUri, string calldata artifactBundleHash, string calldata artifactBundleHttpUrl, string calldata artifactIndexUri, string calldata artifactIndexHash, string calldata artifactIndexHttpUrl) external {
+  function updateBenchmarkArtifacts(uint256 id, string calldata artifactBundleUri, string calldata artifactBundleHash, string calldata artifactBundleHttpUrl, string calldata artifactIndexUri, string calldata artifactIndexHash, string calldata artifactIndexHttpUrl, string calldata publishedArtifactsJson) external {
     RecordBenchmarkArtifacts storage r = benchmarkArtifactsRecords[id];
     if (r.createdBy == address(0)) revert RecordNotFound();
     if (r.isDeleted) revert RecordIsDeleted();
@@ -610,6 +617,7 @@ contract App is Context {
     r.artifactIndexUri = artifactIndexUri;
     r.artifactIndexHash = artifactIndexHash;
     r.artifactIndexHttpUrl = artifactIndexHttpUrl;
+    r.publishedArtifactsJson = publishedArtifactsJson;
     r.updatedAt = block.timestamp;
     r.updatedBy = _msgSender();
     r.version += 1;

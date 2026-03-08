@@ -91,6 +91,10 @@ export const ths = {
           "required": true
         },
         {
+          "name": "phaseTimingsJson",
+          "type": "string"
+        },
+        {
           "name": "operatorNotes",
           "type": "string"
         }
@@ -124,6 +128,7 @@ export const ths = {
           "startedAt",
           "endedAt",
           "outerWallTimeMs",
+          "phaseTimingsJson",
           "operatorNotes"
         ],
         "access": "public"
@@ -132,6 +137,7 @@ export const ths = {
         "mutable": [
           "status",
           "failurePhase",
+          "phaseTimingsJson",
           "operatorNotes"
         ],
         "access": "owner",
@@ -302,6 +308,10 @@ export const ths = {
             "label": "Artifact index",
             "target": "_blank"
           }
+        },
+        {
+          "name": "publishedArtifactsJson",
+          "type": "string"
         }
       ],
       "createRules": {
@@ -319,7 +329,8 @@ export const ths = {
           "artifactBundleHttpUrl",
           "artifactIndexUri",
           "artifactIndexHash",
-          "artifactIndexHttpUrl"
+          "artifactIndexHttpUrl",
+          "publishedArtifactsJson"
         ],
         "access": "public"
       },
@@ -330,7 +341,8 @@ export const ths = {
           "artifactBundleHttpUrl",
           "artifactIndexUri",
           "artifactIndexHash",
-          "artifactIndexHttpUrl"
+          "artifactIndexHttpUrl",
+          "publishedArtifactsJson"
         ],
         "access": "owner",
         "optimisticConcurrency": false

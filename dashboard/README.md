@@ -10,6 +10,9 @@ This directory defines the Token Host Builder app for benchmark history and oper
 
 The app currently models:
 - `BenchmarkRun`: one row per validated benchmark run
+- `BenchmarkEvidence`: one row per run for evidence-level verification fields
+- `BenchmarkArtifacts`: one row per run for bundle and index retrieval metadata plus the on-chain published-artifact manifest
+- `BenchmarkFeedback`: one row per run for structured operator feedback
 - `BenchmarkIncident`: operator-tracked incidents tied to runs
 - `BenchmarkConfig`: lightweight benchmark configuration records
 
@@ -23,15 +26,15 @@ Generate the app scaffold:
 
 That writes generated output under `dashboard/generated/`.
 
-Build a local aggregate feed from benchmark runs:
+Build a local aggregate artifact from benchmark runs for auxiliary tooling:
 
 ```bash
 npm run dashboard:feed
 ```
 
-That writes `dashboard/local-feed.json` from `runs/*/dashboard-records.json`, scoped to the current deployed registry by default so old deployments do not leak into the active dashboard.
+That writes `dashboard/local-feed.json` from `runs/*/dashboard-records.json`, scoped to the current deployed registry by default so old deployments do not leak into the active dashboard. It is kept only for non-UI tooling such as alerting; the dashboard pages themselves read directly from on-chain Token Host collections and no longer ship or fetch `benchmark-feed.json`.
 
-Run the local dashboard UI against the current local feed:
+Run the local dashboard UI against the current generated Token Host app:
 
 ```bash
 npm run dashboard:dev
@@ -41,7 +44,7 @@ Defaults:
 - host: `127.0.0.1`
 - port: `3001`
 
-This serves the already-generated Next UI from `dashboard/generated/ui` and rebuilds `dashboard/local-feed.json` before startup.
+This serves the already-generated Next UI from `dashboard/generated/ui` against the current manifest and deployed contract state.
 
 If you want to compile/deploy the Token Host Builder app schema against Calibration instead, run:
 
@@ -70,4 +73,4 @@ npm run dashboard:reset
 - target chain: Filecoin Calibration
 - local dev server first
 - later hosted as a static-style frontend on a Vercel or Netlify class platform
-- full logs remain off-chain; the app stores compact summaries plus Filecoin-hosted artifact bundle and artifact-index references
+- dashboard pages are reconstructed from on-chain records; per-phase timing and published-artifact manifests are stored on chain, while full artifact contents remain off-chain and are linked by Filecoin-hosted retrieval URLs

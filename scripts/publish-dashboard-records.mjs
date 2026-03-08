@@ -137,20 +137,6 @@ function toIsoTimestamp(value) {
   return new Date(numeric * 1000).toISOString();
 }
 
-async function withTimeout(promise, timeoutMs, message) {
-  let timer = null;
-  try {
-    return await Promise.race([
-      promise,
-      new Promise((_, reject) => {
-        timer = setTimeout(() => reject(new Error(message)), timeoutMs);
-      })
-    ]);
-  } finally {
-    if (timer) clearTimeout(timer);
-  }
-}
-
 function serializeError(error, extra = {}) {
   return {
     message: error instanceof Error ? error.message : String(error),
@@ -159,11 +145,26 @@ function serializeError(error, extra = {}) {
 }
 
 async function waitForReceipt({ publicClient, hash, timeoutMs, label }) {
-  await withTimeout(
-    publicClient.waitForTransactionReceipt({ hash }),
-    timeoutMs,
-    `Timed out waiting for ${label} transaction receipt after ${timeoutMs}ms: ${hash}`
-  );
+  const startedAt = Date.now();
+  let lastError = null;
+
+  while (Date.now() - startedAt < timeoutMs) {
+    try {
+      const receipt = await publicClient.request({
+        method: "eth_getTransactionReceipt",
+        params: [hash]
+      });
+      if (receipt) return receipt;
+      lastError = null;
+    } catch (error) {
+      lastError = error;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+  }
+
+  const detail = lastError instanceof Error ? ` (${lastError.message})` : "";
+  throw new Error(`Timed out waiting for ${label} transaction receipt after ${timeoutMs}ms: ${hash}${detail}`);
 }
 
 async function createRecord({ publicClient, walletClient, account, abi, address, schema, record, timeoutMs }) {
@@ -191,8 +192,8 @@ async function createRecord({ publicClient, walletClient, account, abi, address,
   };
 }
 
-async function updateRunRecord({ publicClient, walletClient, account, abi, address, recordId, record, timeoutMs }) {
-  const functionName = "updateBenchmarkRun";
+async function updateRecord({ publicClient, walletClient, account, abi, address, recordId, record, timeoutMs }) {
+  const functionName = `update${record.collection}`;
   const args = buildUpdateArgs(abi, functionName, recordId, record);
   const simulation = await publicClient.simulateContract({
     address,
@@ -205,94 +206,19 @@ async function updateRunRecord({ publicClient, walletClient, account, abi, addre
     ...simulation.request,
     account
   });
-  console.error(`Updated BenchmarkRun tx submitted: ${hash}`);
-  await waitForReceipt({ publicClient, hash, timeoutMs, label: "BenchmarkRun update" });
+  console.error(`Updated ${record.collection} tx submitted: ${hash}`);
+  await waitForReceipt({ publicClient, hash, timeoutMs, label: `${record.collection} update` });
 
   return {
-    collection: "BenchmarkRun",
+    collection: record.collection,
     recordId: String(recordId),
     txHash: hash,
-    href: buildViewHref("BenchmarkRun", recordId)
+    href: buildViewHref(record.collection, recordId)
   };
 }
 
-async function updateFeedbackRecord({ publicClient, walletClient, account, abi, address, recordId, record, timeoutMs }) {
-  const functionName = "updateBenchmarkFeedback";
-  const args = buildUpdateArgs(abi, functionName, recordId, record);
-  const simulation = await publicClient.simulateContract({
-    address,
-    abi,
-    functionName,
-    args,
-    account: account.address
-  });
-  const hash = await walletClient.writeContract({
-    ...simulation.request,
-    account
-  });
-  console.error(`Updated BenchmarkFeedback tx submitted: ${hash}`);
-  await waitForReceipt({ publicClient, hash, timeoutMs, label: "BenchmarkFeedback update" });
-
-  return {
-    collection: "BenchmarkFeedback",
-    recordId: String(recordId),
-    txHash: hash,
-    href: buildViewHref("BenchmarkFeedback", recordId)
-  };
-}
-
-async function updateEvidenceRecord({ publicClient, walletClient, account, abi, address, recordId, record, timeoutMs }) {
-  const functionName = "updateBenchmarkEvidence";
-  const args = buildUpdateArgs(abi, functionName, recordId, record);
-  const simulation = await publicClient.simulateContract({
-    address,
-    abi,
-    functionName,
-    args,
-    account: account.address
-  });
-  const hash = await walletClient.writeContract({
-    ...simulation.request,
-    account
-  });
-  console.error(`Updated BenchmarkEvidence tx submitted: ${hash}`);
-  await waitForReceipt({ publicClient, hash, timeoutMs, label: "BenchmarkEvidence update" });
-
-  return {
-    collection: "BenchmarkEvidence",
-    recordId: String(recordId),
-    txHash: hash,
-    href: buildViewHref("BenchmarkEvidence", recordId)
-  };
-}
-
-async function updateArtifactsRecord({ publicClient, walletClient, account, abi, address, recordId, record, timeoutMs }) {
-  const functionName = "updateBenchmarkArtifacts";
-  const args = buildUpdateArgs(abi, functionName, recordId, record);
-  const simulation = await publicClient.simulateContract({
-    address,
-    abi,
-    functionName,
-    args,
-    account: account.address
-  });
-  const hash = await walletClient.writeContract({
-    ...simulation.request,
-    account
-  });
-  console.error(`Updated BenchmarkArtifacts tx submitted: ${hash}`);
-  await waitForReceipt({ publicClient, hash, timeoutMs, label: "BenchmarkArtifacts update" });
-
-  return {
-    collection: "BenchmarkArtifacts",
-    recordId: String(recordId),
-    txHash: hash,
-    href: buildViewHref("BenchmarkArtifacts", recordId)
-  };
-}
-
-async function deleteIncidentRecord({ publicClient, walletClient, account, abi, address, recordId, timeoutMs }) {
-  const functionName = "deleteBenchmarkIncident";
+async function deleteRecord({ publicClient, walletClient, account, abi, address, collectionName, recordId, timeoutMs }) {
+  const functionName = `delete${collectionName}`;
   const simulation = await publicClient.simulateContract({
     address,
     abi,
@@ -304,53 +230,17 @@ async function deleteIncidentRecord({ publicClient, walletClient, account, abi, 
     ...simulation.request,
     account
   });
-  console.error(`Deleted BenchmarkIncident tx submitted: ${hash}`);
-  await waitForReceipt({ publicClient, hash, timeoutMs, label: "BenchmarkIncident delete" });
+  console.error(`Deleted ${collectionName} tx submitted: ${hash}`);
+  await waitForReceipt({ publicClient, hash, timeoutMs, label: `${collectionName} delete` });
   return hash;
 }
 
-async function findBenchmarkRunByRunId({ publicClient, abi, address, runId }) {
+async function listCollectionRecords({ publicClient, abi, address, collectionName }) {
   const count = Number(
     await publicClient.readContract({
       address,
       abi,
-      functionName: "getCountBenchmarkRun",
-      args: [false]
-    })
-  );
-  if (!Number.isFinite(count) || count <= 0) return null;
-
-  const ids = await publicClient.readContract({
-    address,
-    abi,
-    functionName: "listIdsBenchmarkRun",
-    args: [0n, BigInt(count), false]
-  });
-
-  for (const id of ids) {
-    const record = await publicClient.readContract({
-      address,
-      abi,
-      functionName: "getBenchmarkRun",
-      args: [id, false]
-    });
-    if (record?.runId === runId) {
-      return {
-        id: String(record.id),
-        createdAt: toIsoTimestamp(record.createdAt)
-      };
-    }
-  }
-
-  return null;
-}
-
-async function listBenchmarkIncidentsByRunId({ publicClient, abi, address, runId }) {
-  const count = Number(
-    await publicClient.readContract({
-      address,
-      abi,
-      functionName: "getCountBenchmarkIncident",
+      functionName: `getCount${collectionName}`,
       args: [false]
     })
   );
@@ -359,135 +249,49 @@ async function listBenchmarkIncidentsByRunId({ publicClient, abi, address, runId
   const ids = await publicClient.readContract({
     address,
     abi,
-    functionName: "listIdsBenchmarkIncident",
+    functionName: `listIds${collectionName}`,
     args: [0n, BigInt(count), false]
   });
 
-  const matches = [];
+  const records = [];
   for (const id of ids) {
     const record = await publicClient.readContract({
       address,
       abi,
-      functionName: "getBenchmarkIncident",
+      functionName: `get${collectionName}`,
       args: [id, false]
     });
-    if (record?.runId === runId) {
-      matches.push({
-        id: String(record.id),
-        href: buildViewHref("BenchmarkIncident", id)
-      });
-    }
+    if (record) records.push(record);
   }
 
-  return matches.sort((left, right) => Number(left.id) - Number(right.id));
+  return records;
 }
 
-async function findBenchmarkFeedbackByRunId({ publicClient, abi, address, runId }) {
-  const count = Number(
-    await publicClient.readContract({
-      address,
-      abi,
-      functionName: "getCountBenchmarkFeedback",
-      args: [false]
-    })
-  );
-  if (!Number.isFinite(count) || count <= 0) return null;
-
-  const ids = await publicClient.readContract({
-    address,
-    abi,
-    functionName: "listIdsBenchmarkFeedback",
-    args: [0n, BigInt(count), false]
-  });
-
-  for (const id of ids) {
-    const record = await publicClient.readContract({
-      address,
-      abi,
-      functionName: "getBenchmarkFeedback",
-      args: [id, false]
-    });
-    if (record?.runId === runId) {
-      return {
-        id: String(record.id),
-        href: buildViewHref("BenchmarkFeedback", id)
-      };
-    }
+async function findCollectionRecordByField({ publicClient, abi, address, collectionName, fieldName, fieldValue }) {
+  const records = await listCollectionRecords({ publicClient, abi, address, collectionName });
+  for (const record of records) {
+    if (record?.[fieldName] !== fieldValue) continue;
+    return {
+      id: String(record.id),
+      href: buildViewHref(collectionName, record.id),
+      createdAt: toIsoTimestamp(record.createdAt),
+      record
+    };
   }
-
   return null;
 }
 
-async function findBenchmarkEvidenceByRunId({ publicClient, abi, address, runId }) {
-  const count = Number(
-    await publicClient.readContract({
-      address,
-      abi,
-      functionName: "getCountBenchmarkEvidence",
-      args: [false]
-    })
-  );
-  if (!Number.isFinite(count) || count <= 0) return null;
-
-  const ids = await publicClient.readContract({
-    address,
-    abi,
-    functionName: "listIdsBenchmarkEvidence",
-    args: [0n, BigInt(count), false]
-  });
-
-  for (const id of ids) {
-    const record = await publicClient.readContract({
-      address,
-      abi,
-      functionName: "getBenchmarkEvidence",
-      args: [id, false]
-    });
-    if (record?.runId === runId) {
-      return {
-        id: String(record.id),
-        href: buildViewHref("BenchmarkEvidence", id)
-      };
-    }
-  }
-
-  return null;
-}
-
-async function findBenchmarkArtifactsByRunId({ publicClient, abi, address, runId }) {
-  const count = Number(
-    await publicClient.readContract({
-      address,
-      abi,
-      functionName: "getCountBenchmarkArtifacts",
-      args: [false]
-    })
-  );
-  if (!Number.isFinite(count) || count <= 0) return null;
-
-  const ids = await publicClient.readContract({
-    address,
-    abi,
-    functionName: "listIdsBenchmarkArtifacts",
-    args: [0n, BigInt(count), false]
-  });
-
-  for (const id of ids) {
-    const record = await publicClient.readContract({
-      address,
-      abi,
-      functionName: "getBenchmarkArtifacts",
-      args: [id, false]
-    });
-    if (record?.runId === runId) {
-      return {
-        id: String(record.id),
-        href: buildViewHref("BenchmarkArtifacts", id)
-      };
-    }
-  }
-
-  return null;
+async function listCollectionRecordsByField({ publicClient, abi, address, collectionName, fieldName, fieldValue }) {
+  const records = await listCollectionRecords({ publicClient, abi, address, collectionName });
+  return records
+    .filter((record) => record?.[fieldName] === fieldValue)
+    .map((record) => ({
+      id: String(record.id),
+      href: buildViewHref(collectionName, record.id),
+      createdAt: toIsoTimestamp(record.createdAt),
+      record
+    }))
+    .sort((left, right) => Number(left.id) - Number(right.id));
 }
 
 function refreshOutputs({ repoRoot, runDir }) {
@@ -511,18 +315,6 @@ function refreshOutputs({ repoRoot, runDir }) {
   );
   if (refreshDashboardRecords.status !== 0) {
     throw new Error(refreshDashboardRecords.stderr || refreshDashboardRecords.stdout || "Failed to refresh dashboard records after on-chain publication.");
-  }
-
-  const refreshFeed = spawnSync(
-    process.execPath,
-    [path.join(repoRoot, "scripts", "build-dashboard-feed.mjs"), "--repo-root", repoRoot],
-    {
-      cwd: repoRoot,
-      encoding: "utf8"
-    }
-  );
-  if (refreshFeed.status !== 0) {
-    throw new Error(refreshFeed.stderr || refreshFeed.stdout || "Failed to refresh dashboard feed after on-chain publication.");
   }
 }
 
@@ -583,6 +375,12 @@ async function main() {
   const artifactsRecord = (payload.records ?? []).find((record) => record.collection === "BenchmarkArtifacts") ?? null;
   const feedbackRecord = (payload.records ?? []).find((record) => record.collection === "BenchmarkFeedback") ?? null;
   const desiredIncidents = (payload.records ?? []).filter((record) => record.collection === "BenchmarkIncident");
+  const uniqueFieldByCollection = {
+    BenchmarkRun: "runId",
+    BenchmarkEvidence: "runId",
+    BenchmarkArtifacts: "runId",
+    BenchmarkFeedback: "runId"
+  };
 
   let failure = null;
   let runPublication = null;
@@ -594,10 +392,17 @@ async function main() {
   let reconciled = false;
 
   try {
-    const existingRun = await findBenchmarkRunByRunId({ publicClient, abi, address, runId: payload.runId });
+    const existingRun = await findCollectionRecordByField({
+      publicClient,
+      abi,
+      address,
+      collectionName: "BenchmarkRun",
+      fieldName: "runId",
+      fieldValue: payload.runId
+    });
     if (existingRun) {
       reconciled = true;
-      runPublication = await updateRunRecord({
+      runPublication = await updateRecord({
         publicClient,
         walletClient,
         account,
@@ -622,98 +427,59 @@ async function main() {
       runPublication.publishedAt = new Date().toISOString();
     }
 
-    if (evidenceRecord) {
-      const existingEvidence = await findBenchmarkEvidenceByRunId({ publicClient, abi, address, runId: payload.runId });
-      if (existingEvidence) {
-        reconciled = true;
-        evidencePublication = await updateEvidenceRecord({
-          publicClient,
-          walletClient,
-          account,
-          abi,
-          address,
-          recordId: existingEvidence.id,
-          record: evidenceRecord,
-          timeoutMs
-        });
-      } else {
-        evidencePublication = await createRecord({
-          publicClient,
-          walletClient,
-          account,
-          abi,
-          address,
-          schema,
-          record: evidenceRecord,
-          timeoutMs
-        });
-      }
+    for (const singleRecord of [evidenceRecord, artifactsRecord, feedbackRecord].filter(Boolean)) {
+      const uniqueField = uniqueFieldByCollection[singleRecord.collection];
+      const existingRecord = await findCollectionRecordByField({
+        publicClient,
+        abi,
+        address,
+        collectionName: singleRecord.collection,
+        fieldName: uniqueField,
+        fieldValue: singleRecord.data?.[uniqueField]
+      });
+      const publication = existingRecord
+        ? await updateRecord({
+            publicClient,
+            walletClient,
+            account,
+            abi,
+            address,
+            recordId: existingRecord.id,
+            record: singleRecord,
+            timeoutMs
+          })
+        : await createRecord({
+            publicClient,
+            walletClient,
+            account,
+            abi,
+            address,
+            schema,
+            record: singleRecord,
+            timeoutMs
+          });
+      if (existingRecord) reconciled = true;
+      if (singleRecord.collection === "BenchmarkEvidence") evidencePublication = publication;
+      if (singleRecord.collection === "BenchmarkArtifacts") artifactsPublication = publication;
+      if (singleRecord.collection === "BenchmarkFeedback") feedbackPublication = publication;
     }
 
-    if (artifactsRecord) {
-      const existingArtifacts = await findBenchmarkArtifactsByRunId({ publicClient, abi, address, runId: payload.runId });
-      if (existingArtifacts) {
-        reconciled = true;
-        artifactsPublication = await updateArtifactsRecord({
-          publicClient,
-          walletClient,
-          account,
-          abi,
-          address,
-          recordId: existingArtifacts.id,
-          record: artifactsRecord,
-          timeoutMs
-        });
-      } else {
-        artifactsPublication = await createRecord({
-          publicClient,
-          walletClient,
-          account,
-          abi,
-          address,
-          schema,
-          record: artifactsRecord,
-          timeoutMs
-        });
-      }
-    }
-
-    if (feedbackRecord) {
-      const existingFeedback = await findBenchmarkFeedbackByRunId({ publicClient, abi, address, runId: payload.runId });
-      if (existingFeedback) {
-        reconciled = true;
-        feedbackPublication = await updateFeedbackRecord({
-          publicClient,
-          walletClient,
-          account,
-          abi,
-          address,
-          recordId: existingFeedback.id,
-          record: feedbackRecord,
-          timeoutMs
-        });
-      } else {
-        feedbackPublication = await createRecord({
-          publicClient,
-          walletClient,
-          account,
-          abi,
-          address,
-          schema,
-          record: feedbackRecord,
-          timeoutMs
-        });
-      }
-    }
-
-    const existingIncidents = await listBenchmarkIncidentsByRunId({ publicClient, abi, address, runId: payload.runId });
+    const existingIncidents = await listCollectionRecordsByField({
+      publicClient,
+      abi,
+      address,
+      collectionName: "BenchmarkIncident",
+      fieldName: "runId",
+      fieldValue: payload.runId
+    });
     for (const incident of existingIncidents) {
-      await deleteIncidentRecord({
+      await deleteRecord({
         publicClient,
         walletClient,
         account,
         abi,
         address,
+        collectionName: "BenchmarkIncident",
         recordId: incident.id,
         timeoutMs
       });
@@ -750,7 +516,13 @@ async function main() {
     recordsPath: path.relative(repoRoot, recordsPath),
     timeoutMs,
     deletedIncidentIds,
-    publishedRecords: [runPublication, evidencePublication, artifactsPublication, feedbackPublication, ...publishedIncidents].filter(Boolean),
+    publishedRecords: [
+      runPublication,
+      evidencePublication,
+      artifactsPublication,
+      feedbackPublication,
+      ...publishedIncidents
+    ].filter(Boolean),
     runRecordId: runPublication?.recordId ?? null,
     runRecordHref: runPublication?.href ?? null,
     evidenceRecordId: evidencePublication?.recordId ?? null,

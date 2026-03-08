@@ -12,8 +12,6 @@ if [[ ! -d "${UI_DIR}" ]]; then
   exit 1
 fi
 
-node "${REPO_ROOT}/scripts/build-dashboard-feed.mjs" --repo-root "${REPO_ROOT}"
-
 if [[ -f "${REPO_ROOT}/dashboard/generated/compiled/App.json" ]]; then
   mkdir -p "${UI_DIR}/public/compiled"
   cp "${REPO_ROOT}/dashboard/generated/compiled/App.json" "${UI_DIR}/public/compiled/App.json"

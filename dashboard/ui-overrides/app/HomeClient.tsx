@@ -1,25 +1,30 @@
 'use client';
 
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
-  fetchBenchmarkFeed,
+  deriveExecutionRecordHref,
+  deriveExecutionInsights,
   formatDuration,
   humanizeMode,
+  loadBenchmarkDashboardSnapshot,
   percentile,
   type BenchmarkIncidentRecord,
-  type BenchmarkRunFeedRecord
-} from '../src/lib/feed';
+  type BenchmarkExecutionRecord
+} from '../src/lib/dashboard';
 import { formatDateTime } from '../src/lib/format';
 
-type FeedState = {
-  runs: BenchmarkRunFeedRecord[];
+type DashboardState = {
+  runs: BenchmarkExecutionRecord[];
   incidents: BenchmarkIncidentRecord[];
-  generatedAt: string | null;
+  latestPublishedAt: string | null;
+  deploymentAddress: string | null;
+  chainName: string | null;
 };
 
-function summarize(runs: BenchmarkRunFeedRecord[]) {
+function summarize(runs: BenchmarkExecutionRecord[]) {
   const samples = runs
     .map((run) => Number(run.outerWallTimeMs))
     .filter((value) => Number.isFinite(value) && value >= 0);
@@ -43,7 +48,15 @@ function tone(status: string): string {
 }
 
 export default function HomeClient() {
-  const [state, setState] = useState<FeedState>({ runs: [], incidents: [], generatedAt: null });
+  const search = useSearchParams();
+  const rpcOverride = search.get('rpc') ?? undefined;
+  const [state, setState] = useState<DashboardState>({
+    runs: [],
+    incidents: [],
+    latestPublishedAt: null,
+    deploymentAddress: null,
+    chainName: null
+  });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -51,9 +64,15 @@ export default function HomeClient() {
     let cancelled = false;
     (async () => {
       try {
-        const result = await fetchBenchmarkFeed();
+        const result = await loadBenchmarkDashboardSnapshot(rpcOverride);
         if (!cancelled) {
-          setState({ runs: result.runs, incidents: result.incidents, generatedAt: result.feed.generatedAt });
+          setState({
+            runs: result.runs,
+            incidents: result.incidents,
+            latestPublishedAt: result.latestPublishedAt,
+            deploymentAddress: result.runtime.deployment?.deploymentEntrypointAddress ?? null,
+            chainName: result.runtime.deployment?.chainName ?? result.runtime.chain?.name ?? null
+          });
           setError(null);
         }
       } catch (err) {
@@ -65,7 +84,7 @@ export default function HomeClient() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [rpcOverride]);
 
   const latestRuns = useMemo(
     () => [...state.runs].sort((a, b) => b.startedAt.localeCompare(a.startedAt)).slice(0, 12),
@@ -97,7 +116,7 @@ export default function HomeClient() {
             </p>
           </div>
           <div className="heroActions">
-            <Link className="btn" href={latestRun ? `/run/?id=${encodeURIComponent(latestRun.runId)}` : '/BenchmarkRun'}>
+            <Link className="btn" href={latestRun?.recordId ? deriveExecutionRecordHref(latestRun.recordId) : '/BenchmarkRun'}>
               {latestRun ? 'Open latest benchmark execution' : 'Open benchmark registry'}
             </Link>
             <a className="btn" href="https://github.com/tokenhost/tokenhost-builder/" target="_blank" rel="noreferrer">
@@ -111,14 +130,15 @@ export default function HomeClient() {
 
         <div className="heroRail">
           <div className="heroRailCard">
-            <span className="heroMetaLabel">Feed built</span>
-            <strong className="heroRailValue">{state.generatedAt ? formatDateTime(state.generatedAt, 'compact') : 'not built yet'}</strong>
+            <span className="heroMetaLabel">Latest registry publish</span>
+            <strong className="heroRailValue">{state.latestPublishedAt ? formatDateTime(state.latestPublishedAt, 'compact') : 'nothing published yet'}</strong>
+            <div className="muted">{state.chainName ?? 'Chain metadata unavailable.'}</div>
           </div>
           <div className="heroRailCard">
             <span className="heroMetaLabel">Latest benchmark execution</span>
             <strong className="heroRailValue">{latestRun?.startedAt ? formatDateTime(latestRun.startedAt, 'compact') : 'none yet'}</strong>
             {latestRun ? <div className="heroRailCode">{latestRun.runId}</div> : null}
-            <div className="muted">{latestRun ? humanizeMode(latestRun.mode) : 'No local feed entries yet.'}</div>
+            <div className="muted">{latestRun ? humanizeMode(latestRun.mode) : 'No on-chain benchmark executions yet.'}</div>
           </div>
           <div className="heroRailCard">
             <span className="heroMetaLabel">Open incidents</span>
@@ -197,16 +217,16 @@ export default function HomeClient() {
             </div>
           </div>
 
-          {loading ? <div className="emptyState">Loading benchmark feed...</div> : null}
+          {loading ? <div className="emptyState">Loading on-chain benchmark registry...</div> : null}
           {error ? <div className="emptyState dangerBox">{error}</div> : null}
-          {!loading && !error && latestRuns.length === 0 ? <div className="emptyState">No benchmark executions found yet. Run a benchmark and rebuild the feed.</div> : null}
+          {!loading && !error && latestRuns.length === 0 ? <div className="emptyState">No benchmark executions found yet on the current deployment.</div> : null}
 
           <div className="runTable runTableDetailed">
             {latestRuns.map((run) => (
               <div key={run.runId} className="runRow runRowDetailed">
                 <div className="runPrimaryBlock">
                   <div className="runPrimary">
-                    <Link className="runLink" href={`/run/?id=${encodeURIComponent(run.runId)}`}>
+                    <Link className="runLink" href={run.recordId ? deriveExecutionRecordHref(run.recordId) : `/run/?id=${encodeURIComponent(run.runId)}`}>
                       {run.runId}
                     </Link>
                     <span className={`statusPill ${tone(run.status)}`}>{run.status}</span>
@@ -217,7 +237,10 @@ export default function HomeClient() {
                     <span>{run.promptVersion}</span>
                   </div>
                   <div className="runInsightLine">
-                    {run.meta?.insights?.headline ?? run.operatorNotes ?? 'No derived benchmark insight yet.'}
+                    {deriveExecutionInsights(run, {
+                      deploymentAddress: state.deploymentAddress,
+                      chainName: state.chainName
+                    }).headline}
                   </div>
                 </div>
                 <div className="runStats runStatsDetailed">
@@ -241,7 +264,7 @@ export default function HomeClient() {
                 <div className="incidentNotes">{incident.notes}</div>
               </div>
             ))}
-            {!loading && !error && openIncidents.length === 0 ? <div className="emptyState">No open incidents in the current feed.</div> : null}
+            {!loading && !error && openIncidents.length === 0 ? <div className="emptyState">No open incidents in the current deployment.</div> : null}
           </div>
         </div>
       </div>
