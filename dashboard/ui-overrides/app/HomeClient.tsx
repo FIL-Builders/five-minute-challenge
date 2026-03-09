@@ -114,6 +114,10 @@ export default function HomeClient() {
               indexes are published to Filecoin Onchain Cloud retrieval URLs. This UI is generated with the Token Host framework and then extended
               with benchmark-specific views.
             </p>
+            <p>
+              Read-only browsing does not require MetaMask and does not require the wallet to be on Calibration. The dashboard reads chain state
+              through public Calibration RPC; wallet connection is only needed for write actions in the generic registry views.
+            </p>
           </div>
           <div className="heroActions">
             <Link className="btn" href={latestRun?.recordId ? deriveExecutionRecordHref(latestRun.recordId) : '/BenchmarkRun'}>
