@@ -47,6 +47,12 @@ function tone(status: string): string {
   return 'toneDanger';
 }
 
+function loadingAwareValue(loading: boolean, error: string | null, resolved: string): string {
+  if (loading) return 'Loading…';
+  if (error) return 'Unavailable';
+  return resolved;
+}
+
 export default function HomeClient() {
   const search = useSearchParams();
   const rpcOverride = search.get('rpc') ?? undefined;
@@ -96,6 +102,7 @@ export default function HomeClient() {
   );
   const metrics = summarize(state.runs);
   const latestRun = latestRuns[0] ?? null;
+  const metricsReady = !loading && !error;
 
   return (
     <>
@@ -135,19 +142,23 @@ export default function HomeClient() {
         <div className="heroRail">
           <div className="heroRailCard">
             <span className="heroMetaLabel">Latest registry publish</span>
-            <strong className="heroRailValue">{state.latestPublishedAt ? formatDateTime(state.latestPublishedAt, 'compact') : 'nothing published yet'}</strong>
-            <div className="muted">{state.chainName ?? 'Chain metadata unavailable.'}</div>
+            <strong className="heroRailValue">
+              {loadingAwareValue(loading, error, state.latestPublishedAt ? formatDateTime(state.latestPublishedAt, 'compact') : 'Nothing published yet')}
+            </strong>
+            <div className="muted">{loading ? 'Reading deployment metadata from chain…' : state.chainName ?? 'Chain metadata unavailable.'}</div>
           </div>
           <div className="heroRailCard">
             <span className="heroMetaLabel">Latest benchmark execution</span>
-            <strong className="heroRailValue">{latestRun?.startedAt ? formatDateTime(latestRun.startedAt, 'compact') : 'none yet'}</strong>
+            <strong className="heroRailValue">
+              {loadingAwareValue(loading, error, latestRun?.startedAt ? formatDateTime(latestRun.startedAt, 'compact') : 'None yet')}
+            </strong>
             {latestRun ? <div className="heroRailCode">{latestRun.runId}</div> : null}
-            <div className="muted">{latestRun ? humanizeMode(latestRun.mode) : 'No on-chain benchmark executions yet.'}</div>
+            <div className="muted">{loading ? 'Querying benchmark executions…' : latestRun ? humanizeMode(latestRun.mode) : 'No on-chain benchmark executions yet.'}</div>
           </div>
           <div className="heroRailCard">
             <span className="heroMetaLabel">Open incidents</span>
-            <strong className="heroRailValue">{openIncidents.length}</strong>
-            <div className="muted">Validator findings requiring operator review.</div>
+            <strong className="heroRailValue">{loadingAwareValue(loading, error, String(openIncidents.length))}</strong>
+            <div className="muted">{loading ? 'Loading incident state from the registry…' : 'Validator findings requiring operator review.'}</div>
           </div>
         </div>
       </section>
@@ -180,31 +191,31 @@ export default function HomeClient() {
       <div className="grid metricsGrid">
         <div className="card statCard">
           <span className="statLabel">Benchmark executions</span>
-          <div className="statValue">{metrics.total}</div>
+          <div className="statValue">{loadingAwareValue(loading, error, String(metrics.total))}</div>
         </div>
         <div className="card statCard">
           <span className="statLabel">Success rate</span>
-          <div className="statValue">{metrics.successRate}%</div>
+          <div className="statValue">{metricsReady ? `${metrics.successRate}%` : loadingAwareValue(loading, error, '0%')}</div>
         </div>
         <div className="card statCard">
           <span className="statLabel">p50 wall time</span>
-          <div className="statValue">{metrics.p50 === null ? 'n/a' : formatDuration(String(metrics.p50))}</div>
+          <div className="statValue">{metricsReady ? (metrics.p50 === null ? 'n/a' : formatDuration(String(metrics.p50))) : loadingAwareValue(loading, error, 'n/a')}</div>
         </div>
         <div className="card statCard">
           <span className="statLabel">p95 wall time</span>
-          <div className="statValue">{metrics.p95 === null ? 'n/a' : formatDuration(String(metrics.p95))}</div>
+          <div className="statValue">{metricsReady ? (metrics.p95 === null ? 'n/a' : formatDuration(String(metrics.p95))) : loadingAwareValue(loading, error, 'n/a')}</div>
         </div>
       </div>
 
       <section className="modeStrip">
         <div className="modeCard">
           <span className="statLabel">Fresh wallet mode</span>
-          <strong>{metrics.freshWalletRuns}</strong>
+          <strong>{loadingAwareValue(loading, error, String(metrics.freshWalletRuns))}</strong>
           <div className="muted">The agent must generate and fund its own wallet through documented public flows.</div>
         </div>
         <div className="modeCard">
           <span className="statLabel">Inherited wallet mode</span>
-          <strong>{metrics.inheritedRuns}</strong>
+          <strong>{loadingAwareValue(loading, error, String(metrics.inheritedRuns))}</strong>
           <div className="muted">The agent inherits a funded key and is measured on the storage path rather than faucet acquisition.</div>
         </div>
       </section>
