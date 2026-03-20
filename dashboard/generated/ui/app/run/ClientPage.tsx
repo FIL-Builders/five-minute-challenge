@@ -25,6 +25,15 @@ function kv(label: string, value: string) {
   );
 }
 
+function evidenceStatusLabel(run: BenchmarkExecutionRecord): string {
+  if (!run.pieceCid) return 'not captured';
+  return run.contentMatch ? 'verified' : 'not verified';
+}
+
+function artifactLocation(httpUrl: string, uri: string): string {
+  return httpUrl || uri || '';
+}
+
 type ArtifactPreviewState = {
   artifact: ArtifactLink;
   mode: 'text' | 'binary';
@@ -259,7 +268,7 @@ export default function RunClientPage(props: { showRegistryLink?: boolean }) {
               <section className="card sectionCard">
                 <h2>Evidence and artifacts</h2>
                 <div className="muted">
-                  All linked evidence below is stored on Filecoin Onchain Cloud retrieval URLs rather than localhost.
+                  Linked evidence uses Filecoin retrieval URLs when the run published them. Older runs may only retain on-chain piece CIDs or URIs.
                 </div>
                 <div className="artifactGrid artifactGridReadable">
                   {run.publishedArtifacts.map((artifact) => (
@@ -273,11 +282,14 @@ export default function RunClientPage(props: { showRegistryLink?: boolean }) {
                     </button>
                   ))}
                 </div>
+                {run.publishedArtifacts.length === 0 ? (
+                  <div className="emptyState">No published artifact links were recorded for this execution.</div>
+                ) : null}
                 <div className="kv detailKv">
                   {kv('pieceCid', run.pieceCid)}
-                  {kv('contentMatch', run.contentMatch ? 'verified' : 'not verified')}
-                  {kv('artifactIndex', run.artifactIndexHttpUrl)}
-                  {kv('artifactBundle', run.artifactBundleHttpUrl)}
+                  {kv('contentMatch', evidenceStatusLabel(run))}
+                  {kv('artifactIndex', artifactLocation(run.artifactIndexHttpUrl, run.artifactIndexUri))}
+                  {kv('artifactBundle', artifactLocation(run.artifactBundleHttpUrl, run.artifactBundleUri))}
                 </div>
               </section>
 

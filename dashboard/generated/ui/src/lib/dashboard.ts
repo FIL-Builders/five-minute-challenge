@@ -100,11 +100,18 @@ export type BenchmarkExecutionInsights = {
   };
 };
 
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
 function toStringValue(value: unknown): string {
   if (typeof value === 'string') return value;
   if (typeof value === 'bigint') return value.toString();
   if (value === null || value === undefined) return '';
   return String(value);
+}
+
+function toAddressValue(value: unknown): string {
+  const normalized = toStringValue(value);
+  return normalized.toLowerCase() === ZERO_ADDRESS ? '' : normalized;
 }
 
 function toNumberValue(value: unknown): number {
@@ -165,6 +172,44 @@ function normalizePublishedArtifact(record: any, runId: string, index: number): 
     displayOrder: Number.isFinite(Number(record?.displayOrder)) ? toNumberValue(record?.displayOrder) : index,
     recordId: toStringValue(record?.id)
   };
+}
+
+function buildArtifactFallbacks(record: any, runId: string): ArtifactLink[] {
+  const artifactIndexUrl = toStringValue(record?.artifactIndexHttpUrl);
+  const artifactBundleUrl = toStringValue(record?.artifactBundleHttpUrl);
+  const fallbacks: ArtifactLink[] = [];
+
+  if (artifactIndexUrl) {
+    fallbacks.push({
+      artifactKey: `${runId}:artifact-index`,
+      runId,
+      label: 'Artifact index',
+      path: `runs/${runId}/artifact-index.json`,
+      url: artifactIndexUrl,
+      uri: toStringValue(record?.artifactIndexUri) || null,
+      hash: toStringValue(record?.artifactIndexHash) || null,
+      pieceCid: null,
+      displayOrder: 0,
+      recordId: toStringValue(record?.id)
+    });
+  }
+
+  if (artifactBundleUrl) {
+    fallbacks.push({
+      artifactKey: `${runId}:artifact-bundle`,
+      runId,
+      label: 'Artifact bundle',
+      path: `runs/${runId}/workspace-output.tgz`,
+      url: artifactBundleUrl,
+      uri: toStringValue(record?.artifactBundleUri) || null,
+      hash: toStringValue(record?.artifactBundleHash) || null,
+      pieceCid: null,
+      displayOrder: fallbacks.length,
+      recordId: toStringValue(record?.id)
+    });
+  }
+
+  return fallbacks;
 }
 
 function normalizePhaseTiming(record: any, runId: string, index: number): BenchmarkPhaseTimingRecord {
@@ -243,10 +288,11 @@ export async function loadBenchmarkDashboardSnapshot(rpcOverride?: string): Prom
       const evidence = evidenceByRun.get(runId);
       const artifactSummary = artifactSummaryByRun.get(runId);
       const feedback = feedbackByRun.get(runId);
-      const publishedArtifacts = sortByDisplayOrder(
-        parseJsonArray(toStringValue(artifactSummary?.publishedArtifactsJson)).map((entry, index) =>
+      const normalizedArtifacts = parseJsonArray(toStringValue(artifactSummary?.publishedArtifactsJson)).map((entry, index) =>
           normalizePublishedArtifact(entry, runId, index)
-        )
+        );
+      const publishedArtifacts = sortByDisplayOrder(
+        normalizedArtifacts.length > 0 ? normalizedArtifacts : buildArtifactFallbacks(artifactSummary, runId)
       );
       const phases = sortByDisplayOrder(
         parseJsonArray(toStringValue(record?.phaseTimingsJson)).map((entry, index) =>
@@ -271,7 +317,7 @@ export async function loadBenchmarkDashboardSnapshot(rpcOverride?: string): Prom
         outerWallTimeMs: toStringValue(record?.outerWallTimeMs),
         operatorNotes: toStringValue(record?.operatorNotes),
         docsSnapshotHash: toStringValue(evidence?.docsSnapshotHash),
-        walletAddress: toStringValue(evidence?.walletAddress),
+        walletAddress: toAddressValue(evidence?.walletAddress),
         fundingTxHash: toStringValue(evidence?.fundingTxHash),
         depositTxHash: toStringValue(evidence?.depositTxHash),
         pieceCid: toStringValue(evidence?.pieceCid),
@@ -396,10 +442,10 @@ export function deriveExecutionInsights(
         : 'storage outcome was not fully captured';
 
   const artifactSummary =
-    run.artifactIndexHttpUrl && run.artifactBundleHttpUrl
+    (run.artifactIndexHttpUrl || run.artifactIndexUri) && (run.artifactBundleHttpUrl || run.artifactBundleUri)
       ? 'published both the artifact index and full bundle to Filecoin Cloud retrieval URLs'
-      : run.artifactBundleHttpUrl
-        ? 'published the bundle to Filecoin Cloud but artifact indexing is incomplete'
+      : run.artifactBundleHttpUrl || run.artifactBundleUri
+        ? 'published a bundle record, but artifact indexing or retrieval metadata is incomplete'
         : 'artifact publication has not completed';
 
   const bullets = [

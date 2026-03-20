@@ -53,6 +53,11 @@ function loadingAwareValue(loading: boolean, error: string | null, resolved: str
   return resolved;
 }
 
+function evidenceStatusLabel(run: BenchmarkExecutionRecord): string {
+  if (!run.pieceCid) return 'not captured';
+  return run.contentMatch ? 'verified' : 'not verified';
+}
+
 export default function HomeClient() {
   const search = useSearchParams();
   const rpcOverride = search.get('rpc') ?? undefined;
@@ -261,7 +266,7 @@ export default function HomeClient() {
                 <div className="runStats runStatsDetailed">
                   <span>{formatDuration(run.outerWallTimeMs)}</span>
                   <span>{run.failurePhase || 'completed'}</span>
-                  <span>{run.contentMatch ? 'verified' : 'not verified'}</span>
+                  <span>{evidenceStatusLabel(run)}</span>
                 </div>
               </div>
             ))}
